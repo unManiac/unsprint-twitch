@@ -13,6 +13,8 @@ const initialState = {
   messageConfirmation:
     "@nome entrou na partida faltando @tempo e se mandar mensagem no chat perderá 1 vida, no fim você ganhará @resultado.",
   messageBonus: "Todos participantes do unSprint ganharam @vida <3 <3 <3",
+  warnMissingLives: true,
+  modImmune: false,
   multiplier: 2,
   lives: 1,
   minutes: 60,

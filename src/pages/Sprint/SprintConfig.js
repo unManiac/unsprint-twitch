@@ -1,4 +1,10 @@
-import { Button, Grid, TextField } from "@material-ui/core";
+import {
+  Button,
+  Checkbox,
+  FormControlLabel,
+  Grid,
+  TextField,
+} from "@material-ui/core";
 import { Alert } from "@material-ui/lab";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -14,6 +20,10 @@ function SprintConfig({ ...rest }) {
   const [multiplier, setMultiplier] = useState(sprint.multiplier);
   const [lives, setLives] = useState(sprint.lives);
   const [minutes, setMinutes] = useState(sprint.minutes);
+  const [warnMissingLives, setWarnMissingLives] = useState(
+    sprint.warnMissingLives
+  );
+  const [modImmune, setModImmune] = useState(sprint.modImmune);
   const [success, setSuccess] = useState(false);
 
   useEffect(() => {
@@ -21,15 +31,14 @@ function SprintConfig({ ...rest }) {
     setMessageEnded(sprint.messageEnded);
     setMessageBonus(sprint.messageBonus);
 
-    // update old command
-    if (sprint.messageStarted?.includes("!sprint")) {
-      const newSprint = { ...sprint };
-      delete newSprint.messageStarted;
-
+    // update new configuration
+    if (sprint.warnMissingLives === undefined) {
+      const newSprint = { ...sprint, warnMissingLives: true, modImmune: false };
       dispatch({
         type: SPRINT_UPDATE,
         sprint: newSprint,
       });
+      setTimeout(() => window.location.reload(), 1000);
     }
   }, [sprint, dispatch]);
 
@@ -40,6 +49,8 @@ function SprintConfig({ ...rest }) {
       multiplier,
       lives,
       minutes,
+      warnMissingLives,
+      modImmune,
     };
 
     if (messageStarted) {
@@ -154,9 +165,39 @@ function SprintConfig({ ...rest }) {
         <Grid
           item
           xs={12}
-          style={{ display: "flex" }}
-          justifyContent="space-between"
+          sm={3}
+          style={{ paddingTop: 0, paddingBottom: 0, marginLeft: "auto" }}
         >
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={modImmune}
+                onChange={({ target: { checked } }) => setModImmune(checked)}
+                color="primary"
+                name="modImmune"
+              />
+            }
+            label="Moderadores não perdem vida."
+          />
+        </Grid>
+
+        <Grid item xs={12} sm={5} style={{ paddingTop: 0, paddingBottom: 0 }}>
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={warnMissingLives}
+                onChange={({ target: { checked } }) =>
+                  setWarnMissingLives(checked)
+                }
+                color="primary"
+                name="warnMissingLives"
+              />
+            }
+            label="Avisar quantas vidas faltam quando digitarem no chat."
+          />
+        </Grid>
+
+        <Grid item xs={12}>
           <Button variant="contained" color="primary" type="submit">
             Salvar
           </Button>

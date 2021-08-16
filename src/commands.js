@@ -163,8 +163,21 @@ const commands = {
     };
     loop(50);
   },
-  "!morte": ({ twitch, sprint, dispatch, participant, target, username }) => {
-    if (sprint.finished || !sprint.ends || !participant) {
+  "!morte": ({
+    twitch,
+    sprint,
+    dispatch,
+    isMod,
+    participant,
+    target,
+    username,
+  }) => {
+    if (
+      sprint.finished ||
+      !sprint.ends ||
+      !participant ||
+      (sprint.modImmune && isMod)
+    ) {
       return;
     }
 
@@ -187,12 +200,15 @@ const commands = {
       username,
       lives: 1,
     });
-    twitch.say(
-      target,
-      `/me @${username} mandou mensagem no chat e perdeu 1 vida, restam ${
-        lives - 1
-      } vida(s).`
-    );
+
+    if (sprint.warnMissingLives) {
+      twitch.say(
+        target,
+        `/me @${username} mandou mensagem no chat e perdeu 1 vida, restam ${
+          lives - 1
+        } vida(s).`
+      );
+    }
   },
 };
 
