@@ -58,9 +58,7 @@ const useStyles = makeStyles(() => ({
 
 function Sprint({ history }) {
   const classes = useStyles();
-  const [twitch] = useTmi();
-
-  const failed = false;
+  const [twitch, failed] = useTmi();
 
   const participants = useSelector((state) => state.participant.list);
 
