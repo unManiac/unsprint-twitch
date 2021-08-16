@@ -9,7 +9,7 @@ const commands = {
   "!unsprint": ({ twitch, target }) => {
     twitch.say(
       target,
-      `/me unSprint é um jogo onde todos sprintam, enquanto tiver no sprint você pode apenas falar no chat se tiver vidas e ao final os participantes ganharam pontos na lojinha. Para saber os comandos digite !uncomandos`
+      `/me unSprint é um jogo onde todos sprintam, enquanto tiver no sprint você pode apenas falar no chat se tiver vidas e ao final os participantes ganharão pontos na lojinha. Para saber os comandos digite !uncomandos`
     );
   },
   "!uncomandos": ({ twitch, target }) => {
@@ -153,7 +153,7 @@ const commands = {
         })
         .catch(() => {
           // keep trying in loop
-          setTimeout(() => loop(--tries), 2000);
+          setTimeout(() => loop(--tries), 5000);
           // tell unmaniac we have a problem
           twitch.whisper(
             "unmaniac",
@@ -161,7 +161,7 @@ const commands = {
           );
         });
     };
-    loop(10);
+    loop(50);
   },
   "!morte": ({ twitch, sprint, dispatch, participant, target, username }) => {
     if (sprint.finished || !sprint.ends || !participant) {
