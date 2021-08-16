@@ -47,15 +47,20 @@ const useStyles = makeStyles(() => ({
   timer: {
     marginBottom: 30,
   },
-  buttons: {
-    display: "flex",
-    justifyContent: "flex-end",
+  total: {
+    textAlign: "right",
+    fontWeight: 500,
+    color: GREEN,
+    marginTop: 0,
+    marginBottom: 5,
   },
 }));
 
 function Sprint({ history }) {
   const classes = useStyles();
-  const [twitch, failed] = useTmi();
+  const [twitch] = useTmi();
+
+  const failed = false;
 
   const participants = useSelector((state) => state.participant.list);
 
@@ -72,6 +77,12 @@ function Sprint({ history }) {
       <SprintConfig className={classes.config} />
 
       <SprintTimer className={classes.timer} twitch={twitch} />
+
+      <Grid item xs={12} sm={12}>
+        <p className={classes.total}>
+          Total participantes: {participants.length}
+        </p>
+      </Grid>
 
       <Grid item xs={12}>
         <TableContainer component={Paper}>
