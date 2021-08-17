@@ -1,6 +1,6 @@
 import { Grid, makeStyles } from "@material-ui/core";
 import React from "react";
-import { GREEN } from "../../constants/colors";
+import { BLUE, GREEN } from "../../constants/colors";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -68,20 +68,30 @@ export default function About() {
       <Question title="5. Se eu sair do site e depois voltar, minhas configurações vão ficar salvas?">
         <b>Sim,</b> todas personalizações e configurações ficam salvas, caso
         inicie um sprint e saia acidetalmente do site, assim que você voltar na
-        página vai estar funcionando como anteriormente, com o timer
-        atualizado e todos participantes.
+        página vai estar funcionando como anteriormente, com o timer atualizado
+        e todos participantes.
       </Question>
 
       <Question title={`6. O que são "Vidas"?`}>
         A Vida permite que o participante do sprint possa enviar uma mensagem no
         chat sem perder seu ansioso prêmio, a quantidade de Vidas é configurável
         na tela de Sprint e por padrão seu valor é 1, ou seja, qualquer mensagem
-        enviada fará a pessoa perder imediatamente. Caso queira permitir que ela
-        possa enviar até uma mensagem, altera seu valor para 2 ou outro maior.{" "}
-        <b>Bônus: </b> se acontecer de você já estar com um sprint em andamento,
-        receber uma raid e quiser permitir que o pessoal agradeça a raid sem
-        perder o jogo, o Streamer pode digitar !vida {"<numero>"} para
-        acrescentar este número em vidas para todos participantes.
+        enviada fará a pessoa perder imediatamente.
+        <br /> <br />
+        <b style={{ color: "red" }}>Importante: </b> Ficar com <i>Zero</i> vidas
+        significa perder, portanto caso queira queira permitir que a pessoa
+        possa enviar 1 mensagem sem perder, o valor de vidas <b>precisa</b> ser
+        2.{" "}
+        <span style={{ color: "red" }}>
+          Os comandos do unSprint não tiram vida, mas os comandos do seu canal
+          e outras mensagens sim.
+        </span>
+        <br /> <br />
+        <b style={{ color: BLUE }}>Bônus: </b> Se acontecer de você já estar com
+        um sprint em andamento, receber uma raid e quiser permitir que o pessoal
+        agradeça a raid sem perder o jogo, o Streamer pode digitar !vida{" "}
+        {"<numero>"} para acrescentar este número em vidas para todos
+        participantes.
       </Question>
 
       <Question title="7. Gostei, quanto custa pra usar?">
