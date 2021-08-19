@@ -65,10 +65,11 @@ const commands = {
     dispatch,
     participant,
     username,
+    isStreamer,
     target,
   }) => {
     // only show lives
-    if (username !== target.replace("#", "")) {
+    if (!isStreamer) {
       if (participant) {
         twitch.say(
           target,

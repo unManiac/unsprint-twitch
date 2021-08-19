@@ -65,6 +65,7 @@ function useTmi() {
     // fresh state
     const { sprint, configuration, participant } = store.getState();
 
+    const isStreamer = username === target.replace("#", "");
     const params = {
       twitch: this,
       dispatch,
@@ -76,6 +77,7 @@ function useTmi() {
       participants: participant.list,
       participant: participant.list.find((p) => p.username === username),
       isMod: "mod" === context["user-type"],
+      isStreamer,
     };
 
     const keyCommands = Object.keys(commands);
@@ -83,8 +85,9 @@ function useTmi() {
 
     for (let i = 0; i < keyCommands.length; i++) {
       const key = keyCommands[i];
-      if (message.startsWith(key)) {
-        commands[key](params);
+      // Prevent regular users to send extra text after the command, streamer is allowed
+      if (message === key || (isStreamer && message.startsWith(key))) {
+        commands[key]({ ...params, hasExtraText: message !== key });
         found = true;
         break;
       }
