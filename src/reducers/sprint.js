@@ -25,6 +25,8 @@ const initialState = {
   warnMissingLives: true,
   modImmune: true,
   multiplier: 2,
+  multiplierSub: 0,
+  multiplierVip: 0,
   lives: 1,
   minutes: 60,
 };

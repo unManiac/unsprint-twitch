@@ -8,6 +8,7 @@ import {
   FormControlLabel,
   Grid,
   makeStyles,
+  Switch,
   TextField,
 } from "@material-ui/core";
 import React, { useEffect, useState } from "react";
@@ -43,16 +44,21 @@ function SprintConfig({ open, updateAlert, onClose, ...rest }) {
   const dispatch = useDispatch();
   const sprint = useSelector((state) => state.sprint);
 
+  const [advancedOptions, setAdvancedOptions] = useState(false);
+
   const [messageStarted, setMessageStarted] = useState(sprint.messageStarted);
   const [messageEnded, setMessageEnded] = useState(sprint.messageEnded);
   const [messageBonus, setMessageBonus] = useState(sprint.messageBonus);
   const [multiplier, setMultiplier] = useState(sprint.multiplier);
+  const [multiplierSub, setMultiplierSub] = useState(sprint.multiplierSub);
+  const [multiplierVip, setMultiplierVip] = useState(sprint.multiplierVip);
   const [lives, setLives] = useState(sprint.lives);
   const [minutes, setMinutes] = useState(sprint.minutes);
   const [warnMissingLives, setWarnMissingLives] = useState(
     sprint.warnMissingLives
   );
   const [modImmune, setModImmune] = useState(sprint.modImmune);
+  const [ranking, setRanking] = useState(sprint.ranking);
 
   useEffect(() => {
     setMessageStarted(sprint.messageStarted);
@@ -92,6 +98,8 @@ function SprintConfig({ open, updateAlert, onClose, ...rest }) {
       minutes,
       warnMissingLives,
       modImmune,
+      multiplierSub,
+      multiplierVip,
     };
 
     if (messageStarted) {
@@ -230,6 +238,64 @@ function SprintConfig({ open, updateAlert, onClose, ...rest }) {
                 helperText="Digite !vida <numero> para dar mais vidas aos participantes, útil pra agradecer raid."
               />
             </Grid>
+
+            <Grid item xs={12}>
+              <Divider style={{ marginTop: 20, marginBottom: 10 }} />
+            </Grid>
+
+            <Grid item xs={12} style={{ textAlign: "right" }}>
+              <FormControlLabel
+                control={
+                  <Switch
+                    checked={advancedOptions}
+                    color="primary"
+                    onChange={() => setAdvancedOptions((prev) => !prev)}
+                  />
+                }
+                label="Exibir configurações avançadas"
+              />
+            </Grid>
+
+            {advancedOptions && (
+              <>
+                <Grid item xs={12} sm={2}>
+                  <TextField
+                    value={multiplierSub}
+                    label="Multiplicador p/ Subs"
+                    name="multiplierSub"
+                    type="number"
+                    onChange={({ target: { value } }) =>
+                      setMultiplierSub(value)
+                    }
+                    fullWidth
+                    helperText={`1 minuto = ${multiplierSub || 0} pontos`}
+                  />
+                </Grid>
+
+                <Grid item xs={12} sm={2}>
+                  <TextField
+                    value={multiplierVip}
+                    label="Multiplicador p/ Vips"
+                    name="multiplierVip"
+                    type="number"
+                    onChange={({ target: { value } }) =>
+                      setMultiplierVip(value)
+                    }
+                    fullWidth
+                    helperText={`1 minuto = ${multiplierVip || 0} pontos`}
+                  />
+                </Grid>
+
+                <Grid item xs={12} sm={8}>
+                  <p style={{ color: "#777", fontSize: 14 }}>
+                    A regra de uso de multiplicador é sempre pegar o{" "}
+                    <b>maior</b>, portanto se o participante tiver sub e vip ao
+                    mesmo tempo, será utilizado o maior multiplicador dentre
+                    esses. Essa regra também inclui o multiplicador do topo.
+                  </p>
+                </Grid>
+              </>
+            )}
           </Grid>
         </DialogContent>
 
@@ -244,12 +310,8 @@ function SprintConfig({ open, updateAlert, onClose, ...rest }) {
             Salvar
           </Button>
 
-          <Button
-            variant="outlined"
-            color="secondary"
-            onClick={() => onClose()}
-          >
-            Cancelar
+          <Button variant="outlined" color="default" onClick={() => onClose()}>
+            Fechar
           </Button>
         </DialogActions>
       </form>

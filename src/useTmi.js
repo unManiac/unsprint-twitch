@@ -76,7 +76,9 @@ function useTmi() {
       sprint,
       participants: participant.list,
       participant: participant.list.find((p) => p.username === username),
-      isMod: "mod" === context["user-type"],
+      isMod: context.mod,
+      isVip: !!context.badges["vip"],
+      isSubscriber: context.subscriber,
       isStreamer,
     };
 

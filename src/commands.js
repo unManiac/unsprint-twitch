@@ -4,7 +4,7 @@ import {
   PARTICIPANT_ADD,
   PARTICIPANT_REMOVE,
 } from "./constants/actionTypes";
-import { calculatePoints } from "./helper";
+import { calculatePoints, findBestMultiplier } from "./helper";
 
 const commands = {
   "!unsprint": ({ twitch, target }) => {
@@ -24,6 +24,8 @@ const commands = {
     participant,
     username,
     dispatch,
+    isSubscriber,
+    isVip,
   }) => {
     if (participant) {
       twitch.say(target, `/me @${username} já está participando.`);
@@ -36,11 +38,8 @@ const commands = {
     }
 
     const joined = Date.now();
-    const [points, minutes] = calculatePoints(
-      joined,
-      sprint.ends,
-      sprint.multiplier
-    );
+    const multiplier = findBestMultiplier(sprint, isSubscriber, isVip);
+    const [points, minutes] = calculatePoints(joined, sprint.ends, multiplier);
 
     dispatch({
       type: PARTICIPANT_ADD,
@@ -59,7 +58,16 @@ const commands = {
     twitch.say(target, `/me ${reply}`);
     //twitch.whisper(username, reply);
   },
-  "!tempo": ({ sprint, config, twitch, participant, username, target }) => {
+  "!tempo": ({
+    sprint,
+    config,
+    twitch,
+    participant,
+    username,
+    isSubscriber,
+    isVip,
+    target,
+  }) => {
     if (!participant) {
       twitch.say(target, `/me @${username} não está participando.`);
       return;
@@ -67,15 +75,16 @@ const commands = {
 
     const { joined } = participant;
 
+    const multiplier = findBestMultiplier(sprint, isSubscriber, isVip);
     const [points, minutes] = calculatePoints(
       joined,
       sprint.ends || sprint.ended,
-      sprint.multiplier
+      multiplier
     );
 
     twitch.say(
       target,
-      `/me ${username} entrou com ${minutes} minutos e irá ganhar ${points} ${config.loyalty} no final.`
+      `/me @${username} entrou com ${minutes} minutos e irá ganhar ${points} ${config.loyalty} no final.`
     );
   },
   "!vida": ({
@@ -95,7 +104,7 @@ const commands = {
         const { lives } = participant;
         const textLives = `vida ${lives > 1 ? "s" : ""}`;
 
-        twitch.say(target, `/me ${username} possui ${lives} ${textLives}.`);
+        twitch.say(target, `/me @${username} possui ${lives} ${textLives}.`);
       }
       return;
     }
@@ -112,7 +121,7 @@ const commands = {
     const lives = parseInt(message.split(" ")[1]);
 
     if (Number.isNaN(lives)) {
-      twitch.say(target, `/me ${username} informe corretamente as vidas.`);
+      twitch.say(target, `/me @${username} informe corretamente as vidas.`);
       return;
     } else {
       const reply = sprint.messageBonus.replace("@vida", `${lives} vida(s)`);
@@ -131,6 +140,8 @@ const commands = {
     sprint,
     twitch,
     username,
+    isSubscriber,
+    isVip,
   }) => {
     if (!sprint.finished) {
       twitch.say(target, `/me @${username} o tempo ainda não acabou.`);
@@ -152,7 +163,8 @@ const commands = {
       return;
     }
 
-    const [points] = calculatePoints(joined, sprint.ended, sprint.multiplier);
+    const multiplier = findBestMultiplier(sprint, isSubscriber, isVip);
+    const [points] = calculatePoints(joined, sprint.ended, multiplier);
 
     const loop = async (tries) => {
       fetch(
