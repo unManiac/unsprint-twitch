@@ -1,8 +1,8 @@
 {
   "files": {
     "main.css": "/unsprint-twitch/static/css/main.6dea0f05.chunk.css",
-    "main.js": "/unsprint-twitch/static/js/main.dd113645.chunk.js",
-    "main.js.map": "/unsprint-twitch/static/js/main.dd113645.chunk.js.map",
+    "main.js": "/unsprint-twitch/static/js/main.bf4c0dc4.chunk.js",
+    "main.js.map": "/unsprint-twitch/static/js/main.bf4c0dc4.chunk.js.map",
     "runtime-main.js": "/unsprint-twitch/static/js/runtime-main.dac849ed.js",
     "runtime-main.js.map": "/unsprint-twitch/static/js/runtime-main.dac849ed.js.map",
     "static/js/2.7e4400eb.chunk.js": "/unsprint-twitch/static/js/2.7e4400eb.chunk.js",
@@ -17,6 +17,6 @@
     "static/js/runtime-main.dac849ed.js",
     "static/js/2.7e4400eb.chunk.js",
     "static/css/main.6dea0f05.chunk.css",
-    "static/js/main.dd113645.chunk.js"
+    "static/js/main.bf4c0dc4.chunk.js"
   ]
 }
