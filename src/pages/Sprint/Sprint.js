@@ -9,18 +9,30 @@ import {
   TableCell,
   withStyles,
   Grid,
+  Button,
 } from "@material-ui/core";
-import React from "react";
+import { Alert } from "@material-ui/lab";
+import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import { withRouter } from "react-router-dom";
-import { GREEN, WHITE } from "../../constants/colors";
+import { BLUE, GREEN, WHITE } from "../../constants/colors";
 import useTmi from "../../useTmi";
 import SprintConfig from "./SprintConfig";
 import SprintTimer from "./SprintTimer";
 
-const StyledTableCell = withStyles(() => ({
+const GreenTableCell = withStyles(() => ({
   head: {
     backgroundColor: GREEN,
+    color: WHITE,
+  },
+  body: {
+    fontSize: 14,
+  },
+}))(TableCell);
+
+const BlueTableCell = withStyles(() => ({
+  head: {
+    backgroundColor: BLUE,
     color: WHITE,
   },
   body: {
@@ -38,17 +50,13 @@ const StyledTableRow = withStyles((theme) => ({
 
 const useStyles = makeStyles(() => ({
   root: {
-    marginTop: 30,
-  },
-  config: {
-    marginTop: 30,
-    marginBottom: 30,
+    marginTop: 20,
   },
   timer: {
     marginBottom: 30,
   },
   total: {
-    textAlign: "right",
+    textAlign: "center",
     fontWeight: 500,
     color: GREEN,
     marginTop: 0,
@@ -60,48 +68,72 @@ function Sprint({ history }) {
   const classes = useStyles();
   const [twitch, failed] = useTmi();
 
+  const [openConfig, setOpenConfig] = useState(false);
+  const [alert, setAlert] = useState();
+
   const participants = useSelector((state) => state.participant.list);
 
   if (failed) {
     history.push(`/config`);
   }
 
+  const updateAlert = (alert) => {
+    setAlert(alert);
+    setTimeout(() => setAlert(null), 2500);
+  };
+
   return (
     <Grid container className={classes.root} alignItems="center">
-      <Grid item xs={12} sm={12}>
-        <h2 style={{ margin: 0 }}>Preparando o unSprint</h2>
+      {alert && (
+        <Alert severity={alert.severiy} style={{ flex: 1, marginBottom: 10 }}>
+          {alert.message}
+        </Alert>
+      )}
+
+      <Grid container justifyContent="space-between" alignItems="center">
+        <h2 style={{ display: "inline-block" }}>Preparando o unSprint</h2>
+
+        <Button
+          onClick={() => setOpenConfig(true)}
+          color="primary"
+          variant="outlined"
+        >
+          Editar configurações
+        </Button>
       </Grid>
 
-      <SprintConfig className={classes.config} />
+      <SprintConfig
+        open={openConfig}
+        updateAlert={updateAlert}
+        onClose={() => setOpenConfig(false)}
+      />
 
-      <SprintTimer className={classes.timer} twitch={twitch} />
+      <SprintTimer
+        updateAlert={updateAlert}
+        className={classes.timer}
+        twitch={twitch}
+      />
 
       <Grid item xs={12} sm={12}>
         <p className={classes.total}>
           Total participantes: {participants.length}
         </p>
-      </Grid>
 
-      <Grid item xs={12}>
         <TableContainer component={Paper}>
-          <Table className={classes.table} aria-label="customized table">
+          <Table className={classes.participants} aria-label="customized table">
             <TableHead>
               <TableRow>
-                <StyledTableCell>Usuário</StyledTableCell>
-                <StyledTableCell align="right">Minutos</StyledTableCell>
-                <StyledTableCell align="right">Vidas</StyledTableCell>
-                <StyledTableCell align="right">Pontos</StyledTableCell>
+                <GreenTableCell>Usuário</GreenTableCell>
+                <GreenTableCell align="right">Vidas</GreenTableCell>
               </TableRow>
             </TableHead>
             <TableBody>
               {participants.map((p) => (
                 <StyledTableRow key={p.username}>
-                  <StyledTableCell component="th" scope="row">
+                  <GreenTableCell component="th" scope="row">
                     {p.username}
-                  </StyledTableCell>
-                  <StyledTableCell align="right">{p.minutes}</StyledTableCell>
-                  <StyledTableCell align="right">{p.lives}</StyledTableCell>
-                  <StyledTableCell align="right">{p.points}</StyledTableCell>
+                  </GreenTableCell>
+                  <GreenTableCell align="right">{p.lives}</GreenTableCell>
                 </StyledTableRow>
               ))}
             </TableBody>

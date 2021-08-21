@@ -5,16 +5,25 @@ import {
   SPRINT_ENDED,
 } from "../constants/actionTypes";
 
-const initialState = {
+export const oldState = {
   messageStarted:
     "Começamos a partida de unSprint, terá duração de @tempo e para participar digite !iniciar",
   messageEnded:
     "Acabou o unSprint de @tempo, sobreviventes podem resgatar seus pontos digitando !ganhei",
   messageConfirmation:
     "@nome entrou na partida faltando @tempo e se mandar mensagem no chat perderá 1 vida, no fim você ganhará @resultado.",
+};
+
+const initialState = {
+  messageStarted:
+    "Começamos a partida de unSprint, terá duração de @tempo minutos e para participar digite !iniciar",
+  messageEnded:
+    "Acabou o unSprint de @tempo minutos, sobreviventes podem resgatar seus pontos digitando !ganhei",
+  messageConfirmation:
+    "@nome entrou na partida faltando @tempo minutos e se mandar mensagem no chat perderá 1 vida, no fim você ganhará @resultado.",
   messageBonus: "Todos participantes do unSprint ganharam @vida <3 <3 <3",
   warnMissingLives: true,
-  modImmune: false,
+  modImmune: true,
   multiplier: 2,
   lives: 1,
   minutes: 60,
@@ -39,10 +48,12 @@ const sprint = (state = initialState, action) => {
         ...state,
         started: undefined,
         ends: undefined,
+        finished: false,
       };
     case SPRINT_ENDED:
       return {
         ...state,
+        ended: state.ends,
         ends: undefined,
         finished: true,
       };

@@ -1,4 +1,4 @@
-import { Button, Grid, lighten, makeStyles } from "@material-ui/core";
+import { Button, Grid, lighten, makeStyles, Tooltip } from "@material-ui/core";
 import { Alert } from "@material-ui/lab";
 import React from "react";
 import Countdown from "react-countdown";
@@ -8,6 +8,7 @@ import {
   SPRINT_STARTED,
   SPRINT_ENDED,
   SPRINT_CANCELLED,
+  SPRINT_UPDATE,
 } from "../../constants/actionTypes";
 import { GREEN, WHITE } from "../../constants/colors";
 
@@ -21,14 +22,13 @@ const useStyles = makeStyles((theme) => ({
   start: {
     backgroundColor: GREEN,
     color: WHITE,
-    fontSize: 18,
     "&:hover,&:active,&:focus": {
       backgroundColor: lighten(GREEN, 0.3),
     },
   },
 }));
 
-function SprintTimer({ twitch, ...rest }) {
+function SprintTimer({ twitch, updateAlert, ...rest }) {
   const classes = useStyles();
 
   const dispatch = useDispatch();
@@ -36,61 +36,33 @@ function SprintTimer({ twitch, ...rest }) {
   const sprint = useSelector((state) => state.sprint);
   const config = useSelector((state) => state.configuration);
 
-  /*
-  const participants = useSelector((state) => state.participant.list);
+  const changeTime = () => {
+    let minutos = parseInt(window.prompt("Digite os minutos restante:"));
 
-  const redeeemParticipant = (participant, tries = 10) => {
-    const { username, joined, lives } = participant;
-
-    if (tries === 0 || lives <= 0 || !joined) {
-      if (tries === 0) {
-        alert("Problema no StreamElements chama unManiac");
-      }
-
-      dispatch({
-        type: PARTICIPANT_REMOVE,
-        username,
-      });
+    if (Number.isNaN(minutos)) {
+      updateAlert({ message: "Tempo incorreto", severity: "warning" });
       return;
     }
 
-    setTimeout(() => {
-      const seconds = Math.abs(joined - sprint.started) / 1000;
-      const minutes = Math.ceil(seconds / 60);
-      const points = minutes * sprint.multiplier;
-
-      fetch(
-        `https://api.streamelements.com/kappa/v2/points/${config.channelId}/${username}/${points}`,
-        {
-          method: "PUT",
-          headers: {
-            Authorization: `Bearer ${config.token}`,
-          },
-        }
-      )
-        .then(() => {
-          twitch.say(
-            config.channel,
-            `/me @${username} sobreviveu e ganhou ${points} ${config.loyalty}.`
-          );
-          dispatch({
-            type: PARTICIPANT_REMOVE,
-            username,
-          });
-        })
-        .catch(() => {
-          redeeemParticipant(participant, --tries);
-        });
-    }, 1000); // delay 1s to avoid spam chat
+    dispatch({
+      type: SPRINT_UPDATE,
+      sprint: {
+        ends: Date.now() + minutos * 60 * 1000,
+      },
+    });
+    updateAlert({ message: "Tempo atualizado", severity: "success" });
+    twitch.say(
+      config.channel,
+      `/me unSprint foi atualizado para ${minutos} minutos, para checar os novos pontos que irá ganhar digite !tempo`
+    );
   };
 
-  useEffect(() => {
-    if (sprint.finished && participants.length) {
-      redeeemParticipant(participants[0]);
-    }
-    // eslint-disable-next-line
-  }, [sprint.finished, participants.length]);
-  */
+  const end = () => {
+    dispatch({ type: SPRINT_ENDED });
+
+    const reply = sprint.messageEnded.replace("@tempo", `${sprint.minutes}`);
+    twitch.say(config.channel, `/me ${reply}`);
+  };
 
   return (
     <Grid container spacing={3} {...rest}>
@@ -100,6 +72,7 @@ function SprintTimer({ twitch, ...rest }) {
             variant="contained"
             className={classes.start}
             color="primary"
+            size="large"
             onClick={() => {
               dispatch({
                 type: SPRINT_STARTED,
@@ -112,7 +85,7 @@ function SprintTimer({ twitch, ...rest }) {
 
               const reply = sprint.messageStarted.replace(
                 "@tempo",
-                `${sprint.minutes} minutos`
+                `${sprint.minutes}`
               );
               twitch.say(config.channel, `/me ${reply}`);
             }}
@@ -129,31 +102,45 @@ function SprintTimer({ twitch, ...rest }) {
 
         {sprint.ends && (
           <div>
+            <Tooltip title="Após modificar o tempo, os participantes terão seus pontos recalculados com base no novo tempo.">
+              <Button
+                variant="outlined"
+                style={{ marginRight: 10 }}
+                color="primary"
+                onClick={changeTime}
+              >
+                Modificar tempo
+              </Button>
+            </Tooltip>
+
+            <Tooltip title="Os participantes vão pode resgatar seus pontos e de acordo com o tempo prometido de sprint.">
+              <Button
+                variant="outlined"
+                style={{ marginRight: 10 }}
+                color="default"
+                onClick={() =>
+                  window.confirm("Deseja realmente encerrar?") && end()
+                }
+              >
+                Encerrar antes
+              </Button>
+            </Tooltip>
+
             <Button
-              variant="contained"
+              variant="outlined"
               style={{ marginRight: 10 }}
               color="secondary"
               onClick={() => {
-                dispatch({ type: SPRINT_CANCELLED });
-                dispatch({ type: PARTICIPANTS_RESET });
+                if (window.confirm("Deseja realmente cancelar?")) {
+                  dispatch({ type: SPRINT_CANCELLED });
+                  dispatch({ type: PARTICIPANTS_RESET });
+                }
               }}
             >
               Cancelar sprint
             </Button>
 
-            <Countdown
-              date={sprint.ends}
-              controlled={false}
-              onComplete={() => {
-                dispatch({ type: SPRINT_ENDED });
-
-                const reply = sprint.messageEnded.replace(
-                  "@tempo",
-                  `${sprint.minutes} minutos`
-                );
-                twitch.say(config.channel, `/me ${reply}`);
-              }}
-            />
+            <Countdown date={sprint.ends} controlled={false} onComplete={end} />
           </div>
         )}
       </Grid>

@@ -4,6 +4,7 @@ import {
   PARTICIPANT_ADD,
   PARTICIPANT_REMOVE,
 } from "./constants/actionTypes";
+import { calculatePoints } from "./helper";
 
 const commands = {
   "!unsprint": ({ twitch, target }) => {
@@ -13,7 +14,7 @@ const commands = {
     );
   },
   "!uncomandos": ({ twitch, target }) => {
-    twitch.say(target, `/me !unsprint / !iniciar / !vida / !ganhei`);
+    twitch.say(target, `/me !unsprint / !iniciar / !vida / !tempo / !ganhei`);
   },
   "!iniciar": ({
     twitch,
@@ -35,9 +36,11 @@ const commands = {
     }
 
     const joined = Date.now();
-    const seconds = Math.abs(sprint.ends - joined) / 1000;
-    const minutes = Math.ceil(seconds / 60);
-    const points = minutes * sprint.multiplier;
+    const [points, minutes] = calculatePoints(
+      joined,
+      sprint.ends,
+      sprint.multiplier
+    );
 
     dispatch({
       type: PARTICIPANT_ADD,
@@ -45,22 +48,40 @@ const commands = {
         username,
         joined,
         lives: parseInt(sprint.lives),
-        minutes,
-        points,
       },
     });
 
     const reply = sprint.messageConfirmation
       .replace("@nome", `@${username}`)
-      .replace("@tempo", `${minutes} minuto(s)`)
+      .replace("@tempo", `${minutes}`)
       .replace("@resultado", `${points} ${config.loyalty}`);
 
     twitch.say(target, `/me ${reply}`);
     //twitch.whisper(username, reply);
   },
+  "!tempo": ({ sprint, config, twitch, participant, username, target }) => {
+    if (!participant) {
+      twitch.say(target, `/me @${username} não está participando.`);
+      return;
+    }
+
+    const { joined } = participant;
+
+    const [points, minutes] = calculatePoints(
+      joined,
+      sprint.ends || sprint.ended,
+      sprint.multiplier
+    );
+
+    twitch.say(
+      target,
+      `/me ${username} entrou com ${minutes} minutos e irá ganhar ${points} ${config.loyalty} no final.`
+    );
+  },
   "!vida": ({
     message,
     sprint,
+    config,
     twitch,
     dispatch,
     participant,
@@ -71,10 +92,10 @@ const commands = {
     // only show lives
     if (!isStreamer) {
       if (participant) {
-        twitch.say(
-          target,
-          `/me ${username} possui ${participant.lives} vida(s).`
-        );
+        const { lives } = participant;
+        const textLives = `vida ${lives > 1 ? "s" : ""}`;
+
+        twitch.say(target, `/me ${username} possui ${lives} ${textLives}.`);
       }
       return;
     }
@@ -121,7 +142,7 @@ const commands = {
       return;
     }
 
-    const { joined, points, lives } = participant;
+    const { joined, lives } = participant;
 
     if (lives <= 0 || !joined) {
       dispatch({
@@ -130,6 +151,8 @@ const commands = {
       });
       return;
     }
+
+    const [points] = calculatePoints(joined, sprint.ended, sprint.multiplier);
 
     const loop = async (tries) => {
       fetch(
