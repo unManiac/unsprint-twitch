@@ -37,19 +37,17 @@ export default function Streamers() {
       <Grid container justifyContent="space-between" alignItems="center">
         <h2 className={classes.title}>Streamers que utilizam o unSprint</h2>
 
-        {!failed && (
-          <Button
-            onClick={() =>
-              window.alert(
-                "Envie um sussuro ao unManiac, é recomendado que seja um streamer ativo para participar da página."
-              )
-            }
-            color="primary"
-            variant="outlined"
-          >
-            Quero fazer parte!
-          </Button>
-        )}
+        <Button
+          onClick={() =>
+            window.alert(
+              "Envie um sussuro ao unManiac, é recomendado que seja um streamer ativo para participar da página."
+            )
+          }
+          color="primary"
+          variant="outlined"
+        >
+          Quero fazer parte!
+        </Button>
       </Grid>
       <Streamer channel="andreabistafa" />
       <Streamer channel="ayaliteraria" />
