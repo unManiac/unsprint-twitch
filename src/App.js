@@ -10,6 +10,7 @@ import { HashRouter as Router, Switch, Route, NavLink } from "react-router-dom";
 import About from "./pages/About/About";
 import Config from "./pages/Config/Config";
 import Sprint from "./pages/Sprint/Sprint";
+import Streamers from "./pages/Streamers/Streamers";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -55,6 +56,14 @@ function App() {
                 </Button>
               )}
             />
+            <NavLink
+              to="/streamers"
+              component={(props) => (
+                <Button {...props} color="default">
+                  Streamers
+                </Button>
+              )}
+            />
           </div>
         </Toolbar>
       </AppBar>
@@ -65,6 +74,9 @@ function App() {
           </Route>
           <Route path="/about">
             <About />
+          </Route>
+          <Route path="/streamers">
+            <Streamers />
           </Route>
           <Route exact path="/">
             <Sprint />
