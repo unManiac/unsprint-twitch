@@ -42,12 +42,11 @@ const commands = {
 
     twitch.action(
       target,
-      `Ranking atual: ${top}. Para conferir sua posição digite !minutos`
+      `Ranking atual: ${top}. Fique atento, pois os pontos serão zerados toda segunda-feira. Para conferir sua posição digite !minutos`
     );
   },
   "!minutos": ({ twitch, target, sprint, username, ranking }) => {
     if (!sprint.ranking) {
-      twitch.action(target, `Ranking desabilitado.`);
       return;
     }
 
