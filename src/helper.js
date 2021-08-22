@@ -21,3 +21,31 @@ export function findBestMultiplier(sprint, sub, vip) {
 
   return multiplierSelected;
 }
+
+export function getLastMonday() {
+  let prevMonday = new Date();
+  prevMonday = prevMonday.setDate(
+    prevMonday.getDate() - ((prevMonday.getDay() + 6) % 7)
+  );
+  return new Date(prevMonday).setHours(5, 0, 0, 0);
+}
+
+export function getNextMonday() {
+  let nextMonday = new Date(getLastMonday());
+  nextMonday = nextMonday.setDate(nextMonday.getDate() + 7);
+  return new Date(nextMonday).setHours(5, 0, 0, 0);
+}
+
+// for testing
+export function getTwoWeeksMonday() {
+  let nextMonday = new Date(getLastMonday());
+  nextMonday = nextMonday.setDate(nextMonday.getDate() - 7);
+  return new Date(nextMonday).setHours(5, 0, 0, 0);
+}
+
+export function sortRanking(list) {
+  // order by biggest minutes and oldest update date
+  return list.sort(
+    (a, b) => b.minutes - a.minutes || a.updatedAt - b.updatedAt
+  );
+}

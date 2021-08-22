@@ -9,8 +9,11 @@ import {
   SPRINT_ENDED,
   SPRINT_CANCELLED,
   SPRINT_UPDATE,
+  RANKING_RESET,
 } from "../../constants/actionTypes";
 import { GREEN, WHITE } from "../../constants/colors";
+import { getLastMonday } from "../../helper";
+import { addPoints } from "../../requests";
 
 const useStyles = makeStyles((theme) => ({
   root: {},
@@ -34,7 +37,69 @@ function SprintTimer({ twitch, updateAlert, ...rest }) {
   const dispatch = useDispatch();
 
   const sprint = useSelector((state) => state.sprint);
+  const ranking = useSelector((state) => state.ranking.list);
+  const rankingLastReset = useSelector((state) => state.ranking.lastReset);
   const config = useSelector((state) => state.configuration);
+
+  const addPointsByRanking = (position) => {
+    const multiplier = parseFloat(sprint[`rankingPrize${position}`]);
+    const participant = ranking[position - 1];
+
+    if (!participant || !multiplier) {
+      return;
+    }
+
+    const { username, minutes } = participant;
+
+    const points = parseInt(minutes * multiplier);
+    return addPoints(username, points, config)
+      .then((result) => {
+        twitch.action(
+          config.channel,
+          `@${username} ficou em ${position}° e ganhou ${points}. Seu novo total é ${result.newAmount} ${config.loyalty}.`
+        );
+      })
+      .catch(() => {
+        twitch.action(
+          config.channel,
+          `Não foi possível adicionar ${points} para @${username}`
+        );
+      });
+  };
+
+  const resetRanking = async () => {
+    await Promise.all([
+      addPointsByRanking(1),
+      addPointsByRanking(2),
+      addPointsByRanking(3),
+    ]);
+
+    dispatch({
+      type: RANKING_RESET,
+    });
+  };
+
+  const startTime = () => {
+    if (
+      sprint.ranking &&
+      rankingLastReset &&
+      rankingLastReset < getLastMonday()
+    ) {
+      resetRanking();
+    }
+
+    dispatch({
+      type: SPRINT_STARTED,
+      sprint: {
+        started: Date.now(),
+        ends: Date.now() + sprint.minutes * 60 * 1000,
+      },
+    });
+    dispatch({ type: PARTICIPANTS_RESET });
+
+    const reply = sprint.messageStarted.replace("@tempo", `${sprint.minutes}`);
+    twitch.say(config.channel, `/me ${reply}`);
+  };
 
   const changeTime = () => {
     let minutos = parseInt(window.prompt("Digite os minutos restante:"));
@@ -73,22 +138,7 @@ function SprintTimer({ twitch, updateAlert, ...rest }) {
             className={classes.start}
             color="primary"
             size="large"
-            onClick={() => {
-              dispatch({
-                type: SPRINT_STARTED,
-                sprint: {
-                  started: Date.now(),
-                  ends: Date.now() + sprint.minutes * 60 * 1000,
-                },
-              });
-              dispatch({ type: PARTICIPANTS_RESET });
-
-              const reply = sprint.messageStarted.replace(
-                "@tempo",
-                `${sprint.minutes}`
-              );
-              twitch.say(config.channel, `/me ${reply}`);
-            }}
+            onClick={startTime}
           >
             Iniciar Sprint de {sprint.minutes} minutos
           </Button>

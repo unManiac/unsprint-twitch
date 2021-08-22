@@ -11,11 +11,11 @@ import {
   Switch,
   TextField,
 } from "@material-ui/core";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { SPRINT_UPDATE } from "../../constants/actionTypes";
+import { RANKING_RESET, SPRINT_UPDATE } from "../../constants/actionTypes";
 import { WHITE } from "../../constants/colors";
-import { oldState } from "../../reducers/sprint";
+import { getNextMonday } from "../../helper";
 
 const useStyles = makeStyles(() => ({
   form: {
@@ -35,6 +35,13 @@ const useStyles = makeStyles(() => ({
     position: "sticky",
     bottom: 0,
     background: WHITE,
+  },
+  beta: {
+    background: "red",
+    color: WHITE,
+    borderRadius: 25,
+    padding: "1px 5px",
+    fontSize: 10,
   },
 }));
 
@@ -59,35 +66,9 @@ function SprintConfig({ open, updateAlert, onClose, ...rest }) {
   );
   const [modImmune, setModImmune] = useState(sprint.modImmune);
   const [ranking, setRanking] = useState(sprint.ranking);
-
-  useEffect(() => {
-    setMessageStarted(sprint.messageStarted);
-    setMessageEnded(sprint.messageEnded);
-    setMessageBonus(sprint.messageBonus);
-
-    // update new configuration
-    let update = false;
-    if (oldState.messageStarted === sprint.messageStarted) {
-      update = true;
-      delete sprint.messageStarted;
-    }
-    if (oldState.messageEnded === sprint.messageEnded) {
-      update = true;
-      delete sprint.messageEnded;
-    }
-    if (oldState.messageConfirmation === sprint.messageConfirmation) {
-      update = true;
-      delete sprint.messageConfirmation;
-    }
-
-    if (update) {
-      dispatch({
-        type: SPRINT_UPDATE,
-        sprint: sprint,
-      });
-      setTimeout(() => window.location.reload(), 1000);
-    }
-  }, [sprint, dispatch]);
+  const [rankingPrize1, setRankingPrize1] = useState(sprint.rankingPrize1);
+  const [rankingPrize2, setRankingPrize2] = useState(sprint.rankingPrize2);
+  const [rankingPrize3, setRankingPrize3] = useState(sprint.rankingPrize3);
 
   const onSave = (e) => {
     e.preventDefault();
@@ -100,6 +81,10 @@ function SprintConfig({ open, updateAlert, onClose, ...rest }) {
       modImmune,
       multiplierSub,
       multiplierVip,
+      ranking,
+      rankingPrize1,
+      rankingPrize2,
+      rankingPrize3,
     };
 
     if (messageStarted) {
@@ -112,6 +97,18 @@ function SprintConfig({ open, updateAlert, onClose, ...rest }) {
 
     if (messageBonus) {
       obj.messageBonus = messageBonus;
+    }
+
+    if (sprint.ranking && !ranking) {
+      if (
+        window.confirm(
+          "O ranking será desativado e portanto todos participantes serão eliminados, deseja continuar?"
+        )
+      ) {
+        dispatch({ type: RANKING_RESET });
+      } else {
+        return;
+      }
     }
 
     dispatch({
@@ -131,7 +128,7 @@ function SprintConfig({ open, updateAlert, onClose, ...rest }) {
         <DialogContent className={classes.dialog}>
           <h2 className={classes.title}>Configurações do Sprint</h2>
 
-          <Grid container spacing={3}>
+          <Grid container spacing={3} alignItems="center">
             <Grid item xs={12} sm={2}>
               <TextField
                 value={minutes}
@@ -294,6 +291,121 @@ function SprintConfig({ open, updateAlert, onClose, ...rest }) {
                     esses. Essa regra também inclui o multiplicador do topo.
                   </p>
                 </Grid>
+
+                <Grid item xs={12}>
+                  <Divider />
+                </Grid>
+
+                <Grid item xs={12} sm={4}>
+                  <FormControlLabel
+                    control={
+                      <Switch
+                        checked={ranking}
+                        color="primary"
+                        onChange={() => {
+                          setRanking((prev) => !prev);
+                          if (!rankingPrize1) {
+                            setRankingPrize1(1);
+                          }
+                          if (!rankingPrize2) {
+                            setRankingPrize2(0.7);
+                          }
+                          if (!rankingPrize3) {
+                            setRankingPrize3(0.3);
+                          }
+                        }}
+                      />
+                    }
+                    label={
+                      <>
+                        Habilitar ranking semanal{" "}
+                        <sup className={classes.beta}>Beta</sup>
+                      </>
+                    }
+                  />
+                  <p style={{ color: "#777", marginTop: 0, fontSize: 14 }}>
+                    <i>!minutos</i> exibe a posição da pessoa no ranking.
+                    <br />
+                    <i>!unranking</i> exibe os primeiros 3 colocados.
+                  </p>
+                </Grid>
+
+                <Grid item xs={12} sm={8}>
+                  <p style={{ color: "#777", fontSize: 14 }}>
+                    O ranking é baseado em <b>minutos</b>, cada vez que o
+                    participante resgatar seu prêmio no final, seus minutos
+                    serão somados e exibidos no ranking. O funcionamento é muito
+                    parecido com o Leaderboard de sub/bits da Twitch, será
+                    resetado sempre na madrugada de segunda-feira. Próxima data
+                    para resetar:{" "}
+                    <b>{new Date(getNextMonday()).toLocaleDateString()}</b>.
+                  </p>
+                </Grid>
+
+                {ranking && (
+                  <>
+                    <Grid item xs={12} style={{ paddingBottom: 0 }}>
+                      <b>Premiação dos primeiros colocados antes de resetar</b>
+                    </Grid>
+
+                    <Grid item xs={12} sm={2}>
+                      <TextField
+                        value={rankingPrize1}
+                        label="Multiplicador do 1°"
+                        name="rankingPrize1"
+                        type="number"
+                        onChange={({ target: { value } }) =>
+                          setRankingPrize1(value)
+                        }
+                        fullWidth
+                        helperText={`1000 minutos = ${
+                          (rankingPrize1 || 0) * 1000
+                        } pontos`}
+                      />
+                    </Grid>
+
+                    <Grid item xs={12} sm={2}>
+                      <TextField
+                        value={rankingPrize2}
+                        label="Multiplicador do 2°"
+                        name="rankingPrize2"
+                        type="number"
+                        onChange={({ target: { value } }) =>
+                          setRankingPrize2(value)
+                        }
+                        fullWidth
+                        helperText={`1000 minutos = ${
+                          (rankingPrize2 || 0) * 1000
+                        } pontos`}
+                      />
+                    </Grid>
+
+                    <Grid item xs={12} sm={2}>
+                      <TextField
+                        value={rankingPrize3}
+                        label="Multiplicador do 3°"
+                        name="rankingPrize3"
+                        type="number"
+                        onChange={({ target: { value } }) =>
+                          setRankingPrize3(value)
+                        }
+                        fullWidth
+                        helperText={`1000 minutos = ${
+                          (rankingPrize3 || 0) * 1000
+                        } pontos`}
+                      />
+                    </Grid>
+
+                    <Grid item xs={12} sm={6}>
+                      <p style={{ color: "#777", fontSize: 14 }}>
+                        A <b>premiação</b> é conforme o total de minutos que os
+                        primeiros colocados conseguiram, por exemplo, se o
+                        primeiro colocado somou 1200 minutos e o multiplicador
+                        dele é 0,5 sua premiação será de 600 pontos.
+                      </p>
+                    </Grid>
+                  </>
+                )}
               </>
             )}
           </Grid>

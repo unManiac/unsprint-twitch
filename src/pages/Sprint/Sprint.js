@@ -12,10 +12,13 @@ import {
   Button,
 } from "@material-ui/core";
 import { Alert } from "@material-ui/lab";
-import React, { useState } from "react";
-import { useSelector } from "react-redux";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { withRouter } from "react-router-dom";
+import { RANKING_RESET, SPRINT_UPDATE } from "../../constants/actionTypes";
 import { BLUE, GREEN, WHITE } from "../../constants/colors";
+import { getLastMonday } from "../../helper";
+import { oldState } from "../../reducers/sprint";
 import useTmi from "../../useTmi";
 import SprintConfig from "./SprintConfig";
 import SprintTimer from "./SprintTimer";
@@ -70,12 +73,57 @@ function Sprint({ history }) {
 
   const [openConfig, setOpenConfig] = useState(false);
   const [alert, setAlert] = useState();
+  const [rankingWillReset, setRankingWillReset] = useState(false);
+
+  const dispatch = useDispatch();
 
   const participants = useSelector((state) => state.participant.list);
+  const sprint = useSelector((state) => state.sprint);
+  const ranking = useSelector((state) => state.ranking.list);
+  const rankingLastReset = useSelector((state) => state.ranking.lastReset);
 
   if (failed) {
     history.push(`/config`);
   }
+
+  useEffect(() => {
+    // update new configuration
+    let update = false;
+    if (oldState.messageStarted === sprint.messageStarted) {
+      update = true;
+      delete sprint.messageStarted;
+    }
+    if (oldState.messageEnded === sprint.messageEnded) {
+      update = true;
+      delete sprint.messageEnded;
+    }
+    if (oldState.messageConfirmation === sprint.messageConfirmation) {
+      update = true;
+      delete sprint.messageConfirmation;
+    }
+    if (sprint.ranking === undefined) {
+      update = true;
+      sprint.ranking = true;
+      sprint.rankingPrize1 = 1;
+      sprint.rankingPrize2 = 0.7;
+      sprint.rankingPrize3 = 0.3;
+    }
+
+    if (update) {
+      dispatch({
+        type: SPRINT_UPDATE,
+        sprint,
+      });
+      setTimeout(() => window.location.reload(), 1000);
+    }
+  }, [sprint, dispatch]);
+
+  useEffect(() => {
+    if (!rankingLastReset) {
+      dispatch({ type: RANKING_RESET });
+    }
+    setRankingWillReset(sprint.ranking && rankingLastReset < getLastMonday());
+  }, [sprint, rankingLastReset, dispatch]);
 
   const updateAlert = (alert) => {
     setAlert(alert);
@@ -102,11 +150,13 @@ function Sprint({ history }) {
         </Button>
       </Grid>
 
-      <SprintConfig
-        open={openConfig}
-        updateAlert={updateAlert}
-        onClose={() => setOpenConfig(false)}
-      />
+      {openConfig && (
+        <SprintConfig
+          open
+          updateAlert={updateAlert}
+          onClose={() => setOpenConfig(false)}
+        />
+      )}
 
       <SprintTimer
         updateAlert={updateAlert}
@@ -114,7 +164,12 @@ function Sprint({ history }) {
         twitch={twitch}
       />
 
-      <Grid item xs={12} sm={12}>
+      <Grid
+        item
+        xs={12}
+        style={{ alignSelf: "baseline" }}
+        sm={sprint.ranking ? 5 : 12}
+      >
         <p className={classes.total}>
           Total participantes: {participants.length}
         </p>
@@ -140,6 +195,54 @@ function Sprint({ history }) {
           </Table>
         </TableContainer>
       </Grid>
+
+      {sprint.ranking && (
+        <>
+          <Grid item xs={12} sm={1}></Grid>
+
+          <Grid item xs={12} sm={6} style={{ alignSelf: "baseline" }}>
+            {rankingWillReset && (
+              <Alert severity="warning">
+                O ranking será resetado e os prêmios distribuídos assim que você
+                iniciar um novo sprint.
+              </Alert>
+            )}
+
+            <p className={classes.total} style={{ color: BLUE }}>
+              Ranking semanal: {ranking.length}
+            </p>
+
+            <TableContainer component={Paper}>
+              <Table aria-label="customized table">
+                <TableHead>
+                  <TableRow>
+                    <BlueTableCell>#</BlueTableCell>
+                    <BlueTableCell>Usuário</BlueTableCell>
+                    <BlueTableCell align="right">Minutos</BlueTableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {ranking.slice(0, 30).map((p, idx) => (
+                    <StyledTableRow key={p.username}>
+                      <BlueTableCell component="th" scope="row">
+                        {idx + 1}°
+                      </BlueTableCell>
+                      <BlueTableCell component="th" scope="row">
+                        {p.username}
+                      </BlueTableCell>
+                      <BlueTableCell align="right">{p.minutes}</BlueTableCell>
+                    </StyledTableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
+            <p style={{ fontSize: 12, textAlign: "center" }}>
+              Exibindo apenas o top 30, é possível conferir seu ranking
+              digitando !minutos no chat.
+            </p>
+          </Grid>
+        </>
+      )}
     </Grid>
   );
 }

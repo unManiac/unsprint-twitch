@@ -63,7 +63,7 @@ function useTmi() {
     const message = msg.toLowerCase().trim();
 
     // fresh state
-    const { sprint, configuration, participant } = store.getState();
+    const { sprint, configuration, participant, ranking } = store.getState();
 
     const isStreamer = username === target.replace("#", "");
     const params = {
@@ -75,6 +75,7 @@ function useTmi() {
       config: configuration,
       sprint,
       participants: participant.list,
+      ranking: ranking.list,
       participant: participant.list.find((p) => p.username === username),
       isMod: context.mod,
       isVip: !!context.badges["vip"],

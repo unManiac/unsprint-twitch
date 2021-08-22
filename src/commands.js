@@ -3,18 +3,70 @@ import {
   PARTICIPANTS_REMOVE_LIVE,
   PARTICIPANT_ADD,
   PARTICIPANT_REMOVE,
+  RANKING_PARTICIPANT_ADD,
 } from "./constants/actionTypes";
 import { calculatePoints, findBestMultiplier } from "./helper";
+import { addPoints } from "./requests";
 
 const commands = {
   "!unsprint": ({ twitch, target }) => {
-    twitch.say(
+    twitch.action(
       target,
-      `/me unSprint é um jogo onde todos sprintam, enquanto tiver no sprint você pode apenas falar no chat se tiver vidas e ao final os participantes ganharão pontos na lojinha. Para saber os comandos digite !uncomandos`
+      `unSprint é um jogo onde todos sprintam, enquanto tiver no sprint você pode apenas falar no chat se tiver vidas e ao final os participantes ganharão pontos na lojinha. Para saber os comandos digite !uncomandos`
     );
   },
   "!uncomandos": ({ twitch, target }) => {
-    twitch.say(target, `/me !unsprint / !iniciar / !vida / !tempo / !ganhei`);
+    twitch.action(
+      target,
+      `!unsprint / !iniciar / !vida / !tempo / !ganhei / !unranking`
+    );
+  },
+  "!unranking": ({ twitch, target, sprint, ranking }) => {
+    if (!sprint.ranking) {
+      twitch.action(
+        target,
+        `Ranking desabilitado. Acesse configurações avançadas para ativar.`
+      );
+      return;
+    }
+
+    const top = ranking
+      .slice(0, 3)
+      .map((p, idx) => `${idx + 1}° ${p.username}`)
+      .join(" / ");
+
+    if (!top) {
+      twitch.action(target, `Ninguém entrou no ranking ainda.`);
+      return;
+    }
+
+    twitch.action(
+      target,
+      `Ranking atual: ${top}. Para conferir sua posição digite !minutos`
+    );
+  },
+  "!minutos": ({ twitch, target, sprint, username, ranking }) => {
+    if (!sprint.ranking) {
+      twitch.action(target, `Ranking desabilitado.`);
+      return;
+    }
+
+    const index = ranking.findIndex((p) => p.username === username);
+
+    if (index === -1) {
+      twitch.action(target, `@${username} não está no ranking.`);
+      return;
+    }
+
+    const participant = ranking[index];
+
+    twitch.action(
+      target,
+      `@${username} possui ${participant.minutes} minutos e sua posição é ${
+        index + 1
+      }°.`
+    );
+    return;
   },
   "!iniciar": ({
     twitch,
@@ -90,7 +142,6 @@ const commands = {
   "!vida": ({
     message,
     sprint,
-    config,
     twitch,
     dispatch,
     participant,
@@ -164,19 +215,10 @@ const commands = {
     }
 
     const multiplier = findBestMultiplier(sprint, isSubscriber, isVip);
-    const [points] = calculatePoints(joined, sprint.ended, multiplier);
+    const [points, minutes] = calculatePoints(joined, sprint.ended, multiplier);
 
     const loop = async (tries) => {
-      fetch(
-        `https://api.streamelements.com/kappa/v2/points/${config.channelId}/${username}/${points}`,
-        {
-          method: "PUT",
-          headers: {
-            Authorization: `Bearer ${config.token}`,
-          },
-        }
-      )
-        .then((resp) => resp.json())
+      addPoints(username, points, config)
         .then((result) => {
           twitch.say(
             target,
@@ -186,6 +228,16 @@ const commands = {
             type: PARTICIPANT_REMOVE,
             username,
           });
+
+          if (sprint.ranking) {
+            dispatch({
+              type: RANKING_PARTICIPANT_ADD,
+              participant: {
+                username,
+                minutes,
+              },
+            });
+          }
         })
         .catch(() => {
           // keep trying in loop

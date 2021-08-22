@@ -29,6 +29,10 @@ const initialState = {
   multiplierVip: 0,
   lives: 1,
   minutes: 60,
+  ranking: true,
+  rankingPrize1: 1,
+  rankingPrize2: 0.7,
+  rankingPrize3: 0.3,
 };
 
 const sprint = (state = initialState, action) => {
