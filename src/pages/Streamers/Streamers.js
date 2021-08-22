@@ -43,7 +43,15 @@ export default function Streamers() {
           <Button
             onClick={() =>
               window.confirm("Deseja enviar um sussuro ao unManiac?") &&
-              twitch.whisper("unmaniac", "Quero estar no mural de Streamers!")
+              twitch
+                .whisper("unmaniac", "Quero estar no mural de Streamers!")
+                .then(() => window.alert("Sussuro enviado com sucesso."))
+                .catch((err) => {
+                  console.log(err);
+                  window.alert(
+                    "Ocorreu um erro ao enviar sussuro, tente enviar manualmente."
+                  );
+                })
             }
             color="primary"
             variant="outlined"
