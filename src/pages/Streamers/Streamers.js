@@ -40,7 +40,7 @@ export default function Streamers() {
         <Button
           onClick={() =>
             window.alert(
-              "Envie um sussuro ao unManiac, é recomendado que seja um streamer ativo para participar da página."
+              "Envie um sussuro ao unManiac, é recomendado que seja um(a) streamer ativo(a) para participar da página."
             )
           }
           color="primary"
