@@ -31,8 +31,6 @@ const Streamer = ({ channel }) => {
 };
 
 export default function Streamers() {
-  const [twitch, failed] = useTmi();
-
   const classes = useStyles();
   return (
     <Grid container className={classes.root} spacing={1} alignItems="center">
@@ -42,16 +40,9 @@ export default function Streamers() {
         {!failed && (
           <Button
             onClick={() =>
-              window.confirm("Deseja enviar um sussuro ao unManiac?") &&
-              twitch
-                .whisper("unmaniac", "Quero estar no mural de Streamers!")
-                .then(() => window.alert("Sussuro enviado com sucesso."))
-                .catch((err) => {
-                  console.log(err);
-                  window.alert(
-                    "Ocorreu um erro ao enviar sussuro, tente enviar manualmente."
-                  );
-                })
+              window.alert(
+                "Envie um sussuro ao unManiac, é recomendado que seja um streamer ativo para participar da página."
+              )
             }
             color="primary"
             variant="outlined"
