@@ -30,9 +30,9 @@ const initialState = {
   lives: 1,
   minutes: 60,
   ranking: true,
-  rankingPrize1: 1,
-  rankingPrize2: 0.7,
-  rankingPrize3: 0.3,
+  rankingPrize1: undefined,
+  rankingPrize2: undefined,
+  rankingPrize3: undefined,
 };
 
 const sprint = (state = initialState, action) => {

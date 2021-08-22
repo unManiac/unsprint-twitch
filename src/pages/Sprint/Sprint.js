@@ -104,9 +104,6 @@ function Sprint({ history }) {
     if (sprint.ranking === undefined) {
       update = true;
       sprint.ranking = true;
-      sprint.rankingPrize1 = 1;
-      sprint.rankingPrize2 = 0.7;
-      sprint.rankingPrize3 = 0.3;
     }
 
     if (update) {
