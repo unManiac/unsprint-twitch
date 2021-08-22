@@ -65,6 +65,8 @@ function useTmi() {
     // fresh state
     const { sprint, configuration, participant, ranking } = store.getState();
 
+    const badges = context.badges || {};
+
     const isStreamer = username === target.replace("#", "");
     const params = {
       twitch: this,
@@ -78,7 +80,7 @@ function useTmi() {
       ranking: ranking.list,
       participant: participant.list.find((p) => p.username === username),
       isMod: context.mod,
-      isVip: !!context.badges["vip"],
+      isVip: !!badges["vip"],
       isSubscriber: context.subscriber,
       isStreamer,
     };

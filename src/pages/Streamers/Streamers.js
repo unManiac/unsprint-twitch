@@ -1,7 +1,6 @@
 import { Button, Grid, makeStyles } from "@material-ui/core";
 import React from "react";
 import { GREEN } from "../../constants/colors";
-import useTmi from "../../useTmi";
 
 const useStyles = makeStyles((theme) => ({
   root: {
