@@ -153,7 +153,7 @@ const commands = {
     if (!isStreamer) {
       if (participant) {
         const { lives } = participant;
-        const textLives = `vida ${lives > 1 ? "s" : ""}`;
+        const textLives = `vida${lives > 1 ? "s" : ""}`;
 
         twitch.say(target, `/me @${username} possui ${lives} ${textLives}.`);
       }
