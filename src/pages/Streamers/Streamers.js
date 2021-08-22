@@ -20,7 +20,7 @@ const Streamer = ({ channel }) => {
   return (
     <div style={{ padding: 15 }}>
       <iframe
-        src={`https://player.twitch.tv/?channel=${channel}&parent=unmaniac.github.io/&muted=true`}
+        src={`https://player.twitch.tv/?channel=${channel}&parent=unmaniac.github.io&muted=true`}
         height="270"
         width="540"
         title={channel}
