@@ -21,6 +21,7 @@ import { getLastMonday } from "../../helper";
 import { oldState } from "../../reducers/sprint";
 import useTmi from "../../useTmi";
 import SprintConfig from "./SprintConfig";
+import SprintMessage from "./SprintMessage";
 import SprintTimer from "./SprintTimer";
 
 const GreenTableCell = withStyles(() => ({
@@ -69,7 +70,7 @@ const useStyles = makeStyles(() => ({
 
 function Sprint({ history }) {
   const classes = useStyles();
-  const [twitch, failed] = useTmi();
+  const [twitch, failed, connected] = useTmi();
 
   const [openConfig, setOpenConfig] = useState(false);
   const [alert, setAlert] = useState();
@@ -129,6 +130,8 @@ function Sprint({ history }) {
 
   return (
     <Grid container className={classes.root} alignItems="center">
+      {connected && <SprintMessage />}
+
       {alert && (
         <Alert severity={alert.severiy} style={{ flex: 1, marginBottom: 10 }}>
           {alert.message}

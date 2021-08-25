@@ -1,3 +1,5 @@
+export const QUEUE_MESSAGES = [];
+
 export function calculatePoints(started, ended = Date.now(), multiplier = 1) {
   const seconds = Math.abs(ended - started) / 1000;
   const minutes = Math.ceil(seconds / 60);
@@ -49,3 +51,21 @@ export function sortRanking(list) {
     (a, b) => b.minutes - a.minutes || a.updatedAt - b.updatedAt
   );
 }
+
+export const wait = (ms) => new Promise((r) => setTimeout(r, ms));
+
+export const retryOperation = (operation, delay, retries) =>
+  new Promise((resolve, reject) => {
+    return operation()
+      .then(resolve)
+      .catch((reason) => {
+        console.log("Operation trying again");
+        if (retries > 0) {
+          return wait(delay)
+            .then(retryOperation.bind(null, operation, delay, retries - 1))
+            .then(resolve)
+            .catch(reject);
+        }
+        return reject(reason);
+      });
+  });

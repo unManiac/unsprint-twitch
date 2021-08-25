@@ -2,7 +2,11 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import tmi from "tmi.js";
 import commands from "./commands";
-import { CONFIGURATION_UPDATE } from "./constants/actionTypes";
+import {
+  CONFIGURATION_UPDATE,
+  MESSAGE_ADD,
+  MESSAGE_REMOVE,
+} from "./constants/actionTypes";
 import { store } from "./store";
 
 let externalClient = null;
@@ -10,12 +14,14 @@ let externalClient = null;
 function useTmi() {
   const [client, setClient] = useState(null);
   const [failed, setFailed] = useState(false);
+  const [connected, setConnected] = useState(false);
 
   const dispatch = useDispatch();
   const config = useSelector((state) => state.configuration);
 
   useEffect(() => {
     setFailed(false);
+    setConnected(false);
     connect(config);
 
     return () => {
@@ -39,6 +45,8 @@ function useTmi() {
     // Register our event handlers (defined below)
     client.on("message", onMessageHandler);
     client.on("connected", onConnectedHandler);
+    client.on("action", onActionHandler);
+    client.on("reconnect", () => setConnected(false));
 
     client
       .connect()
@@ -49,6 +57,7 @@ function useTmi() {
       .catch(() => {
         setFailed(true);
         setClient(null);
+        setConnected(false);
       });
   };
 
@@ -68,8 +77,17 @@ function useTmi() {
     const badges = context.badges || {};
 
     const isStreamer = username === target.replace("#", "");
+    const isAction = context["message-type"] === "action";
+
+    if (isAction && isStreamer) {
+      return;
+    }
+
     const params = {
       twitch: this,
+      twitchSafeSay: async (message) => {
+        dispatch({ type: MESSAGE_ADD, message });
+      },
       dispatch,
       username,
       message,
@@ -106,6 +124,8 @@ function useTmi() {
 
   // Called every time the bot connects to Twitch chat
   function onConnectedHandler(addr, port) {
+    console.log("tmi connected");
+    setConnected(true);
     // Update channel to be same as user
     const channel = this.username;
 
@@ -117,7 +137,24 @@ function useTmi() {
     }
   }
 
-  return [client, failed];
+  // Handles SprintMessage component sending messages
+  function onActionHandler(target, context, msg, self) {
+    if (self) {
+      return;
+    } // Ignore messages from the bot
+
+    const { username } = context;
+
+    self = username === target.replace("#", "");
+    if (self) {
+      dispatch({
+        type: MESSAGE_REMOVE,
+        message: msg,
+      });
+    }
+  }
+
+  return [client, failed, connected];
 }
 
 export default useTmi;
