@@ -81,8 +81,7 @@ function useTmi() {
       participant: participant.list.find((p) => p.username === username),
       isMod: "moderator" in badges,
       isVip: "vip" in badges,
-      isSubscriber: "subscriber" in badges,
-      isFounder: "founder" in badges,
+      isSubscriber: "subscriber" in badges || "founder" in badges, 
       isStreamer,
     };
 
