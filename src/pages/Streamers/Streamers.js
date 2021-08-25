@@ -1,6 +1,7 @@
 import { Button, Grid, makeStyles } from "@material-ui/core";
 import React from "react";
 import { GREEN } from "../../constants/colors";
+import { shuffleArray } from "../../helper";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -31,6 +32,19 @@ const Streamer = ({ channel }) => {
 
 export default function Streamers() {
   const classes = useStyles();
+
+  const names = shuffleArray([
+    "andreabistafa",
+    "aprendizdelivros",
+    "ayaliteraria",
+    "bibilendo",
+    "eibarbarasa",
+    "fernandoarjr",
+    "flaviafialho",
+    "patricialimams",
+    "souoleoedai",
+  ]);
+
   return (
     <Grid container className={classes.root} spacing={1} alignItems="center">
       <Grid container justifyContent="space-between" alignItems="center">
@@ -48,11 +62,9 @@ export default function Streamers() {
           Quero fazer parte!
         </Button>
       </Grid>
-      <Streamer channel="andreabistafa" />
-      <Streamer channel="ayaliteraria" />
-      <Streamer channel="bibilendo" />
-      <Streamer channel="flaviafialho" />
-      <Streamer channel="souoleoedai" />
+      {names.map((name) => (
+        <Streamer key={name} channel={name} />
+      ))}
     </Grid>
   );
 }
