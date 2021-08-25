@@ -51,8 +51,6 @@ function SprintConfig({ open, updateAlert, onClose, ...rest }) {
   const dispatch = useDispatch();
   const sprint = useSelector((state) => state.sprint);
 
-  const [advancedOptions, setAdvancedOptions] = useState(false);
-
   const [messageStarted, setMessageStarted] = useState(sprint.messageStarted);
   const [messageEnded, setMessageEnded] = useState(sprint.messageEnded);
   const [messageBonus, setMessageBonus] = useState(sprint.messageBonus);
@@ -201,6 +199,39 @@ function SprintConfig({ open, updateAlert, onClose, ...rest }) {
               />
             </Grid>
 
+            <Grid item xs={12} sm={2}>
+              <TextField
+                value={multiplierSub}
+                label="Multiplicador p/ Subs"
+                name="multiplierSub"
+                type="number"
+                onChange={({ target: { value } }) => setMultiplierSub(value)}
+                fullWidth
+                helperText={`1 minuto = ${multiplierSub || 0} pontos`}
+              />
+            </Grid>
+
+            <Grid item xs={12} sm={2}>
+              <TextField
+                value={multiplierVip}
+                label="Multiplicador p/ Vips"
+                name="multiplierVip"
+                type="number"
+                onChange={({ target: { value } }) => setMultiplierVip(value)}
+                fullWidth
+                helperText={`1 minuto = ${multiplierVip || 0} pontos`}
+              />
+            </Grid>
+
+            <Grid item xs={12} sm={8}>
+              <p style={{ color: "#777", fontSize: 14 }}>
+                A regra de uso de multiplicador é sempre pegar o <b>maior</b>,
+                portanto se o participante tiver sub e vip ao mesmo tempo, será
+                utilizado o maior multiplicador dentre esses. Essa regra também
+                inclui o multiplicador normal.
+              </p>
+            </Grid>
+
             <Grid item xs={12}>
               <Divider />
             </Grid>
@@ -240,172 +271,113 @@ function SprintConfig({ open, updateAlert, onClose, ...rest }) {
               <Divider style={{ marginTop: 20, marginBottom: 10 }} />
             </Grid>
 
-            <Grid item xs={12} style={{ textAlign: "right" }}>
+            <Grid item xs={12} sm={4}>
               <FormControlLabel
                 control={
                   <Switch
-                    checked={advancedOptions}
+                    checked={ranking}
                     color="primary"
-                    onChange={() => setAdvancedOptions((prev) => !prev)}
+                    onChange={() => {
+                      setRanking((prev) => !prev);
+                      if (!rankingPrize1) {
+                        setRankingPrize1(1);
+                      }
+                      if (!rankingPrize2) {
+                        setRankingPrize2(0.7);
+                      }
+                      if (!rankingPrize3) {
+                        setRankingPrize3(0.3);
+                      }
+                    }}
                   />
                 }
-                label="Exibir configurações avançadas"
+                label={
+                  <>
+                    Habilitar ranking semanal{" "}
+                    <sup className={classes.beta}>Beta</sup>
+                  </>
+                }
               />
+              <p style={{ color: "#777", marginTop: 0, fontSize: 14 }}>
+                <i>!minutos</i> exibe a posição da pessoa no ranking.
+                <br />
+                <i>!unranking</i> exibe os primeiros 3 colocados.
+              </p>
             </Grid>
 
-            {advancedOptions && (
+            <Grid item xs={12} sm={8}>
+              <p style={{ color: "#777", fontSize: 14 }}>
+                O ranking é baseado em <b>minutos</b>, cada vez que o
+                participante resgatar seu prêmio no final, seus minutos serão
+                somados e exibidos no ranking. O funcionamento é muito parecido
+                com o Leaderboard de sub/bits da Twitch, será resetado sempre na
+                madrugada de segunda-feira. Próxima data para resetar:{" "}
+                <b>{new Date(getNextMonday()).toLocaleDateString()}</b>.
+              </p>
+            </Grid>
+
+            {ranking && (
               <>
-                <Grid item xs={12} sm={2}>
-                  <TextField
-                    value={multiplierSub}
-                    label="Multiplicador p/ Subs"
-                    name="multiplierSub"
-                    type="number"
-                    onChange={({ target: { value } }) =>
-                      setMultiplierSub(value)
-                    }
-                    fullWidth
-                    helperText={`1 minuto = ${multiplierSub || 0} pontos`}
-                  />
+                <Grid item xs={12} style={{ paddingBottom: 0 }}>
+                  <b>Premiação dos primeiros colocados antes de resetar</b>
                 </Grid>
 
                 <Grid item xs={12} sm={2}>
                   <TextField
-                    value={multiplierVip}
-                    label="Multiplicador p/ Vips"
-                    name="multiplierVip"
+                    value={rankingPrize1}
+                    label="Multiplicador do 1°"
+                    name="rankingPrize1"
                     type="number"
                     onChange={({ target: { value } }) =>
-                      setMultiplierVip(value)
+                      setRankingPrize1(value)
                     }
                     fullWidth
-                    helperText={`1 minuto = ${multiplierVip || 0} pontos`}
+                    helperText={`1000 minutos = ${
+                      (rankingPrize1 || 0) * 1000
+                    } pontos`}
                   />
                 </Grid>
 
-                <Grid item xs={12} sm={8}>
-                  <p style={{ color: "#777", fontSize: 14 }}>
-                    A regra de uso de multiplicador é sempre pegar o{" "}
-                    <b>maior</b>, portanto se o participante tiver sub e vip ao
-                    mesmo tempo, será utilizado o maior multiplicador dentre
-                    esses. Essa regra também inclui o multiplicador do topo.
-                  </p>
-                </Grid>
-
-                <Grid item xs={12}>
-                  <Divider />
-                </Grid>
-
-                <Grid item xs={12} sm={4}>
-                  <FormControlLabel
-                    control={
-                      <Switch
-                        checked={ranking}
-                        color="primary"
-                        onChange={() => {
-                          setRanking((prev) => !prev);
-                          if (!rankingPrize1) {
-                            setRankingPrize1(1);
-                          }
-                          if (!rankingPrize2) {
-                            setRankingPrize2(0.7);
-                          }
-                          if (!rankingPrize3) {
-                            setRankingPrize3(0.3);
-                          }
-                        }}
-                      />
+                <Grid item xs={12} sm={2}>
+                  <TextField
+                    value={rankingPrize2}
+                    label="Multiplicador do 2°"
+                    name="rankingPrize2"
+                    type="number"
+                    onChange={({ target: { value } }) =>
+                      setRankingPrize2(value)
                     }
-                    label={
-                      <>
-                        Habilitar ranking semanal{" "}
-                        <sup className={classes.beta}>Beta</sup>
-                      </>
-                    }
+                    fullWidth
+                    helperText={`1000 minutos = ${
+                      (rankingPrize2 || 0) * 1000
+                    } pontos`}
                   />
-                  <p style={{ color: "#777", marginTop: 0, fontSize: 14 }}>
-                    <i>!minutos</i> exibe a posição da pessoa no ranking.
-                    <br />
-                    <i>!unranking</i> exibe os primeiros 3 colocados.
-                  </p>
                 </Grid>
 
-                <Grid item xs={12} sm={8}>
+                <Grid item xs={12} sm={2}>
+                  <TextField
+                    value={rankingPrize3}
+                    label="Multiplicador do 3°"
+                    name="rankingPrize3"
+                    type="number"
+                    onChange={({ target: { value } }) =>
+                      setRankingPrize3(value)
+                    }
+                    fullWidth
+                    helperText={`1000 minutos = ${
+                      (rankingPrize3 || 0) * 1000
+                    } pontos`}
+                  />
+                </Grid>
+
+                <Grid item xs={12} sm={6}>
                   <p style={{ color: "#777", fontSize: 14 }}>
-                    O ranking é baseado em <b>minutos</b>, cada vez que o
-                    participante resgatar seu prêmio no final, seus minutos
-                    serão somados e exibidos no ranking. O funcionamento é muito
-                    parecido com o Leaderboard de sub/bits da Twitch, será
-                    resetado sempre na madrugada de segunda-feira. Próxima data
-                    para resetar:{" "}
-                    <b>{new Date(getNextMonday()).toLocaleDateString()}</b>.
+                    A <b>premiação</b> é conforme o total de minutos que os
+                    primeiros colocados conseguiram, por exemplo, se o primeiro
+                    colocado somou 1200 minutos e o multiplicador dele é 0,5 sua
+                    premiação será de 600 pontos.
                   </p>
                 </Grid>
-
-                {ranking && (
-                  <>
-                    <Grid item xs={12} style={{ paddingBottom: 0 }}>
-                      <b>Premiação dos primeiros colocados antes de resetar</b>
-                    </Grid>
-
-                    <Grid item xs={12} sm={2}>
-                      <TextField
-                        value={rankingPrize1}
-                        label="Multiplicador do 1°"
-                        name="rankingPrize1"
-                        type="number"
-                        onChange={({ target: { value } }) =>
-                          setRankingPrize1(value)
-                        }
-                        fullWidth
-                        helperText={`1000 minutos = ${
-                          (rankingPrize1 || 0) * 1000
-                        } pontos`}
-                      />
-                    </Grid>
-
-                    <Grid item xs={12} sm={2}>
-                      <TextField
-                        value={rankingPrize2}
-                        label="Multiplicador do 2°"
-                        name="rankingPrize2"
-                        type="number"
-                        onChange={({ target: { value } }) =>
-                          setRankingPrize2(value)
-                        }
-                        fullWidth
-                        helperText={`1000 minutos = ${
-                          (rankingPrize2 || 0) * 1000
-                        } pontos`}
-                      />
-                    </Grid>
-
-                    <Grid item xs={12} sm={2}>
-                      <TextField
-                        value={rankingPrize3}
-                        label="Multiplicador do 3°"
-                        name="rankingPrize3"
-                        type="number"
-                        onChange={({ target: { value } }) =>
-                          setRankingPrize3(value)
-                        }
-                        fullWidth
-                        helperText={`1000 minutos = ${
-                          (rankingPrize3 || 0) * 1000
-                        } pontos`}
-                      />
-                    </Grid>
-
-                    <Grid item xs={12} sm={6}>
-                      <p style={{ color: "#777", fontSize: 14 }}>
-                        A <b>premiação</b> é conforme o total de minutos que os
-                        primeiros colocados conseguiram, por exemplo, se o
-                        primeiro colocado somou 1200 minutos e o multiplicador
-                        dele é 0,5 sua premiação será de 600 pontos.
-                      </p>
-                    </Grid>
-                  </>
-                )}
               </>
             )}
           </Grid>
