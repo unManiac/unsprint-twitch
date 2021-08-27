@@ -96,9 +96,14 @@ function SprintTimer({ twitch, updateAlert, ...rest }) {
       },
     });
     dispatch({ type: PARTICIPANTS_RESET });
+    const { messageStarted } = sprint;
 
-    const reply = sprint.messageStarted.replace("@tempo", `${sprint.minutes}`);
-    twitch.say(config.channel, `/me ${reply}`);
+    if (messageStarted) {
+      twitch.action(
+        config.channel,
+        messageStarted.replace("@tempo", `${sprint.minutes}`)
+      );
+    }
   };
 
   const changeTime = () => {
@@ -116,17 +121,22 @@ function SprintTimer({ twitch, updateAlert, ...rest }) {
       },
     });
     updateAlert({ message: "Tempo atualizado", severity: "success" });
-    twitch.say(
+    twitch.action(
       config.channel,
-      `/me unSprint foi atualizado para ${minutos} minutos, para checar os novos pontos que irá ganhar digite !tempo`
+      `unSprint foi atualizado para ${minutos} minutos, para checar os novos pontos que irá ganhar digite !tempo`
     );
   };
 
   const end = () => {
     dispatch({ type: SPRINT_ENDED });
+    const { messageEnded } = sprint;
 
-    const reply = sprint.messageEnded.replace("@tempo", `${sprint.minutes}`);
-    twitch.say(config.channel, `/me ${reply}`);
+    if (messageEnded) {
+      twitch.action(
+        config.channel,
+        messageEnded.replace("@tempo", `${sprint.minutes}`)
+      );
+    }
   };
 
   return (

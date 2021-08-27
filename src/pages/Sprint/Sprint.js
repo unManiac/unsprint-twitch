@@ -18,7 +18,7 @@ import { withRouter } from "react-router-dom";
 import { RANKING_RESET, SPRINT_UPDATE } from "../../constants/actionTypes";
 import { BLUE, GREEN, WHITE } from "../../constants/colors";
 import { getLastMonday } from "../../helper";
-import { oldState } from "../../reducers/sprint";
+import { initialState } from "../../reducers/sprint";
 import useTmi from "../../useTmi";
 import SprintConfig from "./SprintConfig";
 import SprintTimer from "./SprintTimer";
@@ -89,21 +89,13 @@ function Sprint({ history }) {
   useEffect(() => {
     // update new configuration
     let update = false;
-    if (oldState.messageStarted === sprint.messageStarted) {
-      update = true;
-      delete sprint.messageStarted;
-    }
-    if (oldState.messageEnded === sprint.messageEnded) {
-      update = true;
-      delete sprint.messageEnded;
-    }
-    if (oldState.messageConfirmation === sprint.messageConfirmation) {
-      update = true;
-      delete sprint.messageConfirmation;
-    }
-    if (sprint.ranking === undefined) {
-      update = true;
-      sprint.ranking = true;
+
+    if (sprint.messageAnxious === undefined) {
+      sprint.messageFinished = initialState.messageFinished;
+      sprint.messageAlreadyConfirmed = initialState.messageAlreadyConfirmed;
+      sprint.messageAnxious = initialState.messageAnxious;
+      sprint.messageLate = initialState.messageLate;
+      sprint.messageTime = initialState.messageTime;
     }
 
     if (update) {

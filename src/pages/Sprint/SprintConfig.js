@@ -7,15 +7,18 @@ import {
   Divider,
   FormControlLabel,
   Grid,
+  IconButton,
   makeStyles,
   Switch,
   TextField,
+  Tooltip,
 } from "@material-ui/core";
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RANKING_RESET, SPRINT_UPDATE } from "../../constants/actionTypes";
 import { WHITE } from "../../constants/colors";
 import { getNextMonday } from "../../helper";
+import { initialState } from "../../reducers/sprint";
 
 const useStyles = makeStyles(() => ({
   form: {
@@ -54,6 +57,17 @@ function SprintConfig({ open, updateAlert, onClose, ...rest }) {
   const [messageStarted, setMessageStarted] = useState(sprint.messageStarted);
   const [messageEnded, setMessageEnded] = useState(sprint.messageEnded);
   const [messageBonus, setMessageBonus] = useState(sprint.messageBonus);
+  const [messageConfirmation, setMessageConfirmation] = useState(
+    sprint.messageConfirmation
+  );
+  const [messageAlreadyConfirmed, setMessageAlreadyConfirmed] = useState(
+    sprint.messageAlreadyConfirmed
+  );
+  const [messageAnxious, setMessageAnxious] = useState(sprint.messageAnxious);
+  const [messageLate, setMessageLate] = useState(sprint.messageLate);
+  const [messageFinished, setMessageFinished] = useState(
+    sprint.messageFinished
+  );
   const [multiplier, setMultiplier] = useState(sprint.multiplier);
   const [multiplierSub, setMultiplierSub] = useState(sprint.multiplierSub);
   const [multiplierVip, setMultiplierVip] = useState(sprint.multiplierVip);
@@ -77,6 +91,14 @@ function SprintConfig({ open, updateAlert, onClose, ...rest }) {
       minutes,
       warnMissingLives,
       modImmune,
+      messageStarted,
+      messageEnded,
+      messageBonus,
+      messageConfirmation,
+      messageFinished,
+      messageAlreadyConfirmed,
+      messageAnxious,
+      messageLate,
       multiplierSub,
       multiplierVip,
       ranking,
@@ -84,18 +106,6 @@ function SprintConfig({ open, updateAlert, onClose, ...rest }) {
       rankingPrize2,
       rankingPrize3,
     };
-
-    if (messageStarted) {
-      obj.messageStarted = messageStarted;
-    }
-
-    if (messageEnded) {
-      obj.messageEnded = messageEnded;
-    }
-
-    if (messageBonus) {
-      obj.messageBonus = messageBonus;
-    }
 
     if (sprint.ranking && !ranking) {
       if (
@@ -119,6 +129,18 @@ function SprintConfig({ open, updateAlert, onClose, ...rest }) {
     });
     onClose();
   };
+
+  const resetMessageProp = (action) => ({
+    InputProps: {
+      endAdornment: (
+        <Tooltip title="Clicando aqui a mensagem será restaurada para a original.">
+          <IconButton onClick={action} size="small">
+            🗑️
+          </IconButton>
+        </Tooltip>
+      ),
+    },
+  });
 
   return (
     <Dialog open={open} maxWidth="lg">
@@ -236,27 +258,104 @@ function SprintConfig({ open, updateAlert, onClose, ...rest }) {
               <Divider />
             </Grid>
 
-            <Grid item xs={12}>
+            <Grid item xs={6}>
               <TextField
                 value={messageStarted}
                 label="Mensagem de início do unSprint"
                 name="message"
                 onChange={({ target: { value } }) => setMessageStarted(value)}
                 fullWidth
+                {...resetMessageProp(() =>
+                  setMessageStarted(initialState.messageStarted)
+                )}
               />
             </Grid>
 
-            <Grid item xs={12}>
+            <Grid item xs={6}>
               <TextField
                 value={messageEnded}
                 label="Mensagem de finalização do unSprint"
                 name="message"
                 onChange={({ target: { value } }) => setMessageEnded(value)}
                 fullWidth
+                {...resetMessageProp(() =>
+                  setMessageEnded(initialState.messageEnded)
+                )}
               />
             </Grid>
 
-            <Grid item xs={12}>
+            <Grid item xs={6}>
+              <TextField
+                value={messageConfirmation}
+                label="Mensagem de resposta do !iniciar"
+                name="messageConfirmation"
+                onChange={({ target: { value } }) =>
+                  setMessageConfirmation(value)
+                }
+                fullWidth
+                {...resetMessageProp(() =>
+                  setMessageConfirmation(initialState.messageConfirmation)
+                )}
+              />
+            </Grid>
+
+            <Grid item xs={6}>
+              <TextField
+                value={messageFinished}
+                label="Mensagem de resposta do !ganhei"
+                name="messageFinished"
+                onChange={({ target: { value } }) => setMessageFinished(value)}
+                fullWidth
+                {...resetMessageProp(() =>
+                  setMessageFinished(initialState.messageFinished)
+                )}
+              />
+            </Grid>
+
+            <Grid item xs={4}>
+              <TextField
+                value={messageAlreadyConfirmed}
+                label="Mensagem já confirmado"
+                name="messageAlreadyConfirmed"
+                onChange={({ target: { value } }) =>
+                  setMessageAlreadyConfirmed(value)
+                }
+                fullWidth
+                {...resetMessageProp(() =>
+                  setMessageAlreadyConfirmed(
+                    initialState.messageAlreadyConfirmed
+                  )
+                )}
+              />
+            </Grid>
+
+            <Grid item xs={4}>
+              <TextField
+                value={messageAnxious}
+                label="Mensagem ansiedade"
+                name="messageAnxious"
+                onChange={({ target: { value } }) => setMessageAnxious(value)}
+                fullWidth
+                {...resetMessageProp(() =>
+                  setMessageAnxious(initialState.messageAnxious)
+                )}
+              />
+            </Grid>
+
+            <Grid item xs={4}>
+              <TextField
+                value={messageLate}
+                label="Mensagem atrasado"
+                name="messageLate"
+                onChange={({ target: { value } }) => setMessageLate(value)}
+                fullWidth
+                {...resetMessageProp(() =>
+                  setMessageLate(initialState.messageLate)
+                )}
+              />
+            </Grid>
+
+            <Grid item xs={6}>
               <TextField
                 value={messageBonus}
                 label="Mensagem de vidas extras no unSprint"
@@ -264,6 +363,9 @@ function SprintConfig({ open, updateAlert, onClose, ...rest }) {
                 onChange={({ target: { value } }) => setMessageBonus(value)}
                 fullWidth
                 helperText="Digite !vida <numero> para dar mais vidas aos participantes, útil pra agradecer raid."
+                {...resetMessageProp(() =>
+                  setMessageBonus(initialState.messageBonus)
+                )}
               />
             </Grid>
 

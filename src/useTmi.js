@@ -71,6 +71,10 @@ function useTmi() {
     const params = {
       twitch: this,
       dispatch,
+      twitchActionSay: (msg) => {
+        if (!msg) return;
+        this.action(target, msg);
+      },
       username,
       message,
       target,
@@ -81,7 +85,7 @@ function useTmi() {
       participant: participant.list.find((p) => p.username === username),
       isMod: "moderator" in badges,
       isVip: "vip" in badges,
-      isSubscriber: "subscriber" in badges || "founder" in badges, 
+      isSubscriber: "subscriber" in badges || "founder" in badges,
       isStreamer,
     };
 

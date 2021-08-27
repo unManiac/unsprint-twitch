@@ -9,22 +9,19 @@ import { calculatePoints, findBestMultiplier } from "./helper";
 import { addPoints } from "./requests";
 
 const commands = {
-  "!unsprint": ({ twitch, target }) => {
-    twitch.action(
-      target,
+  "!unsprint": ({ twitchActionSay }) => {
+    twitchActionSay(
       `unSprint é um jogo onde todos sprintam, enquanto tiver no sprint você pode apenas falar no chat se tiver vidas e ao final os participantes ganharão pontos na lojinha. Para saber os comandos digite !uncomandos`
     );
   },
-  "!uncomandos": ({ twitch, target }) => {
-    twitch.action(
-      target,
+  "!uncomandos": ({ twitchActionSay }) => {
+    twitchActionSay(
       `!unsprint / !iniciar / !vida / !tempo / !ganhei / !unranking`
     );
   },
-  "!unranking": ({ twitch, target, sprint, ranking }) => {
+  "!unranking": ({ twitchActionSay, sprint, ranking }) => {
     if (!sprint.ranking) {
-      twitch.action(
-        target,
+      twitchActionSay(
         `Ranking desabilitado. Acesse configurações avançadas para ativar.`
       );
       return;
@@ -36,16 +33,15 @@ const commands = {
       .join(" / ");
 
     if (!top) {
-      twitch.action(target, `Ninguém entrou no ranking ainda.`);
+      twitchActionSay(`Ninguém entrou no ranking ainda.`);
       return;
     }
 
-    twitch.action(
-      target,
+    twitchActionSay(
       `Ranking atual: ${top}. Fique atento, pois os minutos serão zerados toda segunda-feira. Para conferir sua posição digite !minutos`
     );
   },
-  "!minutos": ({ twitch, target, sprint, username, ranking }) => {
+  "!minutos": ({ twitchActionSay, sprint, username, ranking }) => {
     if (!sprint.ranking) {
       return;
     }
@@ -53,14 +49,13 @@ const commands = {
     const index = ranking.findIndex((p) => p.username === username);
 
     if (index === -1) {
-      twitch.action(target, `@${username} não está no ranking.`);
+      twitchActionSay(`@${username} não está no ranking.`);
       return;
     }
 
     const participant = ranking[index];
 
-    twitch.action(
-      target,
+    twitchActionSay(
       `@${username} possui ${participant.minutes} minutos e sua posição é ${
         index + 1
       }°.`
@@ -68,8 +63,7 @@ const commands = {
     return;
   },
   "!iniciar": ({
-    twitch,
-    target,
+    twitchActionSay,
     sprint,
     config,
     participant,
@@ -79,12 +73,14 @@ const commands = {
     isVip,
   }) => {
     if (participant) {
-      twitch.say(target, `/me @${username} já está participando.`);
+      twitchActionSay(
+        sprint.messageAlreadyConfirmed.replace("@nome", `@${username}`)
+      );
       return;
     }
 
     if (sprint.finished || !sprint.ends) {
-      twitch.say(target, `/me @${username} chegou atrasado.`);
+      twitchActionSay(sprint.messageLate.replace("@nome", `@${username}`));
       return;
     }
 
@@ -106,21 +102,19 @@ const commands = {
       .replace("@tempo", `${minutes}`)
       .replace("@resultado", `${points} ${config.loyalty}`);
 
-    twitch.say(target, `/me ${reply}`);
-    //twitch.whisper(username, reply);
+    twitchActionSay(reply);
   },
   "!tempo": ({
     sprint,
     config,
-    twitch,
+    twitchActionSay,
     participant,
     username,
     isSubscriber,
     isVip,
-    target,
   }) => {
     if (!participant) {
-      twitch.say(target, `/me @${username} não está participando.`);
+      twitchActionSay(sprint.messageAnxious.replace("@nome", `@${username}`));
       return;
     }
 
@@ -133,20 +127,21 @@ const commands = {
       multiplier
     );
 
-    twitch.say(
-      target,
-      `/me @${username} entrou com ${minutes} minutos e irá ganhar ${points} ${config.loyalty} no final.`
-    );
+    const reply = sprint.messageTime
+      .replace("@nome", `@${username}`)
+      .replace("@tempo", `${minutes}`)
+      .replace("@resultado", `${points} ${config.loyalty}`);
+
+    twitchActionSay(reply);
   },
   "!vida": ({
     message,
     sprint,
-    twitch,
+    twitchActionSay,
     dispatch,
     participant,
     username,
     isStreamer,
-    target,
   }) => {
     // only show lives
     if (!isStreamer) {
@@ -154,15 +149,14 @@ const commands = {
         const { lives } = participant;
         const textLives = `vida${lives > 1 ? "s" : ""}`;
 
-        twitch.say(target, `/me @${username} possui ${lives} ${textLives}.`);
+        twitchActionSay(`@${username} possui ${lives} ${textLives}.`);
       }
       return;
     }
 
     if (sprint.finished) {
-      twitch.say(
-        target,
-        `/me @${username} só é possível dar vidas enquanto estiver acontecendo o sprint.`
+      twitchActionSay(
+        `@${username} só é possível dar vidas enquanto estiver acontecendo o sprint.`
       );
       return;
     }
@@ -171,11 +165,11 @@ const commands = {
     const lives = parseInt(message.split(" ")[1]);
 
     if (Number.isNaN(lives)) {
-      twitch.say(target, `/me @${username} informe corretamente as vidas.`);
+      twitchActionSay(`@${username} informe corretamente as vidas.`);
       return;
     } else {
       const reply = sprint.messageBonus.replace("@vida", `${lives} vida(s)`);
-      twitch.say(target, `/me ${reply}`);
+      twitchActionSay(reply);
       dispatch({
         type: PARTICIPANTS_ADD_LIVES,
         lives,
@@ -184,22 +178,21 @@ const commands = {
   },
   "!ganhei": ({
     participant,
-    target,
+    twitchActionSay,
     dispatch,
     config,
     sprint,
-    twitch,
     username,
     isSubscriber,
     isVip,
   }) => {
     if (!sprint.finished) {
-      twitch.say(target, `/me @${username} o tempo ainda não acabou.`);
+      twitchActionSay(sprint.messageAnxious.replace("@nome", `@${username}`));
       return;
     }
 
     if (!participant) {
-      twitch.say(target, `/me @${username} não está participando.`);
+      twitchActionSay(sprint.messageLate.replace("@nome", `@${username}`));
       return;
     }
 
@@ -219,10 +212,12 @@ const commands = {
     const loop = async (tries) => {
       addPoints(username, points, config)
         .then((result) => {
-          twitch.say(
-            target,
-            `/me @${username} sobreviveu e ganhou ${points}. Seu novo total é ${result.newAmount} ${config.loyalty}.`
-          );
+          const reply = sprint.messageFinished
+            .replace("@nome", `@${username}`)
+            .replace("@resultado", points)
+            .replace("@total", `${result.newAmount} ${config.loyalty}`);
+
+          twitchActionSay(reply);
           dispatch({
             type: PARTICIPANT_REMOVE,
             username,
@@ -242,21 +237,19 @@ const commands = {
           // keep trying in loop
           setTimeout(() => loop(--tries), 5000);
           // tell unmaniac we have a problem
-          twitch.whisper(
-            "unmaniac",
-            `/me Erro para atribuir pontos para o usuário ${username}`
+          window.alert(
+            `Erro para atribuir pontos para o usuário ${username}, avise o unManiac.`
           );
         });
     };
     loop(50);
   },
   "!morte": ({
-    twitch,
+    twitchActionSay,
     sprint,
     dispatch,
     isMod,
     participant,
-    target,
     username,
   }) => {
     if (
@@ -275,9 +268,8 @@ const commands = {
         type: PARTICIPANT_REMOVE,
         username,
       });
-      twitch.say(
-        target,
-        `/me @${username} não sobreviveu, digite !iniciar novamente para recomeçar na partida.`
+      twitchActionSay(
+        `@${username} não sobreviveu, digite !iniciar novamente para recomeçar na partida.`
       );
       return;
     }
@@ -289,9 +281,8 @@ const commands = {
     });
 
     if (sprint.warnMissingLives) {
-      twitch.say(
-        target,
-        `/me @${username} mandou mensagem no chat e perdeu 1 vida, restam ${
+      twitchActionSay(
+        `@${username} mandou mensagem no chat e perdeu 1 vida, restam ${
           lives - 1
         } vida(s).`
       );
