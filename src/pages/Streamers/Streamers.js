@@ -37,10 +37,13 @@ export default function Streamers() {
     "andreabistafa",
     "aprendizdelivros",
     "ayaliteraria",
+    "baleiatriz",
     "bibilendo",
+    "carollmariaa",
     "eibarbarasa",
     "fernandoarjr",
     "flaviafialho",
+    "norathegrace",
     "patricialimams",
     "souoleoedai",
   ]);
