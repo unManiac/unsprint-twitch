@@ -209,6 +209,21 @@ const commands = {
     const multiplier = findBestMultiplier(sprint, isSubscriber, isVip);
     const [points, minutes] = calculatePoints(joined, sprint.ended, multiplier);
 
+    dispatch({
+      type: PARTICIPANT_REMOVE,
+      username,
+    });
+
+    if (sprint.ranking) {
+      dispatch({
+        type: RANKING_PARTICIPANT_ADD,
+        participant: {
+          username,
+          minutes,
+        },
+      });
+    }
+
     const loop = async (tries) => {
       addPoints(username, points, config)
         .then((result) => {
@@ -218,26 +233,21 @@ const commands = {
             .replace("@total", `${result.newAmount} ${config.loyalty}`);
 
           twitchActionSay(reply);
-          dispatch({
-            type: PARTICIPANT_REMOVE,
-            username,
-          });
-
-          if (sprint.ranking) {
-            dispatch({
-              type: RANKING_PARTICIPANT_ADD,
-              participant: {
-                username,
-                minutes,
-              },
-            });
-          }
         })
         .catch(() => {
+          if (tries === 0) {
+            // add participant back to the store
+            dispatch({
+              type: PARTICIPANT_ADD,
+              participant,
+            });
+            return;
+          }
+
           // keep trying in loop
           setTimeout(() => loop(--tries), 5000);
           // tell unmaniac we have a problem
-          window.alert(
+          console.log(
             `Erro para atribuir pontos para o usuário ${username}, avise o unManiac.`
           );
         });
