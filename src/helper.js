@@ -6,10 +6,13 @@ export function calculatePoints(started, ended = Date.now(), multiplier = 1) {
   return [points, minutes];
 }
 
-export function findBestMultiplier(sprint, sub, vip) {
+export function findBestMultiplier(username, sprint, sub, vip, special) {
   const { multiplier, multiplierSub = 0, multiplierVip = 0 } = sprint;
-
   let multiplierSelected = multiplier;
+
+  if (special?.list?.includes(username)) {
+    multiplierSelected = special.multiplier;
+  }
 
   if (sub && multiplierSub) {
     multiplierSelected = Math.max(multiplierSelected, multiplierSub);
@@ -55,6 +58,6 @@ export function shuffleArray(array) {
     const j = Math.floor(Math.random() * (i + 1));
     [array[i], array[j]] = [array[j], array[i]];
   }
-  
+
   return array;
 }

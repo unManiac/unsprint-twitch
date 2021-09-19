@@ -67,7 +67,8 @@ function useTmi() {
     );
 
     // fresh state
-    const { sprint, configuration, participant, ranking } = store.getState();
+    const { sprint, configuration, participant, ranking, vip } =
+      store.getState();
 
     const badges = context.badges || {};
 
@@ -91,6 +92,7 @@ function useTmi() {
       isVip: "vip" in badges,
       isSubscriber: "subscriber" in badges || "founder" in badges,
       isStreamer,
+      special: vip,
     };
 
     const keyCommands = Object.keys(commands);

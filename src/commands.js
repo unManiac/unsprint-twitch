@@ -18,6 +18,7 @@ const iniciar = ({
   twitchActionSay,
   sprint,
   config,
+  special,
   participant,
   username,
   dispatch,
@@ -37,7 +38,13 @@ const iniciar = ({
   }
 
   const joined = Date.now();
-  const multiplier = findBestMultiplier(sprint, isSubscriber, isVip);
+  const multiplier = findBestMultiplier(
+    username,
+    sprint,
+    isSubscriber,
+    isVip,
+    special
+  );
   const [points, minutes] = calculatePoints(joined, sprint.ends, multiplier);
 
   dispatch({
@@ -62,6 +69,7 @@ const ganhei = ({
   twitchActionSay,
   dispatch,
   config,
+  special,
   sprint,
   username,
   isSubscriber,
@@ -87,7 +95,13 @@ const ganhei = ({
     return;
   }
 
-  const multiplier = findBestMultiplier(sprint, isSubscriber, isVip);
+  const multiplier = findBestMultiplier(
+    username,
+    sprint,
+    isSubscriber,
+    isVip,
+    special
+  );
   const [points, minutes] = calculatePoints(joined, sprint.ended, multiplier);
 
   dispatch({
@@ -200,6 +214,7 @@ const commands = {
   "!tempo": ({
     sprint,
     config,
+    special,
     twitchActionSay,
     participant,
     username,
@@ -213,7 +228,13 @@ const commands = {
 
     const { joined } = participant;
 
-    const multiplier = findBestMultiplier(sprint, isSubscriber, isVip);
+    const multiplier = findBestMultiplier(
+      username,
+      sprint,
+      isSubscriber,
+      isVip,
+      special
+    );
     const [points, minutes] = calculatePoints(
       joined,
       sprint.ends || sprint.ended,
