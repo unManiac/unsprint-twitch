@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import tmi from "tmi.js";
-import commands from "./commands";
+import commands, { dict } from "./commands";
 import { CONFIGURATION_UPDATE } from "./constants/actionTypes";
 import { store } from "./store";
 
@@ -60,7 +60,11 @@ function useTmi() {
 
     const { username } = context;
 
-    const message = msg.toLowerCase().trim();
+    let message = msg.toLowerCase().trim();
+    message = Object.keys(dict).reduce(
+      (msg, k) => msg.replace(dict[k], k),
+      message
+    );
 
     // fresh state
     const { sprint, configuration, participant, ranking } = store.getState();
@@ -91,6 +95,21 @@ function useTmi() {
 
     const keyCommands = Object.keys(commands);
     let found = false;
+
+    // shade
+    if (message.startsWith("!iniciar ") || message.startsWith("!sprint ")) {
+      let parts = message.split(" ");
+      if (
+        parts.length === 2 &&
+        parts[1].length === 2 && // double digits
+        !Number.isNaN(parseInt(parts[1])) // minutes
+      ) {
+        params.twitchActionSay(
+          `@${username} aqui o bot é inteligente e não precisa digitar minutos, digite apenas !iniciar`
+        );
+        return;
+      }
+    }
 
     for (let i = 0; i < keyCommands.length; i++) {
       const key = keyCommands[i];

@@ -8,6 +8,156 @@ import {
 import { calculatePoints, findBestMultiplier } from "./helper";
 import { addPoints } from "./requests";
 
+export const dict = {
+  iniciar: /inica|inicar|inciar|inica/,
+  ganhei: /ganhar|ganhou/,
+  minutos: /minuts|mins/,
+};
+
+const iniciar = ({
+  twitchActionSay,
+  sprint,
+  config,
+  participant,
+  username,
+  dispatch,
+  isSubscriber,
+  isVip,
+}) => {
+  if (participant) {
+    twitchActionSay(
+      sprint.messageAlreadyConfirmed.replace("@nome", `@${username}`)
+    );
+    return;
+  }
+
+  if (sprint.finished || !sprint.ends) {
+    twitchActionSay(sprint.messageLate.replace("@nome", `@${username}`));
+    return;
+  }
+
+  const joined = Date.now();
+  const multiplier = findBestMultiplier(sprint, isSubscriber, isVip);
+  const [points, minutes] = calculatePoints(joined, sprint.ends, multiplier);
+
+  dispatch({
+    type: PARTICIPANT_ADD,
+    participant: {
+      username,
+      joined,
+      lives: parseInt(sprint.lives),
+    },
+  });
+
+  const reply = sprint.messageConfirmation
+    .replace("@nome", `@${username}`)
+    .replace("@tempo", `${minutes}`)
+    .replace("@resultado", `${points} ${config.loyalty}`);
+
+  twitchActionSay(reply);
+};
+
+const ganhei = ({
+  participant,
+  twitchActionSay,
+  dispatch,
+  config,
+  sprint,
+  username,
+  isSubscriber,
+  isVip,
+}) => {
+  if (!sprint.finished) {
+    twitchActionSay(sprint.messageAnxious.replace("@nome", `@${username}`));
+    return;
+  }
+
+  if (!participant) {
+    twitchActionSay(sprint.messageLate.replace("@nome", `@${username}`));
+    return;
+  }
+
+  const { joined, lives } = participant;
+
+  if (lives <= 0 || !joined) {
+    dispatch({
+      type: PARTICIPANT_REMOVE,
+      username,
+    });
+    return;
+  }
+
+  const multiplier = findBestMultiplier(sprint, isSubscriber, isVip);
+  const [points, minutes] = calculatePoints(joined, sprint.ended, multiplier);
+
+  dispatch({
+    type: PARTICIPANT_REMOVE,
+    username,
+  });
+
+  if (sprint.ranking) {
+    dispatch({
+      type: RANKING_PARTICIPANT_ADD,
+      participant: {
+        username,
+        minutes,
+      },
+    });
+  }
+
+  const loop = async (tries) => {
+    addPoints(username, points, config)
+      .then((result) => {
+        const reply = sprint.messageFinished
+          .replace("@nome", `@${username}`)
+          .replace("@resultado", points)
+          .replace("@total", `${result.newAmount} ${config.loyalty}`);
+
+        twitchActionSay(reply);
+      })
+      .catch(() => {
+        if (tries === 0) {
+          // add participant back to the store
+          dispatch({
+            type: PARTICIPANT_ADD,
+            participant,
+          });
+          return;
+        }
+
+        // keep trying in loop
+        setTimeout(() => loop(--tries), 5000);
+        // tell unmaniac we have a problem
+        console.log(
+          `Erro para atribuir pontos para o usuário ${username}, avise o unManiac.`
+        );
+      });
+  };
+  loop(50);
+};
+
+const minutos = ({ twitchActionSay, sprint, username, ranking }) => {
+  if (!sprint.ranking) {
+    return;
+  }
+
+  const index = ranking.findIndex((p) => p.username === username);
+
+  if (index === -1) {
+    twitchActionSay(`@${username} não está no ranking.`);
+    return;
+  }
+
+  const participant = ranking[index];
+
+  twitchActionSay(
+    `@${username} possui ${participant.minutes} minutos e sua posição é ${
+      index + 1
+    }°.`
+  );
+  return;
+};
+
 const commands = {
   "!unsprint": ({ twitchActionSay }) => {
     twitchActionSay(
@@ -41,69 +191,12 @@ const commands = {
       `Ranking atual: ${top}. Fique atento, pois os minutos serão zerados toda segunda-feira. Para conferir sua posição digite !minutos`
     );
   },
-  "!minutos": ({ twitchActionSay, sprint, username, ranking }) => {
-    if (!sprint.ranking) {
-      return;
-    }
-
-    const index = ranking.findIndex((p) => p.username === username);
-
-    if (index === -1) {
-      twitchActionSay(`@${username} não está no ranking.`);
-      return;
-    }
-
-    const participant = ranking[index];
-
-    twitchActionSay(
-      `@${username} possui ${participant.minutes} minutos e sua posição é ${
-        index + 1
-      }°.`
-    );
-    return;
-  },
-  "!iniciar": ({
-    twitchActionSay,
-    sprint,
-    config,
-    participant,
-    username,
-    dispatch,
-    isSubscriber,
-    isVip,
-  }) => {
-    if (participant) {
-      twitchActionSay(
-        sprint.messageAlreadyConfirmed.replace("@nome", `@${username}`)
-      );
-      return;
-    }
-
-    if (sprint.finished || !sprint.ends) {
-      twitchActionSay(sprint.messageLate.replace("@nome", `@${username}`));
-      return;
-    }
-
-    const joined = Date.now();
-    const multiplier = findBestMultiplier(sprint, isSubscriber, isVip);
-    const [points, minutes] = calculatePoints(joined, sprint.ends, multiplier);
-
-    dispatch({
-      type: PARTICIPANT_ADD,
-      participant: {
-        username,
-        joined,
-        lives: parseInt(sprint.lives),
-      },
-    });
-
-    const reply = sprint.messageConfirmation
-      .replace("@nome", `@${username}`)
-      .replace("@tempo", `${minutes}`)
-      .replace("@resultado", `${points} ${config.loyalty}`);
-
-    twitchActionSay(reply);
-  },
+  "!minutos": minutos,
+  "!m": minutos,
+  "!iniciar": iniciar,
+  "!i": iniciar,
+  "!ganhei": ganhei,
+  "!g": ganhei,
   "!tempo": ({
     sprint,
     config,
@@ -175,84 +268,6 @@ const commands = {
         lives,
       });
     }
-  },
-  "!ganhei": ({
-    participant,
-    twitchActionSay,
-    dispatch,
-    config,
-    sprint,
-    username,
-    isSubscriber,
-    isVip,
-  }) => {
-    if (!sprint.finished) {
-      twitchActionSay(sprint.messageAnxious.replace("@nome", `@${username}`));
-      return;
-    }
-
-    if (!participant) {
-      twitchActionSay(sprint.messageLate.replace("@nome", `@${username}`));
-      return;
-    }
-
-    const { joined, lives } = participant;
-
-    if (lives <= 0 || !joined) {
-      dispatch({
-        type: PARTICIPANT_REMOVE,
-        username,
-      });
-      return;
-    }
-
-    const multiplier = findBestMultiplier(sprint, isSubscriber, isVip);
-    const [points, minutes] = calculatePoints(joined, sprint.ended, multiplier);
-
-    dispatch({
-      type: PARTICIPANT_REMOVE,
-      username,
-    });
-
-    if (sprint.ranking) {
-      dispatch({
-        type: RANKING_PARTICIPANT_ADD,
-        participant: {
-          username,
-          minutes,
-        },
-      });
-    }
-
-    const loop = async (tries) => {
-      addPoints(username, points, config)
-        .then((result) => {
-          const reply = sprint.messageFinished
-            .replace("@nome", `@${username}`)
-            .replace("@resultado", points)
-            .replace("@total", `${result.newAmount} ${config.loyalty}`);
-
-          twitchActionSay(reply);
-        })
-        .catch(() => {
-          if (tries === 0) {
-            // add participant back to the store
-            dispatch({
-              type: PARTICIPANT_ADD,
-              participant,
-            });
-            return;
-          }
-
-          // keep trying in loop
-          setTimeout(() => loop(--tries), 5000);
-          // tell unmaniac we have a problem
-          console.log(
-            `Erro para atribuir pontos para o usuário ${username}, avise o unManiac.`
-          );
-        });
-    };
-    loop(50);
   },
   "!morte": ({
     twitchActionSay,
