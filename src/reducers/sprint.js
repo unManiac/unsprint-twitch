@@ -31,6 +31,7 @@ export const initialState = {
   rankingPrize1: undefined,
   rankingPrize2: undefined,
   rankingPrize3: undefined,
+  implicitReedemSay: false,
 };
 
 const sprint = (state = initialState, action) => {

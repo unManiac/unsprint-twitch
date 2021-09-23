@@ -10,8 +10,8 @@ import { addPoints } from "./requests";
 
 export const dict = {
   iniciar:
-    /inica|inicar|inciar|inica|teamobot|melhorbot|botdesprintmelhorquealgunsoutrosquexistemai|estudar|trabalhar|shade|foquei|focada|focado|sprintei/,
-  minutos: /minuts|mins/,
+    /inica|inicar|inciar|inica|teamobot|melhorbot|botdesprintmelhorquealgunsoutrosquexistemai|estudar|trabalhar|shade|foquei|focada|focado|sprintei|mamei/,
+  minutos: /minuts|mins|resgate|resgatado/,
 };
 
 const iniciar = ({
@@ -130,7 +130,7 @@ const ganhei = ({
           .replace("@resultado", points)
           .replace("@total", `${result.newAmount} ${config.loyalty}`);
 
-        twitchActionSay(reply);
+        if (!silent || sprint.implicitReedemSay) twitchActionSay(reply);
       })
       .catch(() => {
         if (tries === 0) {
@@ -170,7 +170,7 @@ const minutos = ({ twitchActionSay, sprint, username, ranking }) => {
   twitchActionSay(
     `@${username} possui ${participant.minutes} minutos e sua posição é ${
       index + 1
-    }°.`
+    }°. Último resgate: ${new Date(participant.updatedAt).toLocaleString()}.`
   );
   return;
 };

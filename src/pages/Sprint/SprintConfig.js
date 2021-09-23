@@ -77,6 +77,9 @@ function SprintConfig({ open, updateAlert, onClose, ...rest }) {
   const [warnMissingLives, setWarnMissingLives] = useState(
     sprint.warnMissingLives
   );
+  const [implicitReedemSay, setImplicitReedemSay] = useState(
+    sprint.implicitReedemSay || false
+  );
   const [modImmune, setModImmune] = useState(sprint.modImmune);
   const [ranking, setRanking] = useState(sprint.ranking);
   const [rankingPrize1, setRankingPrize1] = useState(sprint.rankingPrize1);
@@ -108,6 +111,7 @@ function SprintConfig({ open, updateAlert, onClose, ...rest }) {
       rankingPrize1,
       rankingPrize2,
       rankingPrize3,
+      implicitReedemSay,
     };
 
     if (sprint.ranking && !ranking) {
@@ -300,7 +304,7 @@ function SprintConfig({ open, updateAlert, onClose, ...rest }) {
                 />
               </Grid>
 
-              <Grid item xs={6}>
+              <Grid item xs={6} style={{ alignSelf: "baseline" }}>
                 <TextField
                   value={messageConfirmation}
                   label="Mensagem de resposta do !iniciar"
@@ -327,6 +331,20 @@ function SprintConfig({ open, updateAlert, onClose, ...rest }) {
                   {...resetMessageProp(() =>
                     setMessageFinished(initialState.messageFinished)
                   )}
+                />
+
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={implicitReedemSay}
+                      onChange={({ target: { checked } }) =>
+                        setImplicitReedemSay(checked)
+                      }
+                      color="primary"
+                      name="implicitReedemSay"
+                    />
+                  }
+                  label="Sempre responder nos resgates implícitos."
                 />
               </Grid>
 
