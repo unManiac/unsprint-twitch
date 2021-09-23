@@ -107,7 +107,7 @@ function useTmi() {
         !Number.isNaN(parseInt(parts[1])) // minutes
       ) {
         params.twitchActionSay(
-          `@${username} aqui o bot é inteligente e não precisa digitar minutos, digite apenas !iniciar`
+          `@${username} aqui o bot é simples e portanto não precisa digitar minutos, digite apenas !iniciar sem precisar calcular o tempo.`
         );
         return;
       }
@@ -123,9 +123,14 @@ function useTmi() {
       }
     }
 
-    // Free comments in chat will lose a life
     if (!found) {
-      commands["!morte"](params);
+      if (sprint.finished) {
+        // By default redeem points
+        commands["!ganhei"]({ ...params, silent: true });
+      } else {
+        // Free comments in chat will lose a life
+        commands["!morte"](params);
+      }
     }
   }
 

@@ -9,8 +9,8 @@ import { calculatePoints, findBestMultiplier } from "./helper";
 import { addPoints } from "./requests";
 
 export const dict = {
-  iniciar: /inica|inicar|inciar|inica/,
-  ganhei: /ganhar|ganhou/,
+  iniciar:
+    /inica|inicar|inciar|inica|estudar|trabalhar|shade|foquei|focada|focado|sprintei/,
   minutos: /minuts|mins/,
 };
 
@@ -74,14 +74,17 @@ const ganhei = ({
   username,
   isSubscriber,
   isVip,
+  silent,
 }) => {
   if (!sprint.finished) {
-    twitchActionSay(sprint.messageAnxious.replace("@nome", `@${username}`));
+    if (!silent)
+      twitchActionSay(sprint.messageAnxious.replace("@nome", `@${username}`));
     return;
   }
 
   if (!participant) {
-    twitchActionSay(sprint.messageLate.replace("@nome", `@${username}`));
+    if (!silent)
+      twitchActionSay(sprint.messageLate.replace("@nome", `@${username}`));
     return;
   }
 
