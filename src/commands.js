@@ -10,7 +10,7 @@ import { addPoints } from "./requests";
 
 export const dict = {
   iniciar:
-    /inica|inicar|inciar|inica|estudar|trabalhar|shade|foquei|focada|focado|sprintei/,
+    /inica|inicar|inciar|inica|teamobot|melhorbot|botdesprintmelhorquealgunsoutrosquexistemai|estudar|trabalhar|shade|foquei|focada|focado|sprintei/,
   minutos: /minuts|mins/,
 };
 
