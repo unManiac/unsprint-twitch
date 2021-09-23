@@ -77,8 +77,8 @@ function SprintConfig({ open, updateAlert, onClose, ...rest }) {
   const [warnMissingLives, setWarnMissingLives] = useState(
     sprint.warnMissingLives
   );
-  const [implicitReedemSay, setImplicitReedemSay] = useState(
-    sprint.implicitReedemSay || false
+  const [implicitReedemSilent, setImplicitReedemSilent] = useState(
+    sprint.implicitReedemSilent || false
   );
   const [modImmune, setModImmune] = useState(sprint.modImmune);
   const [ranking, setRanking] = useState(sprint.ranking);
@@ -111,7 +111,7 @@ function SprintConfig({ open, updateAlert, onClose, ...rest }) {
       rankingPrize1,
       rankingPrize2,
       rankingPrize3,
-      implicitReedemSay,
+      implicitReedemSilent,
     };
 
     if (sprint.ranking && !ranking) {
@@ -336,15 +336,15 @@ function SprintConfig({ open, updateAlert, onClose, ...rest }) {
                 <FormControlLabel
                   control={
                     <Checkbox
-                      checked={implicitReedemSay}
+                      checked={implicitReedemSilent}
                       onChange={({ target: { checked } }) =>
-                        setImplicitReedemSay(checked)
+                        setImplicitReedemSilent(checked)
                       }
                       color="primary"
-                      name="implicitReedemSay"
+                      name="implicitReedemSilent"
                     />
                   }
-                  label="Sempre responder nos resgates implícitos."
+                  label="Não responder nos resgates implícitos."
                 />
               </Grid>
 

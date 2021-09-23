@@ -130,7 +130,7 @@ const ganhei = ({
           .replace("@resultado", points)
           .replace("@total", `${result.newAmount} ${config.loyalty}`);
 
-        if (!silent || sprint.implicitReedemSay) twitchActionSay(reply);
+        if (!silent || !sprint.implicitReedemSilent) twitchActionSay(reply);
       })
       .catch(() => {
         if (tries === 0) {
