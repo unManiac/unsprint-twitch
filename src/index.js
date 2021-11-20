@@ -1,15 +1,26 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import { Provider } from "react-redux";
-import "./index.css";
+import { HashRouter as Router, Switch, Route } from "react-router-dom";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import { store } from "./store";
+import "./index.css";
+import SprintOverlay from "./overlays/SprintOverlay";
 
 ReactDOM.render(
   <React.StrictMode>
     <Provider store={store}>
-      <App />
+      <Router basename={process.env.REACT_APP_BASE_URL}>
+        <Switch>
+          <Route path="/overlay/sprint">
+            <SprintOverlay />
+          </Route>
+          <Route>
+            <App />
+          </Route>
+        </Switch>
+      </Router>
     </Provider>
   </React.StrictMode>,
   document.getElementById("root")
