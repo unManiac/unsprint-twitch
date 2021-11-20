@@ -432,7 +432,7 @@ function SprintConfig({ open, updateAlert, onClose, ...rest }) {
                   label={
                     <>
                       Habilitar ranking semanal{" "}
-                      <sup className={classes.beta}>Beta</sup>
+                      {false && <sup className={classes.beta}>Beta</sup>}
                     </>
                   }
                 />

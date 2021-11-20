@@ -115,8 +115,8 @@ function useTmi() {
 
     for (let i = 0; i < keyCommands.length; i++) {
       const key = keyCommands[i];
-      // Prevent regular users to send extra text after the command, streamer is allowed
-      if (message === key || (isStreamer && message.startsWith(key))) {
+      // Prevent regular users to send extra text after the command
+      if (message === key) {
         commands[key]({ ...params, hasExtraText: message !== key });
         found = true;
         break;
@@ -124,7 +124,9 @@ function useTmi() {
     }
 
     if (!found) {
-      if (sprint.finished) {
+      if (isStreamer && message.startsWith("!vida")) {
+        commands["!vida"](params);
+      } else if (sprint.finished) {
         // By default redeem points
         commands["!ganhei"]({ ...params, silent: true });
       } else {

@@ -39,11 +39,7 @@ export default function About() {
     <Grid container className={classes.root} spacing={1} alignItems="center">
       <Question title="1. O que é o unSprint?">
         É uma ferramenta que permite Streamers engajar e premiar pessoas que
-        querem fazer parte do sprint.{" "}
-        <s style={{ fontSize: 12 }}>
-          Também conhecido como Vaca Amarela v2.0, que é muito melhor que aquele
-          outro bot que tem por ai, sem ofender.
-        </s>
+        querem fazer parte do sprint.
       </Question>
 
       <Question title="2. Como faço para configurar?">
@@ -83,8 +79,8 @@ export default function About() {
         possa enviar 1 mensagem sem perder, o valor de vidas <b>precisa</b> ser
         2.{" "}
         <span style={{ color: "red" }}>
-          Os comandos do unSprint não tiram vida, mas os comandos do seu canal
-          e outras mensagens sim.
+          Os comandos do unSprint não tiram vida, mas os comandos do seu canal e
+          outras mensagens sim.
         </span>
         <br /> <br />
         <b style={{ color: BLUE }}>Bônus: </b> Se acontecer de você já estar com
