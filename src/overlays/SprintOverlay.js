@@ -44,7 +44,7 @@ function SprintOverlay({ end, location }) {
     [parameters]
   );
   const speedParam = useMemo(() => {
-    let speed = parameters.get("speed");
+    let speed = Number.parseInt(parameters.get("speed"));
     if (Number.isNaN(speed)) {
       speed = 700;
     }

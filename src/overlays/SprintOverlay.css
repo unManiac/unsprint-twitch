@@ -12,5 +12,5 @@ body {
 
 #animate {
   height: 100vh;
-  overflow: auto;
+  overflow: hidden;
 }
