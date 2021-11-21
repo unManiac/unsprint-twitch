@@ -115,7 +115,8 @@ function useTmi() {
       }
     }
 
-    const canUseStreamerCommand = isStreamer || sprint.modCanControlBot;
+    const canUseStreamerCommand =
+      isStreamer || (params.isMod && sprint.modCanControlBot);
     if (canUseStreamerCommand) {
       for (let i = 0; i < streamerKeyCommands.length; i++) {
         const key = streamerKeyCommands[i];
