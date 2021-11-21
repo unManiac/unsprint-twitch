@@ -320,7 +320,7 @@ const commands = {
 
     const { lives } = participant;
 
-    if (lives === 1) {
+    if (lives <= 1) {
       dispatch({
         type: PARTICIPANT_REMOVE,
         username,
