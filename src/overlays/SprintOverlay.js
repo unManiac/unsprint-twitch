@@ -43,15 +43,22 @@ function SprintOverlay({ end, location }) {
     () => (parameters.get("config") || "").replace(" ", "+"),
     [parameters]
   );
+  const speedParam = useMemo(() => {
+    let speed = parameters.get("speed");
+    if (Number.isNaN(speed)) {
+      speed = 700;
+    }
+    return speed;
+  }, [parameters]);
 
   useEffect(() => {
     currentId++;
     const timeoutId = setTimeout(
-      () => scrollAnimate(currentId, false, participants.length * 700),
+      () => scrollAnimate(currentId, false, participants.length * speedParam),
       500
     );
     return () => clearTimeout(timeoutId);
-  }, [participants]);
+  }, [participants, speedParam]);
 
   useEffect(() => {
     if (configParam && localStorage.getItem("unconfig") !== configParam) {
@@ -72,13 +79,6 @@ function SprintOverlay({ end, location }) {
     return <Config />;
   }
 
-  let participantStyle = {};
-  try {
-    if (parameters.get("p")) participantStyle = JSON.parse(parameters.get("p"));
-  } catch (err) {
-    console.log(err);
-  }
-
   const descriptionVariable =
     parameters.get("msg") || ": @minutos minutos (@posicao°)";
   const noRankingVariable = parameters.get("nomsg") || ": sem ranking";
@@ -93,7 +93,7 @@ function SprintOverlay({ end, location }) {
                 .replace("@posicao", p.ranking.position)
             : noRankingVariable;
           return (
-            <div key={p.username} style={participantStyle}>
+            <div key={p.username} className="participant">
               {p.username}
               {description}
             </div>

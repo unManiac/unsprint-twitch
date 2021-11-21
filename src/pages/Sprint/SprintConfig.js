@@ -156,9 +156,11 @@ function SprintConfig({ open, updateAlert, onClose, ...rest }) {
 
   const urlOverlay = `${
     window.location.href
-  }overlay/sprint?p={"fontWeight":500,"color":"gray"}&config=${window.btoa(
-    JSON.stringify({ sprint, config })
-  )}`;
+  }overlay/sprint?speed=700&nomsg=${window.encodeURI(
+    ": sem ranking"
+  )}msg=${window.encodeURI(
+    ": @minutos minutos (@posicao°)"
+  )}&config=${window.btoa(JSON.stringify({ sprint, config }))}`;
 
   return (
     <>
