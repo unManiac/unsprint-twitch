@@ -19,7 +19,7 @@ function scrollAnimate(id, top, duration = 1000) {
       element.animate({ scrollTop }, duration, "linear", () =>
         scrollAnimate(id, !top, duration)
       ),
-    100
+    1000
   );
 }
 
