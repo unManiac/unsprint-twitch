@@ -2,20 +2,15 @@ import { Button, Grid, lighten, makeStyles, Tooltip } from "@material-ui/core";
 import { Alert } from "@material-ui/lab";
 import React from "react";
 import Countdown from "react-countdown";
-import { useDispatch, useSelector } from "react-redux";
+import { connect, useDispatch, useSelector } from "react-redux";
 import {
   PARTICIPANTS_RESET,
-  SPRINT_STARTED,
-  SPRINT_ENDED,
   SPRINT_CANCELLED,
-  SPRINT_UPDATE,
-  RANKING_RESET,
 } from "../../constants/actionTypes";
 import { GREEN, WHITE } from "../../constants/colors";
-import { getLastMonday } from "../../helper";
-import { addPoints } from "../../requests";
+import { startTime, changeTime, end, cancel } from "../../actions/sprint";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
   root: {},
   step: {
     fontSize: 18,
@@ -31,113 +26,17 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function SprintTimer({ twitch, updateAlert, ...rest }) {
+function SprintTimer({
+  twitch,
+  updateAlert,
+  startTime,
+  changeTime,
+  end,
+  cancel,
+  ...rest
+}) {
   const classes = useStyles();
-
-  const dispatch = useDispatch();
-
   const sprint = useSelector((state) => state.sprint);
-  const ranking = useSelector((state) => state.ranking.list);
-  const rankingLastReset = useSelector((state) => state.ranking.lastReset);
-  const config = useSelector((state) => state.configuration);
-
-  const addPointsByRanking = (position) => {
-    const multiplier = parseFloat(sprint[`rankingPrize${position}`]);
-    const participant = ranking[position - 1];
-
-    if (!participant || !multiplier) {
-      return;
-    }
-
-    const { username, minutes } = participant;
-
-    const points = parseInt(minutes * multiplier);
-    return addPoints(username, points, config)
-      .then((result) => {
-        twitch.action(
-          config.channel,
-          `@${username} ficou em ${position}° e ganhou ${points}. Seu novo total é ${result.newAmount} ${config.loyalty}.`
-        );
-      })
-      .catch(() => {
-        twitch.action(
-          config.channel,
-          `Não foi possível adicionar ${points} para @${username}`
-        );
-      });
-  };
-
-  const resetRanking = async () => {
-    await Promise.all([
-      addPointsByRanking(1),
-      addPointsByRanking(2),
-      addPointsByRanking(3),
-    ]);
-
-    dispatch({
-      type: RANKING_RESET,
-    });
-  };
-
-  const startTime = () => {
-    if (
-      sprint.ranking &&
-      rankingLastReset &&
-      rankingLastReset < getLastMonday()
-    ) {
-      resetRanking();
-    }
-
-    dispatch({
-      type: SPRINT_STARTED,
-      sprint: {
-        started: Date.now(),
-        ends: Date.now() + sprint.minutes * 60 * 1000,
-      },
-    });
-    dispatch({ type: PARTICIPANTS_RESET });
-    const { messageStarted } = sprint;
-
-    if (messageStarted) {
-      twitch.action(
-        config.channel,
-        messageStarted.replace("@tempo", `${sprint.minutes}`)
-      );
-    }
-  };
-
-  const changeTime = () => {
-    let minutos = parseInt(window.prompt("Digite os minutos restante:"));
-
-    if (Number.isNaN(minutos)) {
-      updateAlert({ message: "Tempo incorreto", severity: "warning" });
-      return;
-    }
-
-    dispatch({
-      type: SPRINT_UPDATE,
-      sprint: {
-        ends: Date.now() + minutos * 60 * 1000,
-      },
-    });
-    updateAlert({ message: "Tempo atualizado", severity: "success" });
-    twitch.action(
-      config.channel,
-      `unSprint foi atualizado para ${minutos} minutos, para checar os novos pontos que irá ganhar digite !tempo`
-    );
-  };
-
-  const end = () => {
-    dispatch({ type: SPRINT_ENDED });
-    const { messageEnded } = sprint;
-
-    if (messageEnded) {
-      twitch.action(
-        config.channel,
-        messageEnded.replace("@tempo", `${sprint.minutes}`)
-      );
-    }
-  };
 
   return (
     <Grid container spacing={3} {...rest}>
@@ -148,7 +47,7 @@ function SprintTimer({ twitch, updateAlert, ...rest }) {
             className={classes.start}
             color="primary"
             size="large"
-            onClick={startTime}
+            onClick={() => startTime(twitch)}
           >
             Iniciar Sprint de {sprint.minutes} minutos
           </Button>
@@ -167,7 +66,7 @@ function SprintTimer({ twitch, updateAlert, ...rest }) {
                 variant="outlined"
                 style={{ marginRight: 10 }}
                 color="primary"
-                onClick={changeTime}
+                onClick={() => updateAlert(changeTime(twitch))}
               >
                 Modificar tempo
               </Button>
@@ -179,7 +78,7 @@ function SprintTimer({ twitch, updateAlert, ...rest }) {
                 style={{ marginRight: 10 }}
                 color="default"
                 onClick={() =>
-                  window.confirm("Deseja realmente encerrar?") && end()
+                  window.confirm("Deseja realmente encerrar?") && end(twitch)
                 }
               >
                 Encerrar antes
@@ -192,15 +91,18 @@ function SprintTimer({ twitch, updateAlert, ...rest }) {
               color="secondary"
               onClick={() => {
                 if (window.confirm("Deseja realmente cancelar?")) {
-                  dispatch({ type: SPRINT_CANCELLED });
-                  dispatch({ type: PARTICIPANTS_RESET });
+                  cancel();
                 }
               }}
             >
               Cancelar sprint
             </Button>
 
-            <Countdown date={sprint.ends} controlled={false} onComplete={end} />
+            <Countdown
+              date={sprint.ends}
+              controlled={false}
+              onComplete={() => end(twitch)}
+            />
           </div>
         )}
       </Grid>
@@ -208,4 +110,9 @@ function SprintTimer({ twitch, updateAlert, ...rest }) {
   );
 }
 
-export default SprintTimer;
+export default connect(undefined, {
+  startTime,
+  changeTime,
+  end,
+  cancel,
+})(SprintTimer);

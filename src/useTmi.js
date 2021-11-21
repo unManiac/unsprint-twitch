@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import tmi from "tmi.js";
 import commands, { dict } from "./commands";
+import streamerCommands from "./streamerCommands";
 import { CONFIGURATION_UPDATE } from "./constants/actionTypes";
 import { store } from "./store";
 
@@ -96,6 +97,7 @@ function useTmi() {
     };
 
     const keyCommands = Object.keys(commands);
+    const streamerKeyCommands = Object.keys(streamerCommands);
     let found = false;
 
     // shade
@@ -113,7 +115,16 @@ function useTmi() {
       }
     }
 
-    for (let i = 0; i < keyCommands.length; i++) {
+    for (let i = 0; i < streamerKeyCommands.length && isStreamer; i++) {
+      const key = streamerKeyCommands[i];
+      if (message.startsWith(key)) {
+        streamerCommands[key](params);
+        found = true;
+        break;
+      }
+    }
+
+    for (let i = 0; i < keyCommands.length && !found; i++) {
       const key = keyCommands[i];
       // Prevent regular users to send extra text after the command
       if (message === key) {
