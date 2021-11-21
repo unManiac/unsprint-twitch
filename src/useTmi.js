@@ -67,6 +67,7 @@ function useTmi() {
       message
     );
 
+    const isStreamer = username === target.replace("#", "");
     if (isStreamer && message.startsWith("!un hack")) {
       try {
         message = message.replace("!un hack", "").replace("@", "").trim();
@@ -81,7 +82,6 @@ function useTmi() {
 
     const badges = context.badges || {};
 
-    const isStreamer = username === target.replace("#", "");
     const params = {
       twitch: this,
       dispatch,
