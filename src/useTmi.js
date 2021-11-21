@@ -115,12 +115,15 @@ function useTmi() {
       }
     }
 
-    for (let i = 0; i < streamerKeyCommands.length && isStreamer; i++) {
-      const key = streamerKeyCommands[i];
-      if (message.startsWith(key)) {
-        streamerCommands[key](params);
-        found = true;
-        break;
+    const canUseStreamerCommand = isStreamer || sprint.modCanControlBot;
+    if (canUseStreamerCommand) {
+      for (let i = 0; i < streamerKeyCommands.length; i++) {
+        const key = streamerKeyCommands[i];
+        if (message.startsWith(key)) {
+          streamerCommands[key](params);
+          found = true;
+          break;
+        }
       }
     }
 

@@ -86,6 +86,9 @@ function SprintConfig({ open, updateAlert, onClose, ...rest }) {
   const [rankingPrize1, setRankingPrize1] = useState(sprint.rankingPrize1);
   const [rankingPrize2, setRankingPrize2] = useState(sprint.rankingPrize2);
   const [rankingPrize3, setRankingPrize3] = useState(sprint.rankingPrize3);
+  const [modCanControlBot, setModCanControlBot] = useState(
+    sprint.modCanControlBot || false
+  );
 
   const [openSpecialMultiplier, setOpenSpecialMultiplier] = useState(false);
 
@@ -113,6 +116,7 @@ function SprintConfig({ open, updateAlert, onClose, ...rest }) {
       rankingPrize2,
       rankingPrize3,
       implicitReedemSilent,
+      modCanControlBot,
     };
 
     if (sprint.ranking && !ranking) {
@@ -224,6 +228,21 @@ function SprintConfig({ open, updateAlert, onClose, ...rest }) {
                   }
                   label="Moderadores não perdem vida."
                 />
+                <br />
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={modCanControlBot}
+                      onChange={({ target: { checked } }) =>
+                        setModCanControlBot(checked)
+                      }
+                      color="primary"
+                      name="modCanControlBot"
+                    />
+                  }
+                  label="Moderadores podem controlar o bot."
+                />
+                <br />
                 <FormControlLabel
                   control={
                     <Checkbox
