@@ -7,15 +7,16 @@ import Config from "../pages/Config/Config";
 import { end } from "../actions/sprint";
 import $ from "jquery";
 import { CONFIGURATION_UPDATE, SPRINT_UPDATE } from "../constants/actionTypes";
+import "./SprintOverlay.css";
 
 let currentId = 0;
 function scrollAnimate(id, top, duration = 1000) {
   if (id !== currentId) return;
-  const html = $("html");
-  const scrollTop = top ? 0 : window.document.body.offsetHeight - 40;
+  const element = $("#animate");
+  const scrollTop = top ? 0 : element[0].scrollHeight - element[0].offsetHeight;
   setTimeout(
     () =>
-      html.animate({ scrollTop }, duration, "linear", () =>
+      element.animate({ scrollTop }, duration, "linear", () =>
         scrollAnimate(id, !top, duration)
       ),
     100
@@ -39,7 +40,7 @@ function SprintOverlay({ end, location }) {
   useEffect(() => {
     currentId++;
     const timeoutId = setTimeout(
-      () => scrollAnimate(currentId, true, participants.length * 1000),
+      () => scrollAnimate(currentId, false, participants.length * 700),
       500
     );
     return () => clearTimeout(timeoutId);
@@ -76,20 +77,22 @@ function SprintOverlay({ end, location }) {
   const noRankingVariable = parameters.get("nomsg") || ": sem ranking";
 
   return (
-    <div style={{ overflow: "auto" }} id="animate">
-      {participants.map((p) => {
-        let description = p.ranking
-          ? descriptionVariable
-              .replace("@minutos", p.ranking.minutes)
-              .replace("@posicao", p.ranking.position)
-          : noRankingVariable;
-        return (
-          <div key={p.username} style={participantStyle}>
-            {p.username}
-            {description}
-          </div>
-        );
-      })}
+    <>
+      <div id="animate">
+        {participants.map((p) => {
+          let description = p.ranking
+            ? descriptionVariable
+                .replace("@minutos", p.ranking.minutes)
+                .replace("@posicao", p.ranking.position)
+            : noRankingVariable;
+          return (
+            <div key={p.username} style={participantStyle}>
+              {p.username}
+              {description}
+            </div>
+          );
+        })}
+      </div>
       <div style={{ color: "transparent" }}>
         {sprint.ends && (
           <Countdown
@@ -99,7 +102,7 @@ function SprintOverlay({ end, location }) {
           />
         )}
       </div>
-    </div>
+    </>
   );
 }
 
