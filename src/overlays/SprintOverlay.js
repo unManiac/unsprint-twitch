@@ -12,15 +12,19 @@ import "./SprintOverlay.css";
 let currentId = 0;
 function scrollAnimate(id, top, duration = 1000) {
   if (id !== currentId) return;
-  const element = $("#animate");
-  const scrollTop = top ? 0 : element[0].scrollHeight - element[0].offsetHeight;
-  setTimeout(
-    () =>
-      element.animate({ scrollTop }, duration, "linear", () =>
-        scrollAnimate(id, !top, duration)
-      ),
-    1000
-  );
+  try {
+    const element = $("#animate");
+    const scrollTop = top
+      ? 0
+      : element[0].scrollHeight - element[0].offsetHeight;
+    setTimeout(
+      () =>
+        element.animate({ scrollTop }, duration, "linear", () =>
+          scrollAnimate(id, !top, duration)
+        ),
+      1000
+    );
+  } catch (err) {}
 }
 
 function SprintOverlay({ end, location }) {
@@ -35,7 +39,10 @@ function SprintOverlay({ end, location }) {
     () => new URLSearchParams(location.search),
     [location.search]
   );
-  const configParam = useMemo(() => parameters.get("config"), [parameters]);
+  const configParam = useMemo(
+    () => (parameters.get("config") || "").replace(" ", "+"),
+    [parameters]
+  );
 
   useEffect(() => {
     currentId++;
