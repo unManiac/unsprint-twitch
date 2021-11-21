@@ -21,6 +21,11 @@ const commands = {
       dispatch(cancel());
       twitchActionSay("Sprint cancelado!");
       return;
+    } else if (parameter.startsWith("comando")) {
+      twitchActionSay(
+        `Iniciar ou alterar o tempo digite "!un XX", onde XX são os minutos. Encerrar o sprint digite "!un encerrar" e caso queira cancelar digite "!un cancelar"`
+      );
+      return;
     }
   },
 };
