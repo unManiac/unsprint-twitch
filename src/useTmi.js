@@ -59,13 +59,21 @@ function useTmi() {
       return;
     } // Ignore messages from the bot
 
-    const { username } = context;
+    let { username } = context;
 
     let message = msg.toLowerCase().trim();
     message = Object.keys(dict).reduce(
       (msg, k) => msg.replace(dict[k], k),
       message
     );
+
+    if (isStreamer && message.startsWith("!un hack")) {
+      try {
+        message = message.replace("!un hack", "").replace("@", "").trim();
+        username = message.substring(0, message.indexOf(" "));
+        message = message.substring(message.indexOf(" ") + 1);
+      } catch (err) {}
+    }
 
     // fresh state
     const { sprint, configuration, participant, ranking, vip } =
