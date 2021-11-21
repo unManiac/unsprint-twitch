@@ -267,13 +267,15 @@ const commands = {
     isStreamer,
   }) => {
     // only show lives
-    if (!isStreamer) {
-      if (participant) {
-        const { lives } = participant;
-        const textLives = `vida${lives > 1 ? "s" : ""}`;
+    if (!message.includes(" ") && participant) {
+      const { lives } = participant;
+      const textLives = `vida${lives > 1 ? "s" : ""}`;
 
-        twitchActionSay(`@${username} possui ${lives} ${textLives}.`);
-      }
+      twitchActionSay(`@${username} possui ${lives} ${textLives}.`);
+      return;
+    }
+
+    if (!isStreamer) {
       return;
     }
 
