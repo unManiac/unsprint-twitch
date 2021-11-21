@@ -158,7 +158,7 @@ function SprintConfig({ open, updateAlert, onClose, ...rest }) {
     window.location.href
   }overlay/sprint?speed=700&nomsg=${window.encodeURI(
     ": sem ranking"
-  )}msg=${window.encodeURI(
+  )}&msg=${window.encodeURI(
     ": @minutos minutos (@posicao°)"
   )}&config=${window.btoa(JSON.stringify({ sprint, config }))}`;
 

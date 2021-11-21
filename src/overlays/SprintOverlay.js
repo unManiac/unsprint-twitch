@@ -52,6 +52,14 @@ function SprintOverlay({ end, location }) {
   }, [parameters]);
 
   useEffect(() => {
+    window.document.getElementsByTagName("html")[0].classList.add("overlay");
+    return () =>
+      window.document
+        .getElementsByTagName("html")[0]
+        .classList.remove("overlay");
+  }, []);
+
+  useEffect(() => {
     currentId++;
     const timeoutId = setTimeout(
       () => scrollAnimate(currentId, false, participants.length * speedParam),
