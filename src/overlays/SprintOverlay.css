@@ -4,12 +4,6 @@ html {
   overflow: hidden;
 }
 
-body {
-  font-size: 20px;
-  color: gray;
-  font-weight: 500;
-}
-
 #animate {
   height: 100vh;
   overflow: hidden;
