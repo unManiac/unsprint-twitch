@@ -19,6 +19,7 @@ const iniciar = ({
   sprint,
   config,
   special,
+  ranking,
   participant,
   username,
   dispatch,
@@ -47,11 +48,16 @@ const iniciar = ({
   );
   const [points, minutes] = calculatePoints(joined, sprint.ends, multiplier);
 
+  const index = ranking.findIndex((p) => p.username === username);
+  const participantRank =
+    index === -1 ? undefined : { ...ranking[index], position: index + 1 };
+
   dispatch({
     type: PARTICIPANT_ADD,
     participant: {
       username,
       joined,
+      ranking: participantRank,
       lives: parseInt(sprint.lives),
     },
   });

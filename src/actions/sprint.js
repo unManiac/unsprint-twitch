@@ -63,7 +63,7 @@ export function startTime(twitch, minutes) {
 
     const selectedMinutes = minutes || sprint.minutes;
 
-    if (!sprint.finished) {
+    if (sprint.ends) {
       dispatch(changeTime(twitch, selectedMinutes));
       return;
     }

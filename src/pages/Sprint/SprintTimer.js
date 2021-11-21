@@ -2,11 +2,7 @@ import { Button, Grid, lighten, makeStyles, Tooltip } from "@material-ui/core";
 import { Alert } from "@material-ui/lab";
 import React from "react";
 import Countdown from "react-countdown";
-import { connect, useDispatch, useSelector } from "react-redux";
-import {
-  PARTICIPANTS_RESET,
-  SPRINT_CANCELLED,
-} from "../../constants/actionTypes";
+import { connect, useSelector } from "react-redux";
 import { GREEN, WHITE } from "../../constants/colors";
 import { startTime, changeTime, end, cancel } from "../../actions/sprint";
 
