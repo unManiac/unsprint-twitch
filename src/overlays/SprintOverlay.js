@@ -6,7 +6,11 @@ import useTmi from "../useTmi";
 import Config from "../pages/Config/Config";
 import { end } from "../actions/sprint";
 import $ from "jquery";
-import { CONFIGURATION_UPDATE, SPRINT_UPDATE } from "../constants/actionTypes";
+import {
+  CONFIGURATION_UPDATE,
+  SPRINT_UPDATE,
+  VIP_UPDATE,
+} from "../constants/actionTypes";
 import "./SprintOverlay.css";
 
 let currentId = 0;
@@ -78,6 +82,10 @@ function SprintOverlay({ end, location }) {
       dispatch({
         type: SPRINT_UPDATE,
         sprint: configParsed.sprint,
+      });
+      dispatch({
+        type: VIP_UPDATE,
+        ...(configParsed.vip || {}),
       });
       localStorage.setItem("unconfig", configParam);
     }

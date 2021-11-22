@@ -55,6 +55,7 @@ function SprintConfig({ open, updateAlert, onClose, ...rest }) {
   const dispatch = useDispatch();
   const sprint = useSelector((state) => state.sprint);
   const config = useSelector((state) => state.configuration);
+  const vip = useSelector((state) => state.vip);
 
   const [messageStarted, setMessageStarted] = useState(sprint.messageStarted);
   const [messageEnded, setMessageEnded] = useState(sprint.messageEnded);
@@ -160,7 +161,7 @@ function SprintConfig({ open, updateAlert, onClose, ...rest }) {
     ": sem ranking"
   )}&msg=${window.encodeURI(
     ": @minutos minutos (@posicao°)"
-  )}&config=${window.btoa(JSON.stringify({ sprint, config }))}`;
+  )}&config=${window.btoa(JSON.stringify({ sprint, config, vip }))}`;
 
   return (
     <>
