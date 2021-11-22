@@ -54,7 +54,7 @@ function useTmi() {
   };
 
   // Called every time a message comes in
-  function onMessageHandler(target, context, msg, self) {
+  function onMessageHandler(target, context, msg, self, silent) {
     if (self) {
       return;
     } // Ignore messages from the bot
@@ -75,6 +75,28 @@ function useTmi() {
         message = message.substring(message.indexOf(" ") + 1);
       } catch (err) {}
     }
+    if (isStreamer && message.startsWith("!un ataque")) {
+      try {
+        const number = Number.parseInt(
+          message.replace("!un ataque", "").trim()
+        );
+        if (!Number.isNaN(number)) {
+          for (let i = 1; i <= number; i++) {
+            const newUsername = `love${Math.floor(
+              100000 + Math.random() * 900000
+            )}`;
+            const newContext = {
+              ...context,
+              username: newUsername,
+            };
+            console.log(newContext, i);
+            onMessageHandler.call(this, target, newContext, "!i", false, true);
+          }
+        }
+      } catch (err) {
+        console.log(err);
+      }
+    }
 
     // fresh state
     const { sprint, configuration, participant, ranking, vip } =
@@ -86,7 +108,7 @@ function useTmi() {
       twitch: this,
       dispatch,
       twitchActionSay: (msg) => {
-        if (!msg) return;
+        if (!msg || silent) return;
         this.action(target, msg);
       },
       username,
