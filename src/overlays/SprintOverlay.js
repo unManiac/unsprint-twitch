@@ -14,7 +14,7 @@ import {
 import "./SprintOverlay.css";
 
 let currentId = 0;
-function scrollAnimate(id, top, duration = 1000) {
+function scrollAnimate(id, top, scroll) {
   if (id !== currentId) return;
   try {
     const element = $("#animate");
@@ -23,8 +23,11 @@ function scrollAnimate(id, top, duration = 1000) {
       : element[0].scrollHeight - element[0].offsetHeight;
     setTimeout(
       () =>
-        element.animate({ scrollTop }, duration, "linear", () =>
-          scrollAnimate(id, !top, duration)
+        element.animate(
+          { scrollTop },
+          element[0].scrollHeight * scroll,
+          "linear",
+          () => scrollAnimate(id, !top, scroll)
         ),
       1000
     );
@@ -47,12 +50,12 @@ function SprintOverlay({ end, location }) {
     () => (parameters.get("config") || "").replace(" ", "+"),
     [parameters]
   );
-  const speedParam = useMemo(() => {
-    let speed = Number.parseInt(parameters.get("speed"));
-    if (Number.isNaN(speed)) {
-      speed = 700;
+  const scrollParam = useMemo(() => {
+    let scroll = Number.parseInt(parameters.get("scroll"));
+    if (Number.isNaN(scroll)) {
+      scroll = 20;
     }
-    return speed;
+    return scroll;
   }, [parameters]);
 
   useEffect(() => {
@@ -66,30 +69,44 @@ function SprintOverlay({ end, location }) {
   useEffect(() => {
     currentId++;
     const timeoutId = setTimeout(
-      () => scrollAnimate(currentId, false, participants.length * speedParam),
+      () => scrollAnimate(currentId, false, scrollParam),
       500
     );
     return () => clearTimeout(timeoutId);
-  }, [participants, speedParam]);
+  }, [participants, scrollParam]);
 
   useEffect(() => {
     if (configParam && localStorage.getItem("unconfig") !== configParam) {
       var configParsed = JSON.parse(window.atob(configParam));
-      dispatch({
-        type: CONFIGURATION_UPDATE,
-        configuration: configParsed.config,
-      });
-      dispatch({
-        type: SPRINT_UPDATE,
-        sprint: configParsed.sprint,
-      });
-      dispatch({
-        type: VIP_UPDATE,
-        ...(configParsed.vip || {}),
-      });
+      delete configParsed.sprint.ends;
+      delete configParsed.sprint.ended;
+      delete configParsed.sprint.minutes;
+      delete configParsed.sprint.started;
+
+      if (configParsed.config) {
+        dispatch({
+          type: CONFIGURATION_UPDATE,
+          configuration: configParsed.config,
+        });
+      }
+      if (configParsed.sprint) {
+        dispatch({
+          type: SPRINT_UPDATE,
+          sprint: {
+            ...sprint,
+            ...configParsed.sprint,
+          },
+        });
+      }
+      if (configParsed.vip) {
+        dispatch({
+          type: VIP_UPDATE,
+          ...(configParsed.vip || {}),
+        });
+      }
       localStorage.setItem("unconfig", configParam);
     }
-  }, [dispatch, configParam]);
+  }, [dispatch, sprint, configParam]);
 
   if (failed) {
     return <Config />;

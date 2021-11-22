@@ -157,7 +157,7 @@ function SprintConfig({ open, updateAlert, onClose, ...rest }) {
 
   const urlOverlay = `${
     window.location.href
-  }overlay/sprint?speed=700&nomsg=${window.encodeURI(
+  }overlay/sprint?scroll=20&nomsg=${window.encodeURI(
     ": sem ranking"
   )}&msg=${window.encodeURI(
     ": @minutos minutos (@posicao°)"

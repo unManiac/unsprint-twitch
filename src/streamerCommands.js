@@ -1,5 +1,5 @@
 import { cancel, end, startTime } from "./actions/sprint";
-import { PARTICIPANTS_ADD_LIVES } from "./constants/actionTypes";
+import { PARTICIPANTS_ADD_LIVES, RANKING_RESET } from "./constants/actionTypes";
 
 const commands = {
   "!un": ({ twitch, dispatch, sprint, twitchActionSay, username, message }) => {
@@ -40,6 +40,15 @@ const commands = {
           lives,
         });
       }
+    } else if (parameter.startsWith("rankingreseta")) {
+      dispatch({
+        type: RANKING_RESET,
+      });
+    } else if (parameter.startsWith("atualiza")) {
+      window.location.reload();
+    } else if (parameter.startsWith("reconfigura")) {
+      localStorage.removeItem("unconfig");
+      window.location.reload();
     }
   },
 };
