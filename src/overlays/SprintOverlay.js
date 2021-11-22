@@ -14,14 +14,17 @@ import {
 import "./SprintOverlay.css";
 
 let currentId = 0;
+let timeoutId = 0;
 function scrollAnimate(id, top, scroll) {
+  clearTimeout(timeoutId);
   if (id !== currentId) return;
   try {
     const element = $("#animate");
+    element.stop(true);
     const scrollTop = top
       ? 0
       : element[0].scrollHeight - element[0].offsetHeight;
-    setTimeout(
+    timeoutId = setTimeout(
       () =>
         element.animate(
           { scrollTop },
@@ -68,10 +71,7 @@ function SprintOverlay({ end, location }) {
 
   useEffect(() => {
     currentId++;
-    const timeoutId = setTimeout(
-      () => scrollAnimate(currentId, false, scrollParam),
-      500
-    );
+    scrollAnimate(currentId, false, scrollParam);
     return () => clearTimeout(timeoutId);
   }, [participants, scrollParam]);
 
