@@ -49,6 +49,13 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
+const overlayBetaUsers = [
+  "unmaniac",
+  "andreabistafa",
+  "ayaliteraria",
+  "flaviafialho",
+];
+
 function SprintConfig({ open, updateAlert, onClose, ...rest }) {
   const classes = useStyles();
 
@@ -544,27 +551,31 @@ function SprintConfig({ open, updateAlert, onClose, ...rest }) {
                 </>
               )}
 
-              <Grid item xs={12}>
-                <Divider style={{ marginTop: 20, marginBottom: 10 }} />
-              </Grid>
+              {overlayBetaUsers.includes(config.channel?.toLowerCase()) && (
+                <>
+                  <Grid item xs={12}>
+                    <Divider style={{ marginTop: 20, marginBottom: 10 }} />
+                  </Grid>
 
-              <Grid item xs={12}>
-                <span>
-                  Overlay, clique no texto abaixo que será copiado
-                  automaticamente
-                  <sup className={classes.beta}>Beta</sup>
-                </span>
-                <TextField
-                  value={urlOverlay}
-                  onClick={() => {
-                    navigator.clipboard.writeText(urlOverlay);
-                  }}
-                  error
-                  helperText="Não compartilhe esse link com ninguém!"
-                  disabled
-                  fullWidth
-                />
-              </Grid>
+                  <Grid item xs={12}>
+                    <span>
+                      Overlay, clique no texto abaixo que será copiado
+                      automaticamente
+                      <sup className={classes.beta}>Beta</sup>
+                    </span>
+                    <TextField
+                      value={urlOverlay}
+                      onClick={() => {
+                        navigator.clipboard.writeText(urlOverlay);
+                      }}
+                      error
+                      helperText="Não compartilhe esse link com ninguém!"
+                      disabled
+                      fullWidth
+                    />
+                  </Grid>
+                </>
+              )}
             </Grid>
           </DialogContent>
 
