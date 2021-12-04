@@ -38,7 +38,7 @@ function scrollAnimate(id, top, scroll) {
 }
 
 function SprintOverlay({ end, location }) {
-  const [twitch, failed] = useTmi();
+  const [twitch, failed] = useTmi({ enableCheer: true });
 
   const dispatch = useDispatch();
 

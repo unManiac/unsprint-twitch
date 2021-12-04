@@ -4,6 +4,7 @@ import sprint from "./reducers/sprint";
 import configuration from "./reducers/configuration";
 import ranking from "./reducers/ranking";
 import vip from "./reducers/vip";
+import goal from "./reducers/goal";
 
 export default combineReducers({
   configuration,
@@ -11,4 +12,5 @@ export default combineReducers({
   participant,
   ranking,
   vip,
+  goal,
 });
