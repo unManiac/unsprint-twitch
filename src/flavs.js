@@ -68,10 +68,11 @@ function retrieveTip() {
     };
   }
 
-  const title = allTips.filter((t, idx) => !goal.tips.includes(idx));
+  const tipsNotSelected = allTips.filter((t, idx) => !goal.tips.includes(idx));
+  const title = pickRandomTip(tipsNotSelected);
   const index = allTips.findIndex((t) => t === title);
 
-  return pickRandomTip({ title, index });
+  return { title, index };
 }
 
 function pickRandomTip(list) {
