@@ -3,8 +3,8 @@ import { allTips } from "./reducers/goal";
 import { store } from "./store";
 
 const total = 80000;
-const tipAmount = 1;
-const user = "unmaniac";
+const tipAmount = 500;
+const user = "flaviafialho";
 
 function onCheerHandler({
   target,
@@ -123,7 +123,7 @@ function checkMessage({ target, twitch, message, dispatch, isMod }) {
     } else {
       twitch.action(target, "Para de tentar roubar :(");
     }
-  } else if (message.startsWith("pistaatualiza! ")) {
+  } else if (isMod && message.startsWith("pistaatualiza! ")) {
     let newTips = message
       .replace("pistaatualiza! ", "")
       .trim()
