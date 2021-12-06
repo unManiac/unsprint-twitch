@@ -120,7 +120,12 @@ function checkMessage({ target, twitch, message, dispatch, isMod }) {
     const tip = parseInt(message.replace("repete!", "").trim()) - 1;
 
     if (goal.tips.includes(tip)) {
-      twitch.action(target, allTips[tip]);
+      const selected = allTips[tip];
+      if (selected) {
+        twitch.action(target, selected);
+      } else {
+        twitch.action(target, `Pista não encontrada`);
+      }
     } else {
       twitch.action(target, "Para de tentar roubar :(");
     }

@@ -75,8 +75,10 @@ export const allTips = [
   `Buscando o Cinturão do Sol, talvez você encontre uma luz`,
   `1ª pessoa do singular`,
   `Juntos a magia acontece`,
+  `All I want for Christmas is you`,
   `Dark horse - Katy Perry 00:55`,
   `Clipe do primeiro single de It's not me, It's you`,
   `Money - LISA`,
   `brutal - Olivia Rodrigo`,
+  `I hope you´re happy, just not like how you were with me I´m selfish, I know, can´t let you go So find someone great, don´t find no one better I hope you´re happy, but don´t be happier`,
 ];
