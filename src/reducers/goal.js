@@ -1,4 +1,4 @@
-import { GOAL_UPDATE } from "../constants/actionTypes";
+import { GOAL_REPLACE, GOAL_UPDATE } from "../constants/actionTypes";
 
 const initialState = {
   amount: 0,
@@ -23,6 +23,16 @@ const goal = (state = initialState, action) => {
         tips,
         amount,
       };
+    case GOAL_REPLACE:
+      let newTips = state.tips;
+      if (action.tips !== undefined) {
+        newTips = action.tips;
+      }
+
+      return {
+        ...state,
+        tips: newTips,
+      };
     default:
       return state;
   }
@@ -31,7 +41,6 @@ const goal = (state = initialState, action) => {
 export default goal;
 
 export const allTips = [
-  `In the middle of the night, in my dreams / You should see the things we do, baby (mmm) / In the middle of the night, in my dreams / I know I'm gonna be with you / So I'll take my time / Are you ready for it? / Baby, let the games begin / Let the games begin`,
   `"Peaches" - IU`,
   `Bela e a fera - Xamã`,
   `Blank space e a maçã no clipe`,
@@ -58,6 +67,7 @@ export const allTips = [
   `So cover your eyes / I have a surprise (Birthday - Katy Perry)`,
   `Um lobo, um vampiro e uma garota nova na cidade`,
   `De papel não sou feito, mas de papel eu posso ser`,
+  `In the middle of the night, in my dreams / You should see the things we do, baby (mmm) / In the middle of the night, in my dreams / I know I'm gonna be with you / So I'll take my time / Are you ready for it? / Baby, let the games begin / Let the games begin`,
   `A loira brigou, o dono pagou e o povo escutou`,
   `Murakami, Taylor Swift e você têm em algo com comum`,
   `7 rings - ariana`,

@@ -1,10 +1,10 @@
-import { GOAL_UPDATE } from "./constants/actionTypes";
+import { GOAL_REPLACE, GOAL_UPDATE } from "./constants/actionTypes";
 import { allTips } from "./reducers/goal";
 import { store } from "./store";
 
 const total = 80000;
-const tipAmount = 500;
-const user = "flaviafialho";
+const tipAmount = 1;
+const user = "unmaniac";
 
 function onCheerHandler({
   target,
@@ -68,16 +68,15 @@ function retrieveTip() {
     };
   }
 
-  const tipsNotSelected = allTips.filter((t, idx) => !goal.tips.includes(idx));
-  return pickRandomTip(tipsNotSelected);
+  const title = allTips.filter((t, idx) => !goal.tips.includes(idx));
+  const index = allTips.findIndex((t) => t === title);
+
+  return pickRandomTip({ title, index });
 }
 
 function pickRandomTip(list) {
   const index = Math.floor(Math.random() * list.length);
-  return {
-    title: list[index],
-    index,
-  };
+  return list[index];
 }
 
 function checkMessage({ target, twitch, message, dispatch, isMod }) {
@@ -124,6 +123,17 @@ function checkMessage({ target, twitch, message, dispatch, isMod }) {
     } else {
       twitch.action(target, "Para de tentar roubar :(");
     }
+  } else if (message.startsWith("pistaatualiza! ")) {
+    let newTips = message
+      .replace("pistaatualiza! ", "")
+      .trim()
+      .split(" ")
+      .map((t) => parseInt(t) - 1);
+
+    dispatch({
+      type: GOAL_REPLACE,
+      tips: newTips,
+    });
   }
 }
 
