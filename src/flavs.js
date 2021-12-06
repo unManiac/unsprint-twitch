@@ -100,10 +100,30 @@ function checkMessage({ target, twitch, message, dispatch, isMod }) {
     });
     twitch.action(
       target,
-      `A meta secreta atualizou para ${amount + goal.amount}/${total} flavsf1Princesa`
+      `A meta secreta atualizou para ${
+        amount + goal.amount
+      }/${total} flavsf1Princesa`
     );
   } else if (message === "metasecreta!") {
-    twitch.action(target, `A meta secreta está em ${goal.amount}/${total} flavsf1Princesa`);
+    twitch.action(
+      target,
+      `A meta secreta está em ${goal.amount}/${total} flavsf1Princesa`
+    );
+  } else if (message === "quaispistas!") {
+    twitch.action(
+      target,
+      `As pistas que já sairam foram ${goal.tips
+        .map((v) => v + 1)
+        .join(", ")} flavsf1Princesa`
+    );
+  } else if (message.startsWith("repete! ")) {
+    const tip = parseInt(message.replace("repete!", "").trim()) - 1;
+
+    if (goal.tips.includes(tip)) {
+      twitch.action(target, allTips[tip]);
+    } else {
+      twitch.action(target, "Para de tentar roubar :(");
+    }
   }
 }
 

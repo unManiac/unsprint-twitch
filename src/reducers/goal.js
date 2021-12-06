@@ -62,4 +62,11 @@ export const allTips = [
   `Murakami, Taylor Swift e você têm em algo com comum`,
   `7 rings - ariana`,
   `hello! hola! Bonjour!`,
+  `Buscando o Cinturão do Sol, talvez você encontre uma luz`,
+  `1ª pessoa do singular`,
+  `Juntos a magia acontece`,
+  `Dark horse - Katy Perry 00:55`,
+  `Clipe do primeiro single de It's not me, It's you`,
+  `Money - LISA`,
+  `brutal - Olivia Rodrigo`,
 ];
