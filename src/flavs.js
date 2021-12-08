@@ -48,7 +48,12 @@ function onCheerHandler({
 
     tipIndex = tip.index;
 
-    twitch.action(target, tip.title);
+    if (tip.index <= 49) {
+      twitch.action(target, tip.title);
+    } else {
+      twitch.action(target, "Pagou por pista e vai levar depoimento <3 <3 <3");
+      twitch.say(target, tip.title);
+    }
   }
 
   dispatch({
@@ -62,17 +67,13 @@ function retrieveTip() {
   const { goal } = store.getState();
 
   if (goal.tips.length === 0) {
-    return {
-      title: allTips[0],
-      index: 0,
-    };
+    return allTips[0];
   }
 
-  const tipsNotSelected = allTips.filter((t, idx) => !goal.tips.includes(idx));
-  const title = pickRandomTip(tipsNotSelected);
-  const index = allTips.findIndex((t) => t === title);
+  const tipsNotSelected = allTips.filter((t) => !goal.tips.includes(t.index));
+  const tip = pickRandomTip(tipsNotSelected);
 
-  return { title, index };
+  return tip;
 }
 
 function pickRandomTip(list) {
@@ -120,9 +121,9 @@ function checkMessage({ target, twitch, message, dispatch, isMod }) {
     const tip = parseInt(message.replace("repete!", "").trim()) - 1;
 
     if (goal.tips.includes(tip)) {
-      const selected = allTips[tip];
+      const selected = allTips.find((t) => t.index === tip);
       if (selected) {
-        twitch.action(target, selected);
+        twitch.say(target, selected.title);
       } else {
         twitch.action(target, `Pista não encontrada`);
       }
