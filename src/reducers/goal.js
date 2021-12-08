@@ -162,6 +162,4 @@ export const allTips = [
     index: 57,
     title: `Eaeee, Flavs, tudo bom? Conhecer este canal INCRÍVEL e os pesseguinhos foi TUDO para mim, sério! Meus dias com certeza nunca mais foram os mesmos e isso tudo graças a principalmente você! Essa pessoa, que apesar de ser ba*****, é incrível, com uma energia poderosa (tarô ta sabendo ein, se liga), simpática, inteligentísima e capaz de conseguir cada vez mais coisas boas na vida. Essa comunidade não seria a mesma sem você (talvez nem uma comunidade tão unida). Não estou muito presente aqui na twitch, mas espero que as lives estejam incríveis (o que sei que com certeza estão ainda mais com essas pessoas MARAVILHOSAS) (braziliiangirl)`,
   },
-  { index: 41, title: `` },
-  { index: 41, title: `` },
 ].map((t) => ({ ...t, index: t.index - 1 }));
