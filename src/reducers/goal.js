@@ -162,4 +162,48 @@ export const allTips = [
     index: 57,
     title: `Eaeee, Flavs, tudo bom? Conhecer este canal INCRÍVEL e os pesseguinhos foi TUDO para mim, sério! Meus dias com certeza nunca mais foram os mesmos e isso tudo graças a principalmente você! Essa pessoa, que apesar de ser ba*****, é incrível, com uma energia poderosa (tarô ta sabendo ein, se liga), simpática, inteligentísima e capaz de conseguir cada vez mais coisas boas na vida. Essa comunidade não seria a mesma sem você (talvez nem uma comunidade tão unida). Não estou muito presente aqui na twitch, mas espero que as lives estejam incríveis (o que sei que com certeza estão ainda mais com essas pessoas MARAVILHOSAS) (braziliiangirl)`,
   },
+  {
+    index: 58,
+    title: `oi Fafa, tudo bom? Lá vem história: Em Dezembro de 2020 existia uma garota passando por diversos problemas e desafios, sem rumo e sem propósito. Em meio à uma pandemia catastrófica, sem poder sair e socializar, ela se apaixonou pelos livros. E cada vez mais submersa nesse mundo, a garota resolveu adentrar na booktwitch. Os primeiros dias foram confusos, ela ainda estava se familiarizando com a plataforma e ainda não havia encontrado a comunidade certa. Até que em Junho de 2021, ela encontrou a família pessegaya! Foi muito bem acolhida, e os dias que antes eram decepcionantes e monótonos passaram a ser cada vez mais especiais. No dia 16+1 de Dezembro, completarei 6 meses de família pessegaya, e coincidentemente também se comemora a vida de uma das personalidades mais fortes e fodas que já conheci. Fafa, você é o motivo dos meus dias serem melhores, devo todo meu amor e carinho à vocês! Com amor, Isa. (isa_carlini)`,
+  },
+  {
+    index: 59,
+    title: `Fafa saiba que você  é  uma pessoa  maravilhosa, você é  incrível  demais, te admiro muito,  você é  uma pessoa  de muita  luz  que merece  sempre coisas maravilhosas  e incríveis  sempre, obrigada  por essa família  que é  a família  pessegada 💜 (Lais Nunes)`,
+  },
+  {
+    index: 60,
+    title: `Tá chegando o dia de uma das melhores pessoas que eu tenho por perto... Te desejo as melhores coisas dessa vida toda, obrigada por ser minha dupla e por cuidar tanto de nós. Sou grata por todo carinho, esforço e cada puxão de orelha que você me dá. Te amo, te amo, te amo. Pra sempre. ❤️ (Isa, a maior)`,
+  },
+  {
+    index: 61,
+    title: `oieeerrrr erm então parece que tem uma lenda da internet de aniverrrr hein me falaram que é a maior que já existiu e que ela deixa todo mundo feliz com umas live aí e que ela odeia ler nunca terminou it já faz 6 anos e meio foi o que me falaram FAFA MTAS FELICIDADES TUDO DE BOM CONTINUE SENDO A MAIOR DA INTERNET A MAIOR DOS SURTOS E DOS SUSTOS A MAIOR DE NÃO PASSAR DA PRIMEIRA NO FALL GUYS POR FAVOR DANÇA ZIMZALABIM TE AMO KISSES (Yago)`,
+  },
+  {
+    index: 62,
+    title: `Filha, você é mais que especial. Filha, amiga, confidente e irmã maravilhosa. Inteligente, brilhante, um ser humano iluminado. Te amo! (Fafa mãe)`,
+  },
+  {
+    index: 63,
+    title: `Oii Flávia, espero q nessa altura vc ja tenha descoberto a meta secreta, e se não descobriu, presta atenção aí kkkk Passando rapidinho pra te falar que vc é uma pessoa incrível (e surtada rs), e vc merece o mundo!! Continue sendo essa pessoa maravilhosa que vc é, com esses seus surtos q a gente tanto ama 💜 Suas lives e o pessoal do discord me fazem companhia em muitos momentos, sempre q apareço por aqui ou no discord sempre acontece momentos marcantes (sendo engraçados, reflexivos, de ajuda, dentre muitos outros), e sou grata por vc ter apresentado essa comunidade incrível 💜 Falei de mais pra uma dica q não é dica né kkkkk Obs: surta e chora q da bits viu (assim vc descobre as outras pistas mais rápido rs) 😂💜 (Gaby)`,
+  },
+  {
+    index: 64,
+    title: `Fala minha musa inspiradora ❤️ curtindo muito seu dia? Vou comemorar por você dando um tibum aqui em porto das galinhas. Te amo! E só pra fechar quero dizer que te amo e sou grata pela sua amizade. Que agora em 2022 eu possa conhecer ainda mais sua nova versão. Sei que meu amor só vai crescer. Obrigada por tanto, sempre. Feliz aniversário!! (Jéssica)`,
+  },
+  {
+    index: 65,
+    title: `Flávia, você é fonte de inspiração e orgulho para muitos de nós  . Eu sou muito grata por ter te conhecido esse ano, e espero acompanhar você por outros anos. Feliz aniversário! (Diimartell)`,
+  },
+  {
+    index: 66,
+    title: `Já faz quase um ano que eu te conheci... essa pessoa incrível, empática, carismática, que fala o que pensa e não mede esforços pra defender quem ama. Fafa, te admiro muito por quem vc é e pelo q vc significa pra mim: a primeira streamer que acompanhei de verdade e que teve a paciência de Jó pra me ensinar a dar sub e muitas outras patetiadas tecnológicas. Mas acima de tudo, uma amiga em quem eu confio e desejo todo o sucesso do universo pq tu merece. Um bjao ♡♡♡ (Gabiii)`,
+  },
+  {
+    index: 67,
+    title: `fafa, eu poderia encher isso aqui de referências da taylor porque as vezes ela sabe traduzir meus sentimentos melhor que eu mesma, mas eu só queria falar que te amo muito e que serei sempre grata por te ter na minha vida, tá? você é foda, linda, inteligente, dedicada, gentil, e uma grande inspiração pra mim. espero que não me odeie pelos nossos surtos #pas #tiamo #pista (Millie - warmchapters)`,
+  },
+  {
+    index: 68,
+    title: `Oi fafa, desde o momento que eu te conheci senti uma conexão boa, e nunca pensei que um dia poderia te chamar de amiga, você é uma pessoa incrível, mesmo surtada continua sendo uma pessoa incrível que mesmo com os altos e baixos sempre tá lá por todo mundo e mesmo quando todo mundo tá na pior você deixa a gente feliz, agradeço muito ao universo por ter colocado você na minha vida, obrigado por todas as risadas, todos os xingos, todas as partidas de vava, todos os sermões, todas as madrugadas em call surtando . Cada coisinha que você faz mostra o quão você é incrível e que vai crescer muito ainda na twitch eu tenho certeza disso, o seu jeito surtada de ser cativa todo mundo e ter encontrado uma pessoa como eu na twitch e essa pessoa ser uma mulher foda pra caralho me inspira cada dia mais, e eu sou muito feliz de poder fazer parte dessa tropinha incrível da pessegada e por ter uma pessoa incrível que eu posso chamar de amiga, te amo fafa Ass: A SURTADA DO CAPS (olha nem usei caps dessa vez #tapassada?)`,
+  },
 ].map((t) => ({ ...t, index: t.index - 1 }));
