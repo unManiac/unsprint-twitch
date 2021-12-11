@@ -1,5 +1,5 @@
 {
-  "name": "sprint-bot",
+  "name": "sprsnt-bot",
   "version": "1.0.0",
   "homepage": "http://unmaniac.github.io/unsprint-twitch",
   "private": true,
@@ -23,7 +23,7 @@
     "redux-localstorage-simple": "^2.4.1",
     "redux-logger": "^3.0.6",
     "redux-thunk": "^2.4.0",
-    "tmi.js": "^1.8.4",
+    "tmi.js": "^1.8.5",
     "web-vitals": "^1.0.1"
   },
   "scripts": {

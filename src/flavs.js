@@ -52,7 +52,7 @@ function onCheerHandler({
       twitch.action(target, tip.title);
     } else {
       twitch.action(target, "Pagou por pista e vai levar depoimento <3 <3 <3");
-      twitch.say(target, tip.title);
+      sayLongText({ twitch, target, text: tip.title });
     }
   }
 
@@ -123,7 +123,7 @@ function checkMessage({ target, twitch, message, dispatch, isMod }) {
     if (goal.tips.includes(tip)) {
       const selected = allTips.find((t) => t.index === tip);
       if (selected) {
-        twitch.say(target, selected.title);
+        sayLongText({ twitch, target, text: selected.title });
       } else {
         twitch.action(target, `Pista não encontrada`);
       }
@@ -141,6 +141,25 @@ function checkMessage({ target, twitch, message, dispatch, isMod }) {
       type: GOAL_REPLACE,
       tips: newTips,
     });
+  }
+}
+
+async function sayLongText({ twitch, target, text }) {
+  const words = text.split(" ");
+  let current = "";
+
+  for (let i = 0; i < words.length; i++) {
+    const word = words[i];
+    if (current.length + word.length >= 200) {
+      twitch.say(target, current.trim()).then(console.log);
+      await new Promise((resolve) => setTimeout(resolve, 100));
+      current = "";
+    }
+    current += word + " ";
+  }
+
+  if (current) {
+    twitch.say(target, current.trim());
   }
 }
 
