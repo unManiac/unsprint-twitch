@@ -40,13 +40,6 @@ function onCheerHandler({
       target,
       `flavsf1Princesa flavsf1Princesa flavsf1Princesa A meta foi batida, @${userstate.username} PARA DE DAR BITS SE NÃO EU VOU TE CAÇAR E TE METER UM SOCO NA COSTELA flavsf1Princesa flavsf1Princesa flavsf1Princesa`
     );
-  } else {
-    for (let i = 0; i < 30; i++) {
-      twitch.action(
-        target,
-        `flavsf1Princesa flavsf1Princesa flavsf1Princesa A META FOI CONCLUÍDAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA flavsf1Princesa flavsf1Princesa flavsf1Princesa`
-      );
-    }
   }
 
   let tipIndex = undefined;
@@ -107,6 +100,13 @@ function checkMessage({ target, twitch, message, dispatch, isMod }) {
       target,
       `Está rolando uma meta secreta (que nem a fafa sabe o que é). Pistas são desbloqueadas com 500 bits para desvendar esse enigma surtado. Lembrando que qualquer valor de bits entra para a meta surpresa ajudando a ficar mais perto de um surto se tornar realidade 👀 #CHUPAFLAVIA`
     );
+  } else if (message === "comemora!") {    
+    for (let i = 0; i < 3; i++) {
+      twitch.action(
+        target,
+        `flavsf1Princesa flavsf1Princesa flavsf1Princesa A META FOI CONCLUÍDAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA flavsf1Princesa flavsf1Princesa flavsf1Princesa`
+      );
+    }
   } else if (isMod && message.startsWith("addbits! ")) {
     const amount = parseInt(message.replace("addbits!", "").trim());
     dispatch({
