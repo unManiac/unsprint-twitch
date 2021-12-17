@@ -59,7 +59,7 @@ const useStyles = makeStyles(() => ({
 
 function Sprint({ history }) {
   const classes = useStyles();
-  const [twitch, failed] = useTmi({ enableCheer: true });
+  const [twitch, failed] = useTmi();
 
   const [openConfig, setOpenConfig] = useState(false);
   const [alert, setAlert] = useState();

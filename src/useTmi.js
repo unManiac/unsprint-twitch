@@ -9,7 +9,7 @@ import onFlavsHandler from "./flavs";
 
 let externalClient = null;
 
-function useTmi(props = { enableCheer: false }) {
+function useTmi() {
   const [client, setClient] = useState(null);
   const [failed, setFailed] = useState(false);
 
@@ -40,9 +40,6 @@ function useTmi(props = { enableCheer: false }) {
 
     // Register our event handlers (defined below)
     client.on("message", onMessageHandler);
-    if (props.enableCheer) {
-      client.on("cheer", onCheerHandler);
-    }
     client.on("connected", onConnectedHandler);
 
     client
@@ -56,16 +53,6 @@ function useTmi(props = { enableCheer: false }) {
         setClient(null);
       });
   };
-
-  function onCheerHandler(target, userstate, message) {
-    onFlavsHandler({
-      twitch: this,
-      target,
-      userstate,
-      message,
-      dispatch,
-    });
-  }
 
   // Called every time a message comes in
   function onMessageHandler(target, context, msg, self, silent) {

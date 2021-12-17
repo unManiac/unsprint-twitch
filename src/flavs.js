@@ -23,24 +23,7 @@ function onCheerHandler({
     return;
   }
 
-  const { goal } = store.getState();
   const amount = parseInt(userstate.bits);
-
-  if (amount + goal.amount < total) {
-    twitch.action(
-      target,
-      `@${
-        userstate.username
-      } contribuiu com ${amount} bits e agora a meta secreta está em ${
-        amount + goal.amount
-      }/${total} flavsf1Princesa`
-    );
-  } else if (goal.amount > total) {
-    twitch.action(
-      target,
-      `flavsf1Princesa flavsf1Princesa flavsf1Princesa A meta foi batida, @${userstate.username} PARA DE DAR BITS SE NÃO EU VOU TE CAÇAR E TE METER UM SOCO NA COSTELA flavsf1Princesa flavsf1Princesa flavsf1Princesa`
-    );
-  }
 
   let tipIndex = undefined;
   if (amount === tipAmount) {
