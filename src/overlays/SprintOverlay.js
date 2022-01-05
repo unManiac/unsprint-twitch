@@ -50,7 +50,7 @@ function SprintOverlay({ end, location }) {
     [location.search]
   );
   const configParam = useMemo(
-    () => (parameters.get("config") || "").replaceAll(" ", "+"),
+    () => (parameters.get("config") || "").replace(new RegExp(" ", "g"), "+"),
     [parameters]
   );
   const scrollParam = useMemo(() => {
