@@ -1,8 +1,22 @@
 import { cancel, end, startTime } from "./actions/sprint";
-import { PARTICIPANTS_ADD_LIVES, RANKING_RESET } from "./constants/actionTypes";
+import {
+  PARTICIPANTS_ADD_LIVES,
+  RANKING_RESET,
+  VIP_ADD_PERSON,
+  VIP_REMOVE_PERSON,
+} from "./constants/actionTypes";
 
 const commands = {
-  "!un": ({ twitch, dispatch, sprint, twitchActionSay, username, message }) => {
+  "!un": ({
+    twitch,
+    target,
+    dispatch,
+    special,
+    sprint,
+    twitchActionSay,
+    username,
+    message,
+  }) => {
     const parts = message.split(" ");
     if (parts.length <= 1) {
       return;
@@ -49,6 +63,39 @@ const commands = {
     } else if (parameter.startsWith("reconfigura")) {
       localStorage.removeItem("unconfig");
       window.location.reload();
+    } else if (parameter.startsWith("vips")) {
+      twitch.say(
+        target,
+        `Lista de vips ganhando ${special.multiplier}x: ${special.list.join(
+          ", "
+        )}`
+      );
+    } else if (parameter.startsWith("addvip") && parts.length > 2) {
+      const username = parts[2].toLowerCase();
+
+      if (special.list.includes(username)) {
+        twitchActionSay(`${username} já existe na lista.`);
+        return;
+      }
+
+      dispatch({
+        type: VIP_ADD_PERSON,
+        username,
+      });
+      twitchActionSay(`${username} foi adicionado na lista de vips.`);
+    } else if (parameter.startsWith("removevip") && parts.length > 2) {
+      const username = parts[2].toLowerCase();
+
+      if (!special.list.includes(username)) {
+        twitchActionSay(`${username} não existe na lista.`);
+        return;
+      }
+
+      dispatch({
+        type: VIP_REMOVE_PERSON,
+        username,
+      });
+      twitchActionSay(`${username} foi removido na lista de vips.`);
     }
   },
 };
