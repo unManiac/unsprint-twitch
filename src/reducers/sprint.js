@@ -1,5 +1,6 @@
 import {
   SPRINT_UPDATE,
+  SPRINT_UPDATE_TIME,
   SPRINT_STARTED,
   SPRINT_CANCELLED,
   SPRINT_ENDED,
@@ -41,6 +42,12 @@ const sprint = (state = initialState, action) => {
         ...state,
         ...initialState, // restore messages
         ...action.sprint,
+      };
+    case SPRINT_UPDATE_TIME:
+      return {
+        ...state,
+        minutes: action.minutes,
+        ends: Date.now() + action.minutes * 60 * 1000,
       };
     case SPRINT_STARTED:
       return {

@@ -4,7 +4,7 @@ import {
   SPRINT_CANCELLED,
   SPRINT_ENDED,
   SPRINT_STARTED,
-  SPRINT_UPDATE,
+  SPRINT_UPDATE_TIME,
 } from "../constants/actionTypes";
 import { getLastMonday } from "../helper";
 import { addPoints } from "../requests";
@@ -107,11 +107,8 @@ export function changeTime(twitch, minutes) {
     }
 
     dispatch({
-      type: SPRINT_UPDATE,
-      sprint: {
-        minutes: selectedMinutes,
-        ends: Date.now() + selectedMinutes * 60 * 1000,
-      },
+      type: SPRINT_UPDATE_TIME,
+      minutes: selectedMinutes,
     });
     twitch.action(
       config.channel,

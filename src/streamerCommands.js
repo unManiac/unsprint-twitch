@@ -71,7 +71,10 @@ const commands = {
         )}`
       );
     } else if (parameter.startsWith("addvip") && parts.length > 2) {
-      const username = parts[2].toLowerCase();
+      const username = parts[2]
+        .toLowerCase()
+        .replace(new RegExp("@", "g"), "")
+        .trim();
 
       if (special.list.includes(username)) {
         twitchActionSay(`${username} já existe na lista.`);
@@ -84,7 +87,10 @@ const commands = {
       });
       twitchActionSay(`${username} foi adicionado na lista de vips.`);
     } else if (parameter.startsWith("removevip") && parts.length > 2) {
-      const username = parts[2].toLowerCase();
+      const username = parts[2]
+        .toLowerCase()
+        .replace(new RegExp("@", "g"), "")
+        .trim();
 
       if (!special.list.includes(username)) {
         twitchActionSay(`${username} não existe na lista.`);

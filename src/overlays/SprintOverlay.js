@@ -44,6 +44,7 @@ function SprintOverlay({ end, location }) {
 
   const participants = useSelector((state) => state.participant.list);
   const sprint = useSelector((state) => state.sprint);
+  const vip = useSelector((state) => state.vip);
 
   const parameters = useMemo(
     () => new URLSearchParams(location.search),
@@ -98,7 +99,7 @@ function SprintOverlay({ end, location }) {
           },
         });
       }
-      if (configParsed.vip) {
+      if (vip.list.length === 0 && configParsed.vip) {
         dispatch({
           type: VIP_UPDATE,
           ...(configParsed.vip || {}),
@@ -106,7 +107,7 @@ function SprintOverlay({ end, location }) {
       }
       localStorage.setItem("unconfig", configParam);
     }
-  }, [dispatch, sprint, configParam]);
+  }, [dispatch, sprint, vip, configParam]);
 
   if (failed) {
     return <Config />;
