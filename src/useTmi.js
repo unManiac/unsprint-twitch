@@ -5,7 +5,6 @@ import commands, { dict } from "./commands";
 import streamerCommands from "./streamerCommands";
 import { CONFIGURATION_UPDATE } from "./constants/actionTypes";
 import { store } from "./store";
-import onFlavsHandler from "./flavs";
 
 let externalClient = null;
 
@@ -180,8 +179,6 @@ function useTmi() {
         commands["!morte"](params);
       }
     }
-
-    onFlavsHandler(params);
   }
 
   // Called every time the bot connects to Twitch chat
