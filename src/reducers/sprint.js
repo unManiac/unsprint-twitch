@@ -2,6 +2,7 @@ import {
   SPRINT_UPDATE,
   SPRINT_UPDATE_TIME,
   SPRINT_STARTED,
+  SPRINT_PARTIAL_UPDATE,
   SPRINT_CANCELLED,
   SPRINT_ENDED,
 } from "../constants/actionTypes";
@@ -33,6 +34,7 @@ export const initialState = {
   rankingPrize2: undefined,
   rankingPrize3: undefined,
   implicitReedemSilent: false,
+  allImmune: false,
 };
 
 const sprint = (state = initialState, action) => {
@@ -41,6 +43,11 @@ const sprint = (state = initialState, action) => {
       return {
         ...state,
         ...initialState, // restore messages
+        ...action.sprint,
+      };
+    case SPRINT_PARTIAL_UPDATE:
+      return {
+        ...state,
         ...action.sprint,
       };
     case SPRINT_UPDATE_TIME:

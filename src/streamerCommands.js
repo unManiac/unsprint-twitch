@@ -2,12 +2,14 @@ import { cancel, end, startTime } from "./actions/sprint";
 import {
   PARTICIPANTS_ADD_LIVES,
   RANKING_RESET,
+  SPRINT_PARTIAL_UPDATE,
   VIP_ADD_PERSON,
   VIP_REMOVE_PERSON,
 } from "./constants/actionTypes";
 
 const commands = {
   "!un": ({
+    isStreamer,
     twitch,
     target,
     dispatch,
@@ -42,6 +44,23 @@ const commands = {
       );
       return;
     } else if (parameter.startsWith("vida") && parts.length > 2) {
+      if (isStreamer && ["on", "off"].includes(parts[2])) {
+        const allImmune = parts[2] === "off";
+        dispatch({
+          type: SPRINT_PARTIAL_UPDATE,
+          sprint: {
+            allImmune,
+          },
+        });
+
+        if (allImmune) {
+          twitchActionSay(`Imunidade geral ativada.`);
+        } else {
+          twitchActionSay(`Imunidade geral desativada.`);
+        }
+        return;
+      }
+
       const lives = parseInt(parts[2]);
       if (Number.isNaN(lives)) {
         twitchActionSay(`@${username} informe corretamente as vidas.`);

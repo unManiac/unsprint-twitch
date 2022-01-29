@@ -150,7 +150,7 @@ function useTmi() {
     if (canUseStreamerCommand) {
       for (let i = 0; i < streamerKeyCommands.length; i++) {
         const key = streamerKeyCommands[i];
-        if (message.startsWith(key)) {
+        if (message.startsWith(key) && message !== "!unsprint") {
           streamerCommands[key](params);
           found = true;
           break;
@@ -174,7 +174,7 @@ function useTmi() {
       } else if (sprint.finished) {
         // By default redeem points
         commands["!ganhei"]({ ...params, silent: true });
-      } else {
+      } else if (!sprint.allImmune) {
         // Free comments in chat will lose a life
         commands["!morte"](params);
       }
