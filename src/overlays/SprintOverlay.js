@@ -78,7 +78,7 @@ function SprintOverlay({ end, location }) {
 
   useEffect(() => {
     if (configParam && localStorage.getItem("unconfig") !== configParam) {
-      var configParsed = JSON.parse(window.atob(configParam));
+      var configParsed = JSON.parse(window.atob(window.decodeURIComponent(window.escape(configParam))));
       delete configParsed.sprint.ends;
       delete configParsed.sprint.ended;
       delete configParsed.sprint.minutes;

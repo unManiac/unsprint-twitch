@@ -162,13 +162,15 @@ function SprintConfig({ open, updateAlert, onClose, ...rest }) {
     },
   });
 
-  const urlOverlay = `${
+  const showOverlay = overlayBetaUsers.includes(config.channel?.toLowerCase());
+
+  const urlOverlay = showOverlay && `${
     window.location.href
   }overlay/sprint?scroll=20&nomsg=${window.encodeURI(
     ": sem ranking"
   )}&msg=${window.encodeURI(
     ": @minutos minutos (@posicao°)"
-  )}&config=${window.btoa(JSON.stringify({ sprint, config, vip }))}`;
+  )}&config=${window.btoa(window.unescape(window.encodeURIComponent(JSON.stringify({ sprint, config, vip }))))}`;
 
   return (
     <>
@@ -551,7 +553,7 @@ function SprintConfig({ open, updateAlert, onClose, ...rest }) {
                 </>
               )}
 
-              {overlayBetaUsers.includes(config.channel?.toLowerCase()) && (
+              {showOverlay && (
                 <>
                   <Grid item xs={12}>
                     <Divider style={{ marginTop: 20, marginBottom: 10 }} />
