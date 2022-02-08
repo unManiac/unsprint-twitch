@@ -17,7 +17,7 @@ import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RANKING_RESET, SPRINT_UPDATE } from "../../constants/actionTypes";
 import { WHITE } from "../../constants/colors";
-import { getNextMonday } from "../../helper";
+import { b64EncodeUnicode, getNextMonday } from "../../helper";
 import { initialState } from "../../reducers/sprint";
 import SprintVip from "./SprintVip";
 
@@ -170,7 +170,7 @@ function SprintConfig({ open, updateAlert, onClose, ...rest }) {
     ": sem ranking"
   )}&msg=${window.encodeURI(
     ": @minutos minutos (@posicao°)"
-  )}&config=${window.btoa(window.unescape(window.encodeURIComponent(JSON.stringify({ sprint, config, vip }))))}`;
+  )}&config=${b64EncodeUnicode(JSON.stringify({ sprint, config, vip }))}`;
 
   return (
     <>

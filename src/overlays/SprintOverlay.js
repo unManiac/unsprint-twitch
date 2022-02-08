@@ -12,6 +12,7 @@ import {
   VIP_UPDATE,
 } from "../constants/actionTypes";
 import "./SprintOverlay.css";
+import { b64DecodeUnicode } from "../helper";
 
 let currentId = 0;
 let timeoutId = 0;
@@ -21,6 +22,11 @@ function scrollAnimate(id, top, scroll) {
   try {
     const element = $("#animate");
     element.stop(true);
+
+    if (!element[0]) {
+      return;
+    }
+
     const scrollTop = top
       ? 0
       : element[0].scrollHeight - element[0].offsetHeight;
@@ -78,7 +84,7 @@ function SprintOverlay({ end, location }) {
 
   useEffect(() => {
     if (configParam && localStorage.getItem("unconfig") !== configParam) {
-      var configParsed = JSON.parse(window.atob(window.decodeURIComponent(window.escape(configParam))));
+      var configParsed = JSON.parse(b64DecodeUnicode(configParam));
       delete configParsed.sprint.ends;
       delete configParsed.sprint.ended;
       delete configParsed.sprint.minutes;
