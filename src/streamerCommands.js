@@ -126,14 +126,9 @@ const commands = {
     } else if (parameter.startsWith("loja") && parts.length > 2) {
       const action = parts[2];
       if (action.startsWith("pausa")) {
+        twitchActionSay(`Pausando lojinha...`);
         const items = await getStoreItems(config).then((items) =>
-          items
-            .filter((item) => item.enabled && item.quantity.current !== 0)
-            .map((item) => ({
-              id: item._id,
-              name: item.name,
-              description: item.description,
-            }))
+          items.filter((item) => item.enabled && item.quantity.current !== 0)
         );
 
         // Save reference
@@ -143,7 +138,7 @@ const commands = {
         await Promise.all(
           items.map((item) =>
             updateStoreItem(
-              item.id,
+              item._id,
               {
                 ...item,
                 enabled: false,
@@ -161,6 +156,7 @@ const commands = {
           twitchActionSay(`Nenhum item encontrado.`);
           return;
         }
+        twitchActionSay(`Restaurando lojinha...`);
 
         items = JSON.parse(items);
 
@@ -168,7 +164,7 @@ const commands = {
         await Promise.all(
           items.map((item) =>
             updateStoreItem(
-              item.id,
+              item._id,
               {
                 ...item,
                 enabled: true,
