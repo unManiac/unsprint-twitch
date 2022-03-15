@@ -6,13 +6,15 @@ import {
   VIP_ADD_PERSON,
   VIP_REMOVE_PERSON,
 } from "./constants/actionTypes";
+import { getStoreItems, updateStoreItem } from "./requests";
 
 const commands = {
-  "!un": ({
+  "!un": async ({
     isStreamer,
     twitch,
     target,
     dispatch,
+    config,
     special,
     sprint,
     twitchActionSay,
@@ -121,6 +123,64 @@ const commands = {
         username,
       });
       twitchActionSay(`${username} foi removido na lista de vips.`);
+    } else if (parameter.startsWith("loja") && parts.length > 2) {
+      const action = parts[2];
+      if (action.startsWith("pausa")) {
+        const items = await getStoreItems(config).then((items) =>
+          items
+            .filter((item) => item.enabled && item.quantity.current !== 0)
+            .map((item) => ({
+              id: item._id,
+              name: item.name,
+              description: item.description,
+            }))
+        );
+
+        // Save reference
+        localStorage.setItem("lojinha", JSON.stringify(items));
+
+        // Update items
+        await Promise.all(
+          items.map((item) =>
+            updateStoreItem(
+              item.id,
+              {
+                ...item,
+                enabled: false,
+              },
+              config
+            )
+          )
+        );
+
+        twitchActionSay(`Desabilitado ${items.length} itens na lojinha.`);
+      } else if (action.startsWith("restaura")) {
+        let items = localStorage.getItem("lojinha");
+
+        if (!items) {
+          twitchActionSay(`Nenhum item encontrado.`);
+          return;
+        }
+
+        items = JSON.parse(items);
+
+        // Update items
+        await Promise.all(
+          items.map((item) =>
+            updateStoreItem(
+              item.id,
+              {
+                ...item,
+                enabled: true,
+              },
+              config
+            )
+          )
+        );
+
+        twitchActionSay(`Restaurado ${items.length} itens na lojinha.`);
+        localStorage.removeItem("lojinha");
+      }
     }
   },
 };
