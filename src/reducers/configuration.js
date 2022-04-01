@@ -7,6 +7,7 @@ const sprint = (
     token: "",
     channelId: "",
     loyalty: "",
+    disableAnnounce: false,
   },
   action
 ) => {

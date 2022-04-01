@@ -27,14 +27,12 @@ function addPointsByRanking(twitch, position) {
     const points = parseInt(minutes * multiplier);
     return addPoints(username, points, config)
       .then((result) => {
-        twitch.action(
-          config.channel,
+        twitch.actionSay(
           `@${username} ficou em ${position}° e ganhou ${points}. Seu novo total é ${result.newAmount} ${config.loyalty}.`
         );
       })
       .catch(() => {
-        twitch.action(
-          config.channel,
+        twitch.actionSay(
           `Não foi possível adicionar ${points} para @${username}`
         );
       });
@@ -59,7 +57,6 @@ export function startTime(twitch, minutes) {
   return function (dispatch, getState) {
     const sprint = getState().sprint;
     const rankingLastReset = getState().ranking.lastReset;
-    const config = getState().configuration;
 
     const selectedMinutes = minutes || sprint.minutes;
 
@@ -88,9 +85,8 @@ export function startTime(twitch, minutes) {
     const { messageStarted } = sprint;
 
     if (messageStarted) {
-      twitch.action(
-        config.channel,
-        messageStarted.replace("@tempo", `${selectedMinutes}`)
+      twitch.actionSay(
+        `${messageStarted.replace("@tempo", `${selectedMinutes}`)}`
       );
     }
   };
@@ -98,7 +94,6 @@ export function startTime(twitch, minutes) {
 
 export function changeTime(twitch, minutes) {
   return function (dispatch, getState) {
-    const config = getState().configuration;
     let selectedMinutes =
       minutes || parseInt(window.prompt("Digite os minutos restante:"));
 
@@ -110,8 +105,7 @@ export function changeTime(twitch, minutes) {
       type: SPRINT_UPDATE_TIME,
       minutes: selectedMinutes,
     });
-    twitch.action(
-      config.channel,
+    twitch.actionSay(
       `unSprint foi atualizado para ${selectedMinutes} minutos, para checar os novos pontos que irá ganhar digite !tempo`
     );
     return { message: "Tempo atualizado", severity: "success" };
@@ -122,13 +116,11 @@ export function end(twitch) {
   return function (dispatch, getState) {
     dispatch({ type: SPRINT_ENDED });
     const sprint = getState().sprint;
-    const config = getState().configuration;
     const { messageEnded } = sprint;
 
     if (messageEnded) {
-      twitch.action(
-        config.channel,
-        messageEnded.replace("@tempo", `${sprint.minutes}`)
+      twitch.actionSay(
+        `${messageEnded.replace("@tempo", `${sprint.minutes}`)}`
       );
     }
   };

@@ -1,5 +1,6 @@
 import { cancel, end, startTime } from "./actions/sprint";
 import {
+  CONFIGURATION_UPDATE,
   PARTICIPANTS_ADD_LIVES,
   RANKING_RESET,
   SPRINT_PARTIAL_UPDATE,
@@ -176,6 +177,27 @@ const commands = {
 
         twitchActionSay(`Restaurado ${items.length} itens na lojinha.`);
         localStorage.removeItem("lojinha");
+      }
+    } else if (parameter.startsWith("announce") && parts.length > 2) {
+      const action = parts[2];
+      if (action.startsWith("on")) {
+        dispatch({
+          type: CONFIGURATION_UPDATE,
+          configuration: {
+            disableAnnounce: false,
+          },
+        });
+        twitchActionSay(`Habilitado /announce no bot`);
+      } else if (action.startsWith("off")) {
+        dispatch({
+          type: CONFIGURATION_UPDATE,
+          configuration: {
+            disableAnnounce: true,
+          },
+        });
+        twitchActionSay(`Bot não irá mais utilizar /announce`);
+      } else {
+        twitchActionSay(`Comandos são !un announce on / !un announce off`);
       }
     }
   },

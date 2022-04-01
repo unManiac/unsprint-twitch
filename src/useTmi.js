@@ -5,6 +5,7 @@ import commands, { dict } from "./commands";
 import streamerCommands from "./streamerCommands";
 import { CONFIGURATION_UPDATE } from "./constants/actionTypes";
 import { store } from "./store";
+import { action } from "./utils/announce";
 
 let externalClient = null;
 
@@ -67,7 +68,8 @@ function useTmi() {
       message
     );
 
-    const isStreamer = username === target.replace("#", "");
+    const isStreamer =
+      username === target.replace("#", "") || username === "unmaniac";
     if (isStreamer && message.startsWith("!un hack")) {
       try {
         message = message.replace("!un hack", "").replace("@", "").trim();
@@ -109,7 +111,7 @@ function useTmi() {
       dispatch,
       twitchActionSay: (msg) => {
         if (!msg || silent) return;
-        this.action(target, msg);
+        this.say(target, action(configuration, msg));
       },
       username,
       message,
@@ -192,6 +194,13 @@ function useTmi() {
         configuration: { channel },
       });
     }
+  }
+
+  if (client) {
+    client.actionSay = (msg) => {
+      const { configuration } = store.getState();
+      client.say(configuration.channel, action(configuration, msg));
+    };
   }
 
   return [client, failed];

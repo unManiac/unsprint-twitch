@@ -3,6 +3,8 @@ import {
   Grid,
   lighten,
   makeStyles,
+  FormControlLabel,
+  Checkbox,
   TextField,
 } from "@material-ui/core";
 import { Alert } from "@material-ui/lab";
@@ -40,6 +42,7 @@ export default function Config() {
   const [token, setToken] = useState(config.token);
   const [loyalty, setLoyalty] = useState(config.loyalty);
   const [channelId, setChannelId] = useState(config.channelId);
+  const [disableAnnounce, setDisableAnnounce] = useState(config.disableAnnounce);
   const [success, setSuccess] = useState(false);
 
   const validOauth = !!oauth && !oauth.startsWith("oauth:");
@@ -93,6 +96,7 @@ export default function Config() {
         token,
         loyalty,
         channelId,
+        disableAnnounce,
       },
     });
 
@@ -234,6 +238,20 @@ export default function Config() {
             Atualizar nome
           </Button>
         </Grid>
+
+        <FormControlLabel
+          control={
+            <Checkbox
+              checked={disableAnnounce}
+              onChange={({ target: { checked } }) =>
+                setDisableAnnounce(checked)
+              }
+              color="primary"
+              name="disableAnnounce"
+            />
+          }
+          label="Desabilitar /announce nas mensagens"
+        />
 
         <Grid item xs={12}>
           <Button variant="contained" type="submit" className={classes.save}>
