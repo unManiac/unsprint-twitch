@@ -42,7 +42,7 @@ export default function Config() {
   const [token, setToken] = useState(config.token);
   const [loyalty, setLoyalty] = useState(config.loyalty);
   const [channelId, setChannelId] = useState(config.channelId);
-  const [disableAnnounce, setDisableAnnounce] = useState(config.disableAnnounce);
+  const [enableAnnounce, setEnableAnnounce] = useState(config.enableAnnounce);
   const [success, setSuccess] = useState(false);
 
   const validOauth = !!oauth && !oauth.startsWith("oauth:");
@@ -96,7 +96,7 @@ export default function Config() {
         token,
         loyalty,
         channelId,
-        disableAnnounce,
+        enableAnnounce,
       },
     });
 
@@ -242,15 +242,15 @@ export default function Config() {
         <FormControlLabel
           control={
             <Checkbox
-              checked={disableAnnounce}
+              checked={enableAnnounce}
               onChange={({ target: { checked } }) =>
-                setDisableAnnounce(checked)
+                setEnableAnnounce(checked)
               }
               color="primary"
-              name="disableAnnounce"
+              name="enableAnnounce"
             />
           }
-          label="Desabilitar /announce nas mensagens"
+          label="Habilitar /announce nas mensagens (pode não funcionar no app mobile)"
         />
 
         <Grid item xs={12}>

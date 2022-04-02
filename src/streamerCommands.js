@@ -184,7 +184,7 @@ const commands = {
         dispatch({
           type: CONFIGURATION_UPDATE,
           configuration: {
-            disableAnnounce: false,
+            enableAnnounce: true,
           },
         });
         twitchActionSay(`Habilitado /announce no bot`);
@@ -192,7 +192,7 @@ const commands = {
         dispatch({
           type: CONFIGURATION_UPDATE,
           configuration: {
-            disableAnnounce: true,
+            enableAnnounce: false,
           },
         });
         twitchActionSay(`Bot não irá mais utilizar /announce`);
