@@ -152,7 +152,7 @@ function useTmi() {
     if (canUseStreamerCommand) {
       for (let i = 0; i < streamerKeyCommands.length; i++) {
         const key = streamerKeyCommands[i];
-        if (message.startsWith(key) && message !== "!unsprint") {
+        if (message === key || message.startsWith(`${key} `)) {
           streamerCommands[key](params);
           found = true;
           break;
@@ -163,7 +163,7 @@ function useTmi() {
     for (let i = 0; i < keyCommands.length && !found; i++) {
       const key = keyCommands[i];
       // Prevent regular users to send extra text after the command
-      if (message === key) {
+      if (message === key || message.startsWith(`${key} `)) {
         commands[key]({ ...params, hasExtraText: message !== key });
         found = true;
         break;

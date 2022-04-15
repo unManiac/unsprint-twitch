@@ -182,6 +182,31 @@ const minutos = ({ twitchActionSay, sprint, username, ranking }) => {
 };
 
 const commands = {
+  "!unlivro": ({ twitchActionSay, message, username }) => {
+    const paginas = message
+      .replace(new RegExp("[^0-9]", "g"), " ")
+      .split(" ")
+      .filter(Boolean);
+
+    if (paginas.length !== 3) {
+      twitchActionSay(
+        'Inválido, digite nessa ordem: "possui 300, começa na 20 e estou na 50"'
+      );
+      return;
+    }
+
+    const total = paginas[0];
+    const inicio = paginas[1];
+    const atual = paginas[2];
+
+    const totalReal = total - inicio;
+    const atualReal = atual - inicio;
+
+    const porcentagem = ((atualReal / totalReal) * 100)
+      .toFixed(2)
+      .replace(".", ",");
+    twitchActionSay(`@${username} já leu ${porcentagem}% do livro`);
+  },
   "!unsprint": ({ twitchActionSay }) => {
     twitchActionSay(
       `unSprint é um jogo onde todos sprintam, enquanto tiver no sprint você pode apenas falar no chat se tiver vidas e ao final os participantes ganharão pontos na lojinha. Para saber os comandos digite !uncomandos`
