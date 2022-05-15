@@ -100,8 +100,7 @@ export default function About() {
 
       <Question title="8. É confiável eu usar este site?">
         Sim, essa ferramenta é integrada com o site da Twitch e o site do
-        StreamElements, todas requisições feitas por aqui são apenas para esses
-        2 destinos sem nenhum intermediário. Este projeto tem o código aberto e
+        StreamElements. Este projeto tem o código aberto e
         qualquer pessoa (com conhecimento) pode auditar, se certificando de que
         todas informações são mantidas em segurança.{" "}
         <a
