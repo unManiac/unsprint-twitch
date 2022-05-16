@@ -2,11 +2,19 @@ import React from "react";
 import ReactDOM from "react-dom";
 import { Provider } from "react-redux";
 import { HashRouter as Router, Switch, Route } from "react-router-dom";
+import * as Sentry from "@sentry/react";
+import { BrowserTracing } from "@sentry/tracing";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import { store } from "./store";
 import "./index.css";
 import SprintOverlay from "./overlays/SprintOverlay";
+
+Sentry.init({
+  dsn: "https://22f4233bfca74092907d0c5c44a6732e@o347973.ingest.sentry.io/6410338",
+  integrations: [new BrowserTracing()],
+  tracesSampleRate: 1.0,
+});
 
 ReactDOM.render(
   <React.StrictMode>

@@ -61,6 +61,10 @@ export function startTime(twitch, minutes) {
 
     const selectedMinutes = minutes || sprint.minutes;
 
+    if (window.analytics && window.analytics?.user().id() !== config.channel) {
+      window.analytics.identify(config.channel, {});
+    }
+
     window.analytics?.track("Iniciar Sprint", {
       minutos: selectedMinutes,
       userId: config.channel,
@@ -101,7 +105,7 @@ export function startTime(twitch, minutes) {
 export function changeTime(twitch, minutes) {
   return function (dispatch, getState) {
     const config = getState().configuration;
-    
+
     let selectedMinutes =
       minutes || parseInt(window.prompt("Digite os minutos restante:"));
 

@@ -38,13 +38,6 @@ function useTmi() {
     setClient(client);
     externalClient = client;
 
-    if (
-      window.analytics?.user &&
-      window.analytics?.user().id() !== config.channel
-    ) {
-      window.analytics.identify(config.channel, {});
-    }
-
     // Register our event handlers (defined below)
     client.on("message", onMessageHandler);
     client.on("connected", onConnectedHandler);
