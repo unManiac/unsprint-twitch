@@ -65,6 +65,14 @@ function App() {
                 </Button>
               )}
             />
+            <NavLink
+              to="/contact"
+              component={(props) => (
+                <Button {...props} color="default">
+                  Contato
+                </Button>
+              )}
+            />
           </div>
         </Toolbar>
       </AppBar>
@@ -78,6 +86,17 @@ function App() {
           </Route>
           <Route path="/forest">
             <Forest />
+          </Route>
+          <Route path="/contact">
+            <div style={{ marginTop: 50 }}>
+              <pre>
+                Discord: Maniac#9227 <br />
+                Twitch:{" "}
+                <a href="https://www.twitch.tv/unmaniac">
+                  https://www.twitch.tv/unmaniac
+                </a>
+              </pre>
+            </div>
           </Route>
           <Route exact path="/">
             <Sprint />
