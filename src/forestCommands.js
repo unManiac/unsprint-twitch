@@ -7,6 +7,7 @@ const commands = {
     config,
     forest,
     twitchActionSay,
+    twitchLongSay,
     message,
   }) => {
     const parts = message.split(" ");
@@ -45,7 +46,7 @@ const commands = {
           trees,
         });
 
-        twitchActionSay(
+        twitchLongSay(
           `As opções disponíveis são: ${trees.map((t) => t.title).join(", ")}`
         );
       });

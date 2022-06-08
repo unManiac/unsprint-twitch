@@ -83,6 +83,24 @@ function useTmi({ enableSprint = true, enableForest = true }) {
         if (!msg || silent) return;
         this.say(target, action(configuration, msg));
       },
+      twitchLongSay: async (text) => {
+        const words = text.split(" ");
+        let current = "";
+
+        for (let i = 0; i < words.length; i++) {
+          const word = words[i];
+          if (current.length + word.length >= 200) {
+            this.say(target, current.trim()).then(console.log);
+            await new Promise((resolve) => setTimeout(resolve, 100));
+            current = "";
+          }
+          current += word + " ";
+        }
+
+        if (current) {
+          this.say(target, current.trim());
+        }
+      },
       username,
       message,
       target,
