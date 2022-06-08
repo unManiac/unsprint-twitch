@@ -124,16 +124,17 @@ function useTmi({ enableSprint = true, enableForest = true }) {
     const keyForestCommands = Object.keys(enableForest ? forestCommands : {});
     let found = false;
 
-    if (
-      enableForest &&
-      (message.startsWith("!unforest") || message.startsWith("!uf")) &&
-      (params.isStreamer || params.isMod)
-    ) {
-      for (let i = 0; i < keyForestCommands.length; i++) {
-        const key = keyForestCommands[i];
-        if (message === key || message.startsWith(`${key} `)) {
-          forestCommands[key](params);
-          break;
+    if (enableForest) {
+      if (
+        (message.startsWith("!unforest") || message.startsWith("!uf")) &&
+        (params.isStreamer || params.isMod)
+      ) {
+        for (let i = 0; i < keyForestCommands.length; i++) {
+          const key = keyForestCommands[i];
+          if (message === key || message.startsWith(`${key} `)) {
+            forestCommands[key](params);
+            break;
+          }
         }
       }
       return;
@@ -162,7 +163,7 @@ function useTmi({ enableSprint = true, enableForest = true }) {
       }
     }
 
-    if (!found) {
+    if (!found && enableSprint) {
       if (message.startsWith("!unlivro")) {
         sprintCommands["!unlivro"](params);
       }
