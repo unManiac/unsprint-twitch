@@ -158,7 +158,8 @@ const commands = {
         window.analytics?.track("Forest - Nova sala", {
           userId: config.channel,
           email: config.forestEmail,
-          token: data.token,
+          roomToken: data.token,
+          roomId: data.id,
         });
 
         for (let i = 0; i < 5; i++)

@@ -102,6 +102,11 @@ function Config({ location }) {
   };
 
   const forestLogin = () => {
+    window.analytics?.track("Forest - Validando usuário", {
+      userId: channel,
+      email: forestEmail,
+    });
+
     setForestLoading(true);
     forestFetch(`sessions`, {
       headers: new Headers({
