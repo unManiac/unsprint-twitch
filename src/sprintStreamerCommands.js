@@ -6,6 +6,7 @@ import {
   SPRINT_PARTIAL_UPDATE,
   VIP_ADD_PERSON,
   VIP_REMOVE_PERSON,
+  VIP_UPDATE,
 } from "./constants/actionTypes";
 import { getStoreItems, updateStoreItem } from "./requests";
 
@@ -124,6 +125,12 @@ const commands = {
         username,
       });
       twitchActionSay(`${username} foi removido na lista de vips.`);
+    } else if (parameter.startsWith("zeravip")) {
+      dispatch({
+        type: VIP_UPDATE,
+        list: [],
+      });
+      twitchActionSay(`${username} foi zerado a lista de vips.`);
     } else if (parameter.startsWith("loja") && parts.length > 2) {
       const action = parts[2];
       if (action.startsWith("pausa")) {

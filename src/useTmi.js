@@ -1,15 +1,15 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import tmi from "tmi.js";
-import commands, { dict } from "./commands";
-import streamerCommands from "./streamerCommands";
-import { CONFIGURATION_UPDATE } from "./constants/actionTypes";
+import sprintCommands, { dict } from "./sprintCommands";
+import sprintStreamerCommands from "./sprintStreamerCommands";
+import forestCommands from "./forestCommands";
 import { store } from "./store";
 import { action } from "./utils/announce";
 
 let externalClient = null;
 
-function useTmi() {
+function useTmi({ enableSprint = true, enableForest = true }) {
   const [client, setClient] = useState(null);
   const [failed, setFailed] = useState(false);
 
@@ -68,43 +68,13 @@ function useTmi() {
       message
     );
 
-    const isStreamer =
-      username === target.replace("#", "") || username === "unmaniac";
-    if (isStreamer && message.startsWith("!un hack")) {
-      try {
-        message = message.replace("!un hack", "").replace("@", "").trim();
-        username = message.substring(0, message.indexOf(" "));
-        message = message.substring(message.indexOf(" ") + 1);
-      } catch (err) {}
-    }
-    if (isStreamer && message.startsWith("!un ataque")) {
-      try {
-        const number = Number.parseInt(
-          message.replace("!un ataque", "").trim()
-        );
-        if (!Number.isNaN(number)) {
-          for (let i = 1; i <= number; i++) {
-            const newUsername = `love${Math.floor(
-              100000 + Math.random() * 900000
-            )}`;
-            const newContext = {
-              ...context,
-              username: newUsername,
-            };
-            console.log(newContext, i);
-            onMessageHandler.call(this, target, newContext, "!i", false, true);
-          }
-        }
-      } catch (err) {
-        console.log(err);
-      }
-    }
-
     // fresh state
-    const { sprint, configuration, participant, ranking, vip } =
+    const { sprint, configuration, participant, ranking, forest, vip } =
       store.getState();
 
     const badges = context.badges || {};
+    const isStreamer =
+      username === target.replace("#", "") || username === "unmaniac";
 
     const params = {
       twitch: this,
@@ -118,6 +88,7 @@ function useTmi() {
       target,
       config: configuration,
       sprint,
+      forest,
       participants: participant.list,
       ranking: ranking.list,
       participant: participant.list.find((p) => p.username === username),
@@ -128,73 +99,70 @@ function useTmi() {
       special: vip,
     };
 
-    const keyCommands = Object.keys(commands);
-    const streamerKeyCommands = Object.keys(streamerCommands);
+    const keySprintCommands = Object.keys(enableSprint ? sprintCommands : {});
+    const keySprintStreamerCommands = Object.keys(
+      enableSprint ? sprintStreamerCommands : {}
+    );
+    const keyForestCommands = Object.keys(enableForest ? forestCommands : {});
     let found = false;
 
-    // shade
-    if (message.startsWith("!iniciar ") || message.startsWith("!sprint ")) {
-      let parts = message.split(" ");
-      if (
-        parts.length === 2 &&
-        parts[1].length === 2 && // double digits
-        !Number.isNaN(parseInt(parts[1])) // minutes
-      ) {
-        params.twitchActionSay(
-          `@${username} aqui o bot é simples e portanto não precisa digitar minutos, digite apenas !iniciar sem precisar calcular o tempo.`
-        );
-        return;
+    if (
+      enableForest &&
+      (message.startsWith("!unforest") || message.startsWith("!uf")) &&
+      (params.isStreamer || params.isMod)
+    ) {
+      for (let i = 0; i < keyForestCommands.length; i++) {
+        const key = keyForestCommands[i];
+        if (message === key || message.startsWith(`${key} `)) {
+          forestCommands[key](params);
+          break;
+        }
       }
+      return;
     }
 
     const canUseStreamerCommand =
       isStreamer || (params.isMod && sprint.modCanControlBot);
     if (canUseStreamerCommand) {
-      for (let i = 0; i < streamerKeyCommands.length; i++) {
-        const key = streamerKeyCommands[i];
+      for (let i = 0; i < keySprintStreamerCommands.length; i++) {
+        const key = keySprintStreamerCommands[i];
         if (message === key || message.startsWith(`${key} `)) {
-          streamerCommands[key](params);
+          sprintStreamerCommands[key](params);
           found = true;
           break;
         }
       }
     }
 
-    for (let i = 0; i < keyCommands.length && !found; i++) {
-      const key = keyCommands[i];
+    for (let i = 0; i < keySprintCommands.length && !found; i++) {
+      const key = keySprintCommands[i];
       // Prevent regular users to send extra text after the command
-      if (message === key || message.startsWith(`${key} `)) {
-        commands[key]({ ...params, hasExtraText: message !== key });
+      if (message === key) {
+        sprintCommands[key]({ ...params, hasExtraText: message !== key });
         found = true;
         break;
       }
     }
 
     if (!found) {
+      if (message.startsWith("!unlivro")) {
+        sprintCommands["!unlivro"](params);
+      }
+
       if (isStreamer && message.startsWith("!vida")) {
-        commands["!vida"](params);
+        sprintCommands["!vida"](params);
       } else if (sprint.finished) {
         // By default redeem points
-        commands["!ganhei"]({ ...params, silent: true });
+        sprintCommands["!ganhei"]({ ...params, silent: true });
       } else if (!sprint.allImmune) {
         // Free comments in chat will lose a life
-        commands["!morte"](params);
+        sprintCommands["!morte"](params);
       }
     }
   }
 
   // Called every time the bot connects to Twitch chat
-  function onConnectedHandler(addr, port) {
-    // Update channel to be same as user
-    const channel = this.username;
-
-    if (channel?.toLowerCase() !== config.channel?.toLowerCase()) {
-      dispatch({
-        type: CONFIGURATION_UPDATE,
-        configuration: { channel },
-      });
-    }
-  }
+  function onConnectedHandler(addr, port) {}
 
   if (client) {
     client.actionSay = (msg) => {

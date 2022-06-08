@@ -8,10 +8,12 @@ import {
   TextField,
 } from "@material-ui/core";
 import { Alert } from "@material-ui/lab";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { withRouter } from "react-router";
 import { CONFIGURATION_UPDATE } from "../../constants/actionTypes";
 import { GREEN, WHITE } from "../../constants/colors";
+import { forestFetch } from "../../utils/proxy";
 
 const useStyles = makeStyles((theme) => ({
   root: {},
@@ -31,8 +33,15 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function Config() {
+function Config({ location }) {
   const classes = useStyles();
+
+  const parameters = useMemo(
+    () => new URLSearchParams(location.search),
+    [location.search]
+  );
+
+  const msg = parameters.get("msg");
 
   const dispatch = useDispatch();
   const config = useSelector((state) => state.configuration);
@@ -43,7 +52,15 @@ export default function Config() {
   const [loyalty, setLoyalty] = useState(config.loyalty);
   const [channelId, setChannelId] = useState(config.channelId);
   const [enableAnnounce, setEnableAnnounce] = useState(config.enableAnnounce);
+  const [forestEmail, setForestEmail] = useState(config.forestEmail ?? "");
+  const [forestPassword, setForestPassword] = useState(
+    config.forestPassword ?? ""
+  );
+  const [forestToken, setForestToken] = useState(config.forestToken ?? "");
+
   const [success, setSuccess] = useState(false);
+  const [forestError, setForestError] = useState(false);
+  const [forestLoading, setForestLoading] = useState(false);
 
   const validOauth = !!oauth && !oauth.startsWith("oauth:");
   const validToken = !!token && !token.startsWith("ey");
@@ -84,6 +101,28 @@ export default function Config() {
       });
   };
 
+  const forestLogin = () => {
+    setForestLoading(true);
+    forestFetch(`sessions`, {
+      headers: new Headers({
+        "Content-Type": "application/json",
+      }),
+      method: "POST",
+      body: JSON.stringify({
+        session: { email: forestEmail, password: forestPassword },
+      }),
+    })
+      .then((data) => {
+        setForestError(false);
+        setForestToken(data.remember_token);
+      })
+      .catch(() => {
+        setForestError(true);
+        setForestToken("");
+      })
+      .finally(() => setForestLoading(false));
+  };
+
   const onSave = (e) => {
     e.preventDefault();
 
@@ -97,6 +136,9 @@ export default function Config() {
         loyalty,
         channelId,
         enableAnnounce,
+        forestEmail,
+        forestPassword,
+        forestToken,
       },
     });
 
@@ -114,7 +156,13 @@ export default function Config() {
         </Alert>
       )}
 
-      <Grid container spacing={1} alignItems="center">
+      {!success && msg && (
+        <Alert severity="error" style={{ marginTop: 20 }}>
+          {msg}
+        </Alert>
+      )}
+
+      <Grid container spacing={1}>
         <h2>Configuração do Chat</h2>
         <Grid item xs={12}>
           <p className={classes.step}>
@@ -160,12 +208,31 @@ export default function Config() {
           <TextField
             value={channel}
             variant="outlined"
-            label="Nome do Canal"
+            label="Nome do canal que o bot vai interagir"
             placeholder="unManiac"
+            helperText="Lembrando que o nome é a palavra que fica após https://twitch.tv/<aqui>"
             name="channel"
             required
-            onChange={({ target: { value } }) => setChannel(value)}
+            onChange={({ target: { value } }) =>
+              setChannel(value.replace("@", ""))
+            }
             fullWidth
+          />
+        </Grid>
+
+        <Grid item xs={12}>
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={enableAnnounce}
+                onChange={({ target: { checked } }) =>
+                  setEnableAnnounce(checked)
+                }
+                color="primary"
+                name="enableAnnounce"
+              />
+            }
+            label="Habilitar /announce nas mensagens (pode não funcionar no app mobile)"
           />
         </Grid>
 
@@ -230,6 +297,7 @@ export default function Config() {
           <Button
             variant="contained"
             color="primary"
+            style={{ height: 56 }}
             onClick={() => {
               fetchLoyalty(channelId, token);
             }}
@@ -239,19 +307,57 @@ export default function Config() {
           </Button>
         </Grid>
 
-        <FormControlLabel
-          control={
-            <Checkbox
-              checked={enableAnnounce}
-              onChange={({ target: { checked } }) =>
-                setEnableAnnounce(checked)
-              }
-              color="primary"
-              name="enableAnnounce"
-            />
-          }
-          label="Habilitar /announce nas mensagens (pode não funcionar no app mobile)"
-        />
+        <h2>Configuração do Forest (opcional)</h2>
+
+        <Grid item xs={12}></Grid>
+
+        <Grid item xs={12} sm={5}>
+          <TextField
+            value={forestEmail}
+            variant="outlined"
+            label="E-mail"
+            name="forestEmail"
+            placeholder="user@gmail.com"
+            onChange={({ target: { value } }) => setForestEmail(value)}
+            fullWidth
+            error={forestError}
+            helperText={
+              forestError
+                ? "Email ou senha incorretos"
+                : forestToken
+                ? "Token gerado com sucesso."
+                : ""
+            }
+          />
+        </Grid>
+
+        <Grid item xs={9} sm={5}>
+          <TextField
+            value={forestPassword}
+            variant="outlined"
+            label="Senha"
+            name="forestPassword"
+            placeholder="**********"
+            type="password"
+            onChange={({ target: { value } }) => setForestPassword(value)}
+            fullWidth
+            error={forestError}
+          />
+        </Grid>
+
+        <Grid item xs={9} sm={2}>
+          <Button
+            variant="contained"
+            color="primary"
+            style={{ height: 56, background: forestToken ? GREEN : undefined }}
+            onClick={() => {
+              forestLogin();
+            }}
+            fullWidth
+          >
+            {forestLoading ? "Gerando..." : "Gerar token"}
+          </Button>
+        </Grid>
 
         <Grid item xs={12}>
           <Button variant="contained" type="submit" className={classes.save}>
@@ -262,3 +368,5 @@ export default function Config() {
     </form>
   );
 }
+
+export default withRouter(Config);

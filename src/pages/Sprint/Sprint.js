@@ -59,7 +59,10 @@ const useStyles = makeStyles(() => ({
 
 function Sprint({ history }) {
   const classes = useStyles();
-  const [twitch, failed] = useTmi();
+  const [twitch, failed] = useTmi({
+    enableSprint: true,
+    enableForest: false,
+  });
 
   const [openConfig, setOpenConfig] = useState(false);
   const [alert, setAlert] = useState();

@@ -10,7 +10,8 @@ import { HashRouter as Router, Switch, Route, NavLink } from "react-router-dom";
 import About from "./pages/About/About";
 import Config from "./pages/Config/Config";
 import Sprint from "./pages/Sprint/Sprint";
-import Streamers from "./pages/Streamers/Streamers";
+import Forest from "./pages/Forest/Forest";
+import { GREEN } from "./constants/colors";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -41,6 +42,14 @@ function App() {
               )}
             />
             <NavLink
+              to="/forest"
+              component={(props) => (
+                <Button {...props} style={{ color: GREEN }}>
+                  Forest
+                </Button>
+              )}
+            />
+            <NavLink
               to="/config"
               component={(props) => (
                 <Button {...props} color="secondary">
@@ -56,14 +65,6 @@ function App() {
                 </Button>
               )}
             />
-            <NavLink
-              to="/streamers"
-              component={(props) => (
-                <Button {...props} color="default">
-                  Streamers
-                </Button>
-              )}
-            />
           </div>
         </Toolbar>
       </AppBar>
@@ -75,8 +76,8 @@ function App() {
           <Route path="/about">
             <About />
           </Route>
-          <Route path="/streamers">
-            <Streamers />
+          <Route path="/forest">
+            <Forest />
           </Route>
           <Route exact path="/">
             <Sprint />
