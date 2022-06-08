@@ -146,6 +146,13 @@ function Forest({ history }) {
           <b>!unforest remover</b>
         </p>
       </Grid>
+
+      <Grid item xs={12}>
+        <p className={classes.step}>
+          9. Se tiver mensagens duplicadas no chat pelo Bot, digite{" "}
+          <b>!unforest atualiza</b>
+        </p>
+      </Grid>
     </Grid>
   );
 }

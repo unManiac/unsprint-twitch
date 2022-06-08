@@ -18,7 +18,7 @@ const commands = {
       if (forest.roomToken) {
         twitchActionSay(`${joinMessage}${forest.roomToken}`);
       } else {
-        twitchActionSay(`Digite "!unforest sala" pra criar uma nova sala.`)
+        twitchActionSay(`Digite "!unforest sala" pra criar uma nova sala.`);
       }
       return;
     }
@@ -200,6 +200,8 @@ const commands = {
           );
         });
       return;
+    } else if (parameter.startsWith("atualiza")) {
+      window.location.reload();
     }
   },
 };

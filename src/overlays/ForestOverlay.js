@@ -36,6 +36,7 @@ function ForestOverlay({ location }) {
         });
       }
       localStorage.setItem("unconfig", configParam);
+      window.location.reload();
     }
   }, [dispatch, configParam]);
 
