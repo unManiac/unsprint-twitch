@@ -88,9 +88,9 @@ function Forest({ history }) {
       </Grid>
 
       <Grid item xs={12}>
-        <p style={{ fontWeight: "bold", color: GREEN }}>
-          Se foi exibido "Pronto" no overlay, ele está configurado corretamente
-          e basta seguir os próximos passos.
+        <p style={{ color: GREEN }}>
+          Se foi exibido <b>"Pronto"</b> no overlay, ele está configurado
+          corretamente e basta seguir os próximos passos.
         </p>
       </Grid>
 
@@ -101,6 +101,10 @@ function Forest({ history }) {
           link da sala no chat e se alguém precisar que envie novamente o link
           basta digitar <b>!unforest</b> sem nada além. O código da sala será
           exibido visualmente no overlay.
+        </p>
+        <p style={{ color: "#3D76EF" }}>
+          É possível utilizar apenas <b>!uf ...</b> como alias dos comandos{" "}
+          <b>!unforest ...</b>
         </p>
       </Grid>
 
@@ -123,11 +127,12 @@ function Forest({ history }) {
           <b>!unforest arvore nome</b> ou <b>!unforest arvore codigo</b>. Por
           exemplo: <b>!unforest arvore coral estrelado</b> ou{" "}
           <b>!unforest arvore 6</b>
-          <br /><br />
-          Acentos são desconsiderados, e se caso o nome exato não for encontrado, é
-          realizado uma busca por partes do texto, por exemplo se digitar{" "}
-          <b>!unforest arvore natal</b> e você possuir a "Árvore de Natal", ela
-          será escolhida.
+          <br />
+          <br />
+          Acentos são desconsiderados, e se caso o nome exato não for
+          encontrado, é realizado uma busca por partes do texto, por exemplo se
+          digitar <b>!unforest arvore natal</b> e você possuir a "Árvore de
+          Natal", ela será escolhida.
         </p>
       </Grid>
 
