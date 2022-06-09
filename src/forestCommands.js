@@ -6,6 +6,44 @@ const findTitle = (id) => {
   return arvores.find((a) => a.id === `tree_type_${id}_title`)?.title;
 };
 
+const removeAcento = (texto) =>
+  texto.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+
+const findArvore = (title, id, trees) => {
+  if (!Number.isNaN(id)) {
+    return trees.find((t) => t.id === id);
+  }
+
+  const titleTratado = removeAcento(title);
+
+  let found = trees.find(
+    (t) => removeAcento(t.title.toLowerCase()) === titleTratado
+  );
+
+  if (!found) {
+    // busca pelo termo em inglês
+    found = trees.find(
+      (t) => removeAcento(t.titleOriginal.toLowerCase()) === titleTratado
+    );
+  }
+
+  if (!found) {
+    // busca por includes em pt
+    found = trees.find((t) =>
+      removeAcento(t.title.toLowerCase()).includes(titleTratado)
+    );
+  }
+
+  if (!found) {
+    // busca por includes em inglês
+    found = trees.find((t) =>
+      removeAcento(t.titleOriginal.toLowerCase()).includes(titleTratado)
+    );
+  }
+
+  return found;
+};
+
 const commands = {
   "!unforest": async ({
     dispatch,
@@ -14,7 +52,7 @@ const commands = {
     isStreamer,
     isMod,
     twitchActionSay,
-    twitchLongSay,
+    twitchSay,
     message,
   }) => {
     const parts = message.split(" ");
@@ -45,11 +83,13 @@ const commands = {
         }),
         method: "GET",
       }).then((data) => {
-        const trees = data.map((d) => ({
-          id: d.gid,
-          title: findTitle(d.gid) || d.title.trim(),
-          titleOriginal: d.title.trim(),
-        }));
+        const trees = data
+          .map((d) => ({
+            id: d.gid,
+            title: findTitle(d.gid) || d.title.trim(),
+            titleOriginal: d.title.trim(),
+          }))
+          .sort((a, b) => a.id - b.id);
 
         dispatch({
           type: FOREST_UPDATE,
@@ -62,22 +102,19 @@ const commands = {
           trees,
         });
 
-        twitchLongSay(
-          `As opções disponíveis são: ${trees.map((t) => t.title).join(", ")}`
+        twitchSay(
+          `As opções disponíveis são: ${trees
+            .map((t) => `[${t.id}] ${t.title}`)
+            .join(" / ")
+            .trim()}`
         );
       });
       return;
     } else if (parameter.startsWith("arvore") && parts.length > 2) {
       const arvore = message.split(" arvore ")[1].trim().toLowerCase();
+      const codigo = Number.parseInt(arvore);
 
-      let found = forest.trees.find((t) => t.title.toLowerCase() === arvore);
-
-      if (!found) {
-        // busca pelo titleOriginal
-        found = forest.trees.find(
-          (t) => t.titleOriginal.toLowerCase() === arvore
-        );
-      }
+      const found = findArvore(arvore, codigo, forest.trees);
 
       if (!found) {
         twitchActionSay(

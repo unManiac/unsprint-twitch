@@ -118,9 +118,16 @@ function Forest({ history }) {
           4. Por padrão toda sala é criada com a árvore inicial e 60 minutos,
           mas isso pode ser alterado a qualquer momento antes do iniciar a sala.
           Para exibir a lista de árvores que você possui digite{" "}
-          <b>!unforest arvores</b>, é listado o nome em inglês de cada árvore e
-          para mudar a árvore da sala digite <b>!unforest arvore nome</b>. Por
-          exemplo: <b>!unforest arvore moon tree</b>
+          <b>!unforest arvores</b>, é listado o código e nome em português de
+          cada árvore e para mudar a árvore da sala digite{" "}
+          <b>!unforest arvore nome</b> ou <b>!unforest arvore codigo</b>. Por
+          exemplo: <b>!unforest arvore coral estrelado</b> ou{" "}
+          <b>!unforest arvore 6</b>
+          <br /><br />
+          Acentos são desconsiderados, e se caso o nome exato não for encontrado, é
+          realizado uma busca por partes do texto, por exemplo se digitar{" "}
+          <b>!unforest arvore natal</b> e você possuir a "Árvore de Natal", ela
+          será escolhida.
         </p>
       </Grid>
 

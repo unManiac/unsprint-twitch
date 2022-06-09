@@ -79,6 +79,10 @@ function useTmi({ enableSprint = true, enableForest = true }) {
     const params = {
       twitch: this,
       dispatch,
+      twitchSay: (msg) => {
+        if (!msg || silent) return;
+        this.say(target, msg);
+      },
       twitchActionSay: (msg) => {
         if (!msg || silent) return;
         this.say(target, action(configuration, msg, enableForest));
@@ -121,18 +125,11 @@ function useTmi({ enableSprint = true, enableForest = true }) {
     const keySprintStreamerCommands = Object.keys(
       enableSprint ? sprintStreamerCommands : {}
     );
-    const keyForestCommands = Object.keys(enableForest ? forestCommands : {});
     let found = false;
 
     if (enableForest) {
       if (message.startsWith("!unforest") || message.startsWith("!uf")) {
-        for (let i = 0; i < keyForestCommands.length; i++) {
-          const key = keyForestCommands[i];
-          if (message === key || message.startsWith(`${key} `)) {
-            forestCommands[key](params);
-            break;
-          }
-        }
+        forestCommands["!unforest"](params);
       }
       return;
     }

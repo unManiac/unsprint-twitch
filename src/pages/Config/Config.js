@@ -234,6 +234,7 @@ function Config({ location }) {
             control={
               <Checkbox
                 checked={enableAnnounce}
+                disabled
                 onChange={({ target: { checked } }) =>
                   setEnableAnnounce(checked)
                 }
@@ -241,7 +242,7 @@ function Config({ location }) {
                 name="enableAnnounce"
               />
             }
-            label="Habilitar /announce nas mensagens do Sprint"
+            label="Habilitar /announce nas mensagens do Sprint (Desabilitado por não funcionar corretamente no celular)"
           />
         </Grid>
 
@@ -372,6 +373,7 @@ function Config({ location }) {
           <FormControlLabel
             control={
               <Checkbox
+                disabled
                 checked={enableAnnounceForest}
                 onChange={({ target: { checked } }) =>
                   setEnableAnnounceForest(checked)
@@ -380,7 +382,7 @@ function Config({ location }) {
                 name="enableAnnounceForest"
               />
             }
-            label="Habilitar /announce nas mensagens do Forest"
+            label="Habilitar /announce nas mensagens do Forest (Desabilitado por não funcionar corretamente no celular)"
           />
         </Grid>
 
