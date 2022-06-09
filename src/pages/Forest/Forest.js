@@ -119,9 +119,9 @@ function Forest({ history }) {
 
       <Grid item xs={12}>
         <p className={classes.step}>
-          4. Por padrão toda sala é criada com a árvore inicial e 60 minutos,
-          mas isso pode ser alterado a qualquer momento antes do iniciar a sala.
-          Para exibir a lista de árvores que você possui digite{" "}
+          4. Por padrão toda sala é criada com a árvore inicial e com duração de
+          60 minutos, mas isso pode ser alterado a qualquer momento antes de
+          iniciar a sala. Para exibir a lista de árvores que você possui digite{" "}
           <b>!unforest arvores</b>, é listado o código e nome em português de
           cada árvore e para mudar a árvore da sala digite{" "}
           <b>!unforest arvore nome</b> ou <b>!unforest arvore codigo</b>. Por
