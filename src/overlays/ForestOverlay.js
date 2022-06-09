@@ -15,6 +15,7 @@ function ForestOverlay({ location }) {
   const dispatch = useDispatch();
 
   const forest = useSelector((state) => state.forest);
+  const config = useSelector((state) => state.configuration);
 
   const parameters = useMemo(
     () => new URLSearchParams(location.search),
@@ -26,7 +27,7 @@ function ForestOverlay({ location }) {
   );
 
   useEffect(() => {
-    if (configParam && localStorage.getItem("unconfig") !== configParam) {
+    if (configParam && localStorage.getItem("unforest") !== configParam) {
       const configParsed = JSON.parse(b64DecodeUnicode(configParam));
 
       if (configParsed.config) {
@@ -35,18 +36,18 @@ function ForestOverlay({ location }) {
           configuration: configParsed.config,
         });
       }
-      localStorage.setItem("unconfig", configParam);
+      localStorage.setItem("unforest", configParam);
       window.location.reload();
     }
   }, [dispatch, configParam]);
 
-  if (failed) {
+  if (failed || !config.forestToken) {
     return "Configure novamente";
   }
 
   return (
     <div>
-      <div>{forest.roomToken || "Aguardando"}</div>
+      <div>{forest.roomToken || "Pronto"}</div>
     </div>
   );
 }

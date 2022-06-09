@@ -125,10 +125,7 @@ function useTmi({ enableSprint = true, enableForest = true }) {
     let found = false;
 
     if (enableForest) {
-      if (
-        (message.startsWith("!unforest") || message.startsWith("!uf")) &&
-        (params.isStreamer || params.isMod)
-      ) {
+      if (message.startsWith("!unforest") || message.startsWith("!uf")) {
         for (let i = 0; i < keyForestCommands.length; i++) {
           const key = keyForestCommands[i];
           if (message === key || message.startsWith(`${key} `)) {

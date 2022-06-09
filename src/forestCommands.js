@@ -6,6 +6,8 @@ const commands = {
     dispatch,
     config,
     forest,
+    isStreamer,
+    isMod,
     twitchActionSay,
     twitchLongSay,
     message,
@@ -13,14 +15,19 @@ const commands = {
     const parts = message.split(" ");
 
     const joinMessage = `Entre no Forest: https://forestapp.cc/join-room/?token=`;
+    const allowed = isStreamer || isMod;
 
     if (parts.length === 1) {
       // reenviar link da sala
       if (forest.roomToken) {
         twitchActionSay(`${joinMessage}${forest.roomToken}`);
-      } else {
+      } else if (allowed) {
         twitchActionSay(`Digite "!unforest sala" pra criar uma nova sala.`);
       }
+      return;
+    }
+
+    if (!allowed) {
       return;
     }
 

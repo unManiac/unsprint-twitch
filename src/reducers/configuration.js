@@ -1,6 +1,6 @@
 import { CONFIGURATION_UPDATE } from "../constants/actionTypes";
 
-const sprint = (
+const configuration = (
   state = {
     oauth: "",
     channel: "",
@@ -8,6 +8,9 @@ const sprint = (
     channelId: "",
     loyalty: "",
     enableAnnounce: false,
+    forestEmail: "",
+    forestPassword: "",
+    forestToken: "",
   },
   action
 ) => {
@@ -22,4 +25,4 @@ const sprint = (
   }
 };
 
-export default sprint;
+export default configuration;
