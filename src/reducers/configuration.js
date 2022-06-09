@@ -8,6 +8,7 @@ const configuration = (
     channelId: "",
     loyalty: "",
     enableAnnounce: false,
+    enableAnnounceForest: false,
     forestEmail: "",
     forestPassword: "",
     forestToken: "",

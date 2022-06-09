@@ -52,6 +52,9 @@ function Config({ location }) {
   const [loyalty, setLoyalty] = useState(config.loyalty);
   const [channelId, setChannelId] = useState(config.channelId);
   const [enableAnnounce, setEnableAnnounce] = useState(config.enableAnnounce);
+  const [enableAnnounceForest, setEnableAnnounceForest] = useState(
+    config.enableAnnounceForest
+  );
   const [forestEmail, setForestEmail] = useState(config.forestEmail ?? "");
   const [forestPassword, setForestPassword] = useState(
     config.forestPassword ?? ""
@@ -141,6 +144,7 @@ function Config({ location }) {
         loyalty,
         channelId,
         enableAnnounce,
+        enableAnnounceForest,
         forestEmail,
         forestPassword,
         forestToken,
@@ -237,7 +241,7 @@ function Config({ location }) {
                 name="enableAnnounce"
               />
             }
-            label="Habilitar /announce nas mensagens (pode não funcionar no app mobile)"
+            label="Habilitar /announce nas mensagens do Sprint"
           />
         </Grid>
 
@@ -365,7 +369,28 @@ function Config({ location }) {
         </Grid>
 
         <Grid item xs={12}>
-          <Button variant="contained" type="submit" className={classes.save}>
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={enableAnnounceForest}
+                onChange={({ target: { checked } }) =>
+                  setEnableAnnounceForest(checked)
+                }
+                color="primary"
+                name="enableAnnounceForest"
+              />
+            }
+            label="Habilitar /announce nas mensagens do Forest"
+          />
+        </Grid>
+
+        <Grid item xs={12}>
+          <Button
+            variant="contained"
+            type="submit"
+            disabled={forestLoading}
+            className={classes.save}
+          >
             Salvar
           </Button>
         </Grid>

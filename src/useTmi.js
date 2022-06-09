@@ -81,7 +81,7 @@ function useTmi({ enableSprint = true, enableForest = true }) {
       dispatch,
       twitchActionSay: (msg) => {
         if (!msg || silent) return;
-        this.say(target, action(configuration, msg));
+        this.say(target, action(configuration, msg, enableForest));
       },
       twitchLongSay: async (text) => {
         const words = text.split(" ");
@@ -183,7 +183,10 @@ function useTmi({ enableSprint = true, enableForest = true }) {
   if (client) {
     client.actionSay = (msg) => {
       const { configuration } = store.getState();
-      client.say(configuration.channel, action(configuration, msg));
+      client.say(
+        configuration.channel,
+        action(configuration, msg, enableForest)
+      );
     };
   }
 

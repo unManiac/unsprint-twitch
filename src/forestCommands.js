@@ -1,5 +1,10 @@
-import { FOREST_UPDATE } from "./constants/actionTypes";
+import { CONFIGURATION_UPDATE, FOREST_UPDATE } from "./constants/actionTypes";
+import { arvores } from "./utils/arvores";
 import { forestFetch } from "./utils/proxy";
+
+const findTitle = (id) => {
+  return arvores.find((a) => a.id === `tree_type_${id}_title`)?.title;
+};
 
 const commands = {
   "!unforest": async ({
@@ -40,7 +45,11 @@ const commands = {
         }),
         method: "GET",
       }).then((data) => {
-        const trees = data.map((d) => ({ id: d.gid, title: d.title.trim() }));
+        const trees = data.map((d) => ({
+          id: d.gid,
+          title: findTitle(d.gid) || d.title.trim(),
+          titleOriginal: d.title.trim(),
+        }));
 
         dispatch({
           type: FOREST_UPDATE,
@@ -61,7 +70,14 @@ const commands = {
     } else if (parameter.startsWith("arvore") && parts.length > 2) {
       const arvore = message.split(" arvore ")[1].trim().toLowerCase();
 
-      const found = forest.trees.find((t) => t.title.toLowerCase() === arvore);
+      let found = forest.trees.find((t) => t.title.toLowerCase() === arvore);
+
+      if (!found) {
+        // busca pelo titleOriginal
+        found = forest.trees.find(
+          (t) => t.titleOriginal.toLowerCase() === arvore
+        );
+      }
 
       if (!found) {
         twitchActionSay(
@@ -211,6 +227,29 @@ const commands = {
       return;
     } else if (parameter.startsWith("atualiza")) {
       window.location.reload();
+    } else if (parameter.startsWith("announce") && parts.length > 2) {
+      const action = parts[2];
+      if (action.startsWith("on")) {
+        dispatch({
+          type: CONFIGURATION_UPDATE,
+          configuration: {
+            enableAnnounceForest: true,
+          },
+        });
+        twitchActionSay(`Habilitado /announce no forest`);
+      } else if (action.startsWith("off")) {
+        dispatch({
+          type: CONFIGURATION_UPDATE,
+          configuration: {
+            enableAnnounceForest: false,
+          },
+        });
+        twitchActionSay(`Bot não irá mais utilizar /announce no forest`);
+      } else {
+        twitchActionSay(
+          `Comandos são !unforest announce on / !unforest announce off`
+        );
+      }
     }
   },
 };
