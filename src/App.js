@@ -73,6 +73,15 @@ function App() {
                 </Button>
               )}
             />
+            <Button
+              href="https://www.leituraconjunta.com/?origin=unsprint"
+              target="_blank"
+              color="primary"
+              style={{ float: "right" }}
+              variant="contained"
+            >
+              Leitura Conjunta
+            </Button>
           </div>
         </Toolbar>
       </AppBar>

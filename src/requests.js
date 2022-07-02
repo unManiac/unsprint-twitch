@@ -37,3 +37,16 @@ export function updateStoreItem(id, item, config) {
     }
   ).then((resp) => resp.json());
 }
+
+export function saveSprint(oauth, body) {
+  return fetch(`https://www.leituraconjunta.com/api/unsprint/participantes`, {
+    method: "POST",
+    headers: {
+      Authorization: oauth,
+      "content-type": "application/json",
+    },
+    body: JSON.stringify(body),
+  })
+    .then((resp) => resp.json())
+    .catch((err) => window.analytics?.track("Erro integração", { error: err }));
+}

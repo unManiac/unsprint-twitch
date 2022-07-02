@@ -100,16 +100,7 @@ export default function About() {
 
       <Question title="8. É confiável eu usar este site?">
         Sim, essa ferramenta é integrada com o site da Twitch e o site do
-        StreamElements. Este projeto tem o código aberto e
-        qualquer pessoa (com conhecimento) pode auditar, se certificando de que
-        todas informações são mantidas em segurança.{" "}
-        <a
-          href="https://github.com/unManiac/unsprint-twitch"
-          rel="noreferrer"
-          target="_blank"
-        >
-          Código fonte aqui.
-        </a>
+        StreamElements.
       </Question>
 
       <Question title="9. Posso fazer alterações no código fonte e usar">

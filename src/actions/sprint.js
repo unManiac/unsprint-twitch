@@ -1,3 +1,4 @@
+import { v4 as uuidv4 } from "uuid";
 import {
   PARTICIPANTS_RESET,
   RANKING_RESET,
@@ -6,8 +7,8 @@ import {
   SPRINT_STARTED,
   SPRINT_UPDATE_TIME,
 } from "../constants/actionTypes";
-import { getLastMonday } from "../helper";
-import { addPoints } from "../requests";
+import { calculatePoints, getLastMonday } from "../helper";
+import { addPoints, saveSprint } from "../requests";
 
 function addPointsByRanking(twitch, position) {
   return function (dispatch, getState) {
@@ -83,13 +84,25 @@ export function startTime(twitch, minutes) {
       dispatch(resetRanking(twitch));
     }
 
+    const newSprint = {
+      started: Date.now(),
+      uuid: uuidv4(),
+      minutes: selectedMinutes,
+      ends: Date.now() + selectedMinutes * 60 * 1000,
+    };
+
+    saveSprint(config.oauth, [
+      {
+        username: config.channel,
+        sprint: newSprint.uuid,
+        minutos: newSprint.minutes,
+        evento: "criar",
+      },
+    ]);
+
     dispatch({
       type: SPRINT_STARTED,
-      sprint: {
-        started: Date.now(),
-        minutes: selectedMinutes,
-        ends: Date.now() + selectedMinutes * 60 * 1000,
-      },
+      sprint: newSprint,
     });
     dispatch({ type: PARTICIPANTS_RESET });
     const { messageStarted } = sprint;
@@ -105,6 +118,7 @@ export function startTime(twitch, minutes) {
 export function changeTime(twitch, minutes) {
   return function (dispatch, getState) {
     const config = getState().configuration;
+    const sprint = getState().sprint;
 
     let selectedMinutes =
       minutes || parseInt(window.prompt("Digite os minutos restante:"));
@@ -113,10 +127,14 @@ export function changeTime(twitch, minutes) {
       return { message: "Tempo incorreto", severity: "warning" };
     }
 
-    window.analytics?.track("Modificou tempo Sprint", {
-      minutos: selectedMinutes,
-      userId: config.channel,
-    });
+    saveSprint(config.oauth, [
+      {
+        username: config.channel,
+        sprint: sprint.uuid,
+        minutos: sprint.minutes,
+        evento: "atualizar",
+      },
+    ]);
 
     dispatch({
       type: SPRINT_UPDATE_TIME,
@@ -137,10 +155,30 @@ export function end(twitch) {
     const participants = getState().participant.list;
     const { messageEnded } = sprint;
 
-    window.analytics?.track("Encerrou Sprint", {
-      userId: config.channel,
-      participantes: participants.length,
+    const data = participants.map((p) => {
+      const [, minutes] = calculatePoints(
+        p.joined,
+        sprint.ends || sprint.ended
+      );
+
+      return {
+        username: p.username,
+        usernameId: p.userId,
+        minutos: minutes,
+        sprint: sprint.uuid,
+        evento: "iniciar",
+      };
     });
+
+    saveSprint(config.oauth, [
+      {
+        username: config.channel,
+        sprint: sprint.uuid,
+        minutos: sprint.minutes,
+        evento: "encerrar",
+      },
+      ...data,
+    ]);
 
     if (messageEnded) {
       twitch.actionSay(
@@ -153,10 +191,16 @@ export function end(twitch) {
 export function cancel() {
   return function (dispatch, getState) {
     const config = getState().configuration;
+    const sprint = getState().sprint;
 
-    window.analytics?.track("Cancelou Sprint", {
-      userId: config.channel,
-    });
+    saveSprint(config.oauth, [
+      {
+        username: config.channel,
+        sprint: sprint.uuid,
+        minutos: sprint.minutes,
+        evento: "cancelar",
+      },
+    ]);
 
     dispatch({ type: SPRINT_CANCELLED });
     dispatch({ type: PARTICIPANTS_RESET });

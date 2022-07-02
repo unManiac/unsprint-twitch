@@ -60,7 +60,7 @@ function useTmi({ enableSprint = true, enableForest = true }) {
       return;
     } // Ignore messages from the bot
 
-    let { username } = context;
+    let { username, "user-id": userId } = context;
 
     let message = msg.toLowerCase().trim();
     message = Object.keys(dict).reduce(
@@ -106,6 +106,7 @@ function useTmi({ enableSprint = true, enableForest = true }) {
         }
       },
       username,
+      userId,
       message,
       target,
       config: configuration,

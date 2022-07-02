@@ -65,7 +65,12 @@ function Forest({ history }) {
         <p className={classes.step}>
           1. Clicando no link abaixo ele será copiado automaticamente, adicione
           no OBS como navegador e para personalizações utilize as propriedades
-          da fonte chamada "CSS customizado".
+          da fonte chamada "CSS customizado".{" "}
+          <strong>
+            Não é necessário manter o site aberto pro funcionamento do Forest,
+            pórém o overlay deve estar visível em todas cenas pra responder aos
+            comandos.
+          </strong>
         </p>
       </Grid>
 

@@ -1,3 +1,4 @@
+import { v4 as uuidv4 } from "uuid";
 import {
   PARTICIPANTS_ADD_LIVES,
   PARTICIPANTS_REMOVE_LIVE,
@@ -6,7 +7,7 @@ import {
   RANKING_PARTICIPANT_ADD,
 } from "./constants/actionTypes";
 import { calculatePoints, findBestMultiplier } from "./helper";
-import { addPoints } from "./requests";
+import { addPoints, saveSprint } from "./requests";
 
 export const dict = {
   iniciar:
@@ -22,6 +23,7 @@ const iniciar = ({
   ranking,
   participant,
   username,
+  userId,
   dispatch,
   isSubscriber,
   isVip,
@@ -55,6 +57,8 @@ const iniciar = ({
   dispatch({
     type: PARTICIPANT_ADD,
     participant: {
+      uuid: uuidv4(),
+      userId,
       username,
       joined,
       ranking: participantRank,
@@ -78,6 +82,7 @@ const ganhei = ({
   special,
   sprint,
   username,
+  userId,
   isSubscriber,
   isVip,
   silent,
@@ -117,6 +122,16 @@ const ganhei = ({
     type: PARTICIPANT_REMOVE,
     username,
   });
+
+  saveSprint(config.oauth, [
+    {
+      username,
+      usernameId: userId,
+      sprint: sprint.uuid,
+      minutos: minutes,
+      evento: "resgatar",
+    },
+  ]);
 
   if (sprint.ranking) {
     dispatch({

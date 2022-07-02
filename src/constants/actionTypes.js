@@ -26,3 +26,6 @@ export const RANKING_RESET = "RANKING_RESET";
 export const VIP_UPDATE = "VIP_UPDATE";
 export const VIP_ADD_PERSON = "VIP_ADD_PERSON";
 export const VIP_REMOVE_PERSON = "VIP_REMOVE_PERSON";
+
+export const BATCH_ADD = "BATCH_ADD";
+export const BATCH_REMOVE = "BATCH_REMOVE";
