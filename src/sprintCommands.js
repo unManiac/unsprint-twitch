@@ -130,10 +130,11 @@ const ganhei = ({
       {
         uuid: uuidv4(),
         username,
-        usernameId: userId,
+        userId,
         sprint: sprint.uuid,
         minutos: minutes,
         evento: "resgatar",
+        eventoAt: new Date().toISOString(),
       },
     ],
   });

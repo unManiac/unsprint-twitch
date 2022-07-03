@@ -163,7 +163,7 @@ export function end(twitch) {
 
       return {
         username: p.username,
-        usernameId: p.userId,
+        userId: p.userId,
         minutos: minutes,
         sprint: sprint.uuid,
         evento: "iniciar",
