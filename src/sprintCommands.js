@@ -1,5 +1,6 @@
 import { v4 as uuidv4 } from "uuid";
 import {
+  BATCH_ADD,
   PARTICIPANTS_ADD_LIVES,
   PARTICIPANTS_REMOVE_LIVE,
   PARTICIPANT_ADD,
@@ -7,7 +8,7 @@ import {
   RANKING_PARTICIPANT_ADD,
 } from "./constants/actionTypes";
 import { calculatePoints, findBestMultiplier } from "./helper";
-import { addPoints, saveSprint } from "./requests";
+import { addPoints } from "./requests";
 
 export const dict = {
   iniciar:
@@ -123,15 +124,19 @@ const ganhei = ({
     username,
   });
 
-  saveSprint(config.oauth, [
-    {
-      username,
-      usernameId: userId,
-      sprint: sprint.uuid,
-      minutos: minutes,
-      evento: "resgatar",
-    },
-  ]);
+  dispatch({
+    type: BATCH_ADD,
+    batch: [
+      {
+        uuid: uuidv4(),
+        username,
+        usernameId: userId,
+        sprint: sprint.uuid,
+        minutos: minutes,
+        evento: "resgatar",
+      },
+    ],
+  });
 
   if (sprint.ranking) {
     dispatch({

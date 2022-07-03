@@ -13,6 +13,7 @@ import {
 } from "../constants/actionTypes";
 import "./SprintOverlay.css";
 import { b64DecodeUnicode } from "../helper";
+import BatchListener from "../components/BatchListener";
 
 let currentId = 0;
 let timeoutId = 0;
@@ -128,6 +129,7 @@ function SprintOverlay({ end, location }) {
 
   return (
     <>
+      <BatchListener />
       <div id="animate">
         {participants.map((p) => {
           let description = p.ranking

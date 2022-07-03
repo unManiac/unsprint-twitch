@@ -10,7 +10,7 @@ const batch = (state = { list: [] }, action) => {
     case BATCH_REMOVE:
       return {
         ...state,
-        list: [...state.list.filter((l) => !action.uuids.include(l.uuid))],
+        list: [...state.list.filter((l) => !action.uuids.includes(l.uuid))],
       };
     default:
       return state;

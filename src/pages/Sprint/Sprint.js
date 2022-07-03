@@ -15,6 +15,7 @@ import { Alert } from "@material-ui/lab";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { withRouter } from "react-router-dom";
+import BatchListener from "../../components/BatchListener";
 import { SPRINT_UPDATE } from "../../constants/actionTypes";
 import { GREEN, WHITE } from "../../constants/colors";
 import { initialState } from "../../reducers/sprint";
@@ -104,6 +105,8 @@ function Sprint({ history }) {
 
   return (
     <Grid container className={classes.root} alignItems="center">
+      <BatchListener />
+
       {alert && (
         <Alert severity={alert.severiy} style={{ flex: 1, marginBottom: 10 }}>
           {alert.message}
