@@ -203,6 +203,9 @@ const minutos = ({ twitchActionSay, sprint, username, ranking }) => {
 };
 
 const commands = {
+  "!unlink": ({ twitchActionSay, username }) => {
+    twitchActionSay(`@${username} seu perfil é: https://botfo.co/u/${username}`);
+  },
   "!unlivro": ({ twitchActionSay, message, username }) => {
     const paginas = message
       .replace(new RegExp("[^0-9]", "g"), " ")
