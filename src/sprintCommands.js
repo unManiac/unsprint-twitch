@@ -55,16 +55,33 @@ const iniciar = ({
   const participantRank =
     index === -1 ? undefined : { ...ranking[index], position: index + 1 };
 
+  const newParticipant = {
+    uuid: uuidv4(),
+    userId,
+    username,
+    joined,
+    ranking: participantRank,
+    lives: parseInt(sprint.lives),
+  };
+
   dispatch({
     type: PARTICIPANT_ADD,
-    participant: {
-      uuid: uuidv4(),
-      userId,
-      username,
-      joined,
-      ranking: participantRank,
-      lives: parseInt(sprint.lives),
-    },
+    participant: newParticipant,
+  });
+
+  dispatch({
+    type: BATCH_ADD,
+    batch: [
+      {
+        uuid: uuidv4(),
+        username,
+        userId,
+        sprint: sprint.uuid,
+        minutos: minutes,
+        evento: "iniciar",
+        eventoAt: new Date().toISOString(),
+      },
+    ],
   });
 
   const reply = sprint.messageConfirmation
@@ -204,7 +221,9 @@ const minutos = ({ twitchActionSay, sprint, username, ranking }) => {
 
 const commands = {
   "!unlink": ({ twitchActionSay, username }) => {
-    twitchActionSay(`@${username} seu perfil é: https://botfo.co/u/${username}`);
+    twitchActionSay(
+      `@${username} seu perfil é: https://maratona.app/u/${username}`
+    );
   },
   "!unlivro": ({ twitchActionSay, message, username }) => {
     const paginas = message
@@ -357,6 +376,7 @@ const commands = {
     isMod,
     participant,
     username,
+    userId,
   }) => {
     if (
       sprint.finished ||
@@ -367,13 +387,31 @@ const commands = {
       return;
     }
 
-    const { lives } = participant;
+    const { lives, joined } = participant;
 
     if (lives <= 1) {
       dispatch({
         type: PARTICIPANT_REMOVE,
         username,
       });
+
+      const [, minutes] = calculatePoints(joined, sprint.ends || sprint.ended);
+
+      dispatch({
+        type: BATCH_ADD,
+        batch: [
+          {
+            uuid: uuidv4(),
+            username,
+            userId,
+            sprint: sprint.uuid,
+            minutos: minutes,
+            evento: "perder",
+            eventoAt: new Date().toISOString(),
+          },
+        ],
+      });
+
       twitchActionSay(
         `@${username} não sobreviveu, digite !iniciar novamente para recomeçar na partida.`
       );

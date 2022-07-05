@@ -7,7 +7,7 @@ import {
   SPRINT_STARTED,
   SPRINT_UPDATE_TIME,
 } from "../constants/actionTypes";
-import { calculatePoints, getLastMonday } from "../helper";
+import { getLastMonday } from "../helper";
 import { addPoints, saveSprint } from "../requests";
 
 function addPointsByRanking(twitch, position) {
@@ -152,23 +152,7 @@ export function end(twitch) {
     dispatch({ type: SPRINT_ENDED });
     const sprint = getState().sprint;
     const config = getState().configuration;
-    const participants = getState().participant.list;
     const { messageEnded } = sprint;
-
-    const data = participants.map((p) => {
-      const [, minutes] = calculatePoints(
-        p.joined,
-        sprint.ends || sprint.ended
-      );
-
-      return {
-        username: p.username,
-        userId: p.userId,
-        minutos: minutes,
-        sprint: sprint.uuid,
-        evento: "iniciar",
-      };
-    });
 
     saveSprint(config.oauth, [
       {
@@ -177,7 +161,6 @@ export function end(twitch) {
         minutos: sprint.minutes,
         evento: "encerrar",
       },
-      ...data,
     ]);
 
     if (messageEnded) {

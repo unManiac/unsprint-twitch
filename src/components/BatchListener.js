@@ -14,7 +14,9 @@ function BatchListener() {
   useEffect(() => {
     clearTimeout(timeoutId.current);
     timeoutId.current = setTimeout(() => {
-      saveSprint(config.oauth, batches);
+      if (batches.length) {
+        saveSprint(config.oauth, batches);
+      }
       dispatch({
         type: BATCH_REMOVE,
         uuids: batches.map((b) => b.uuid),
