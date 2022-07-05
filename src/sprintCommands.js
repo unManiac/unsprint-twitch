@@ -222,7 +222,7 @@ const minutos = ({ twitchActionSay, sprint, username, ranking }) => {
 const commands = {
   "!unlink": ({ twitchActionSay, username }) => {
     twitchActionSay(
-      `@${username} seu perfil é: https://maratona.app/u/${username}`
+      `@${username} seu perfil é: https://botfo.co/u/${username}`
     );
   },
   "!unlivro": ({ twitchActionSay, message, username }) => {
