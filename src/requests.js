@@ -48,5 +48,5 @@ export function saveSprint(oauth, body) {
     body: JSON.stringify(body),
   })
     .then((resp) => resp.json())
-    .catch((err) => window.analytics?.track("Erro integração", { error: err }));
+    .catch((err) => window.analytics?.track("Erro integração", { body, error: err }));
 }

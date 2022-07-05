@@ -66,11 +66,6 @@ export function startTime(twitch, minutes) {
       window.analytics.identify(config.channel, {});
     }
 
-    window.analytics?.track("Iniciar Sprint", {
-      minutos: selectedMinutes,
-      userId: config.channel,
-    });
-
     if (sprint.ends) {
       dispatch(changeTime(twitch, selectedMinutes));
       return;
@@ -105,6 +100,13 @@ export function startTime(twitch, minutes) {
       sprint: newSprint,
     });
     dispatch({ type: PARTICIPANTS_RESET });
+
+    window.analytics?.track("Iniciar Sprint", {
+      minutos: newSprint.minutes,
+      sprint: newSprint.uuid,
+      userId: config.channel,
+    });
+
     const { messageStarted } = sprint;
 
     if (messageStarted) {
@@ -131,10 +133,16 @@ export function changeTime(twitch, minutes) {
       {
         username: config.channel,
         sprint: sprint.uuid,
-        minutos: sprint.minutes,
+        minutos: selectedMinutes,
         evento: "atualizar",
       },
     ]);
+
+    window.analytics?.track("Modificou tempo Sprint", {
+      minutos: selectedMinutes,
+      userId: config.channel,
+      sprint: sprint.uuid,
+    });
 
     dispatch({
       type: SPRINT_UPDATE_TIME,
@@ -162,6 +170,11 @@ export function end(twitch) {
         evento: "encerrar",
       },
     ]);
+
+    window.analytics?.track("Encerrou Sprint", {
+      userId: config.channel,
+      sprint: sprint.uuid,
+    });
 
     if (messageEnded) {
       twitch.actionSay(
