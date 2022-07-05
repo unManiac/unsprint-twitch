@@ -39,7 +39,7 @@ export function updateStoreItem(id, item, config) {
 }
 
 export function saveSprint(oauth, body) {
-  return fetch(`https://www.leituraconjunta.com/api/unsprint/participantes`, {
+  return fetch(`https://maratona.app/api/unsprint/participantes`, {
     method: "POST",
     headers: {
       Authorization: oauth,

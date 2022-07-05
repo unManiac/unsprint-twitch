@@ -74,13 +74,13 @@ function App() {
               )}
             />
             <Button
-              href="https://www.leituraconjunta.com/?origin=unsprint"
+              href="https://maratona.app/?origin=unsprint"
               target="_blank"
               color="primary"
               style={{ float: "right" }}
               variant="contained"
             >
-              Leitura Conjunta
+              Maratonas? LCs?
             </Button>
           </div>
         </Toolbar>
