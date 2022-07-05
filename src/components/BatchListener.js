@@ -21,7 +21,7 @@ function BatchListener() {
         type: BATCH_REMOVE,
         uuids: batches.map((b) => b.uuid),
       });
-    }, 30 * 1000); // 30s
+    }, 15 * 1000); // 15s
     // eslint-disable-next-line
   }, [config.oauth, batches.map((b) => b.uuid).join(",")]);
 
