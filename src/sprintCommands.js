@@ -17,7 +17,7 @@ export const dict = {
 };
 
 const iniciar = ({
-  twitchReply,
+  twitchActionSay,
   sprint,
   config,
   special,
@@ -30,14 +30,14 @@ const iniciar = ({
   isVip,
 }) => {
   if (participant) {
-    twitchReply(
+    twitchActionSay(
       sprint.messageAlreadyConfirmed.replace("@nome", `@${username}`)
     );
     return;
   }
 
   if (sprint.finished || !sprint.ends) {
-    twitchReply(sprint.messageLate.replace("@nome", `@${username}`));
+    twitchActionSay(sprint.messageLate.replace("@nome", `@${username}`));
     return;
   }
 
@@ -89,12 +89,12 @@ const iniciar = ({
     .replace("@tempo", `${minutes}`)
     .replace("@resultado", `${points} ${config.loyalty}`);
 
-  twitchReply(reply);
+  twitchActionSay(reply);
 };
 
 const ganhei = ({
   participant,
-  twitchReply,
+  twitchActionSay,
   dispatch,
   config,
   special,
@@ -107,13 +107,13 @@ const ganhei = ({
 }) => {
   if (!sprint.finished) {
     if (!silent)
-      twitchReply(sprint.messageAnxious.replace("@nome", `@${username}`));
+      twitchActionSay(sprint.messageAnxious.replace("@nome", `@${username}`));
     return;
   }
 
   if (!participant) {
     if (!silent)
-      twitchReply(sprint.messageLate.replace("@nome", `@${username}`));
+      twitchActionSay(sprint.messageLate.replace("@nome", `@${username}`));
     return;
   }
 
@@ -174,7 +174,7 @@ const ganhei = ({
           .replace("@resultado", points)
           .replace("@total", `${result.newAmount} ${config.loyalty}`);
 
-        if (!silent || !sprint.implicitReedemSilent) twitchReply(reply);
+        if (!silent || !sprint.implicitReedemSilent) twitchActionSay(reply);
       })
       .catch(() => {
         if (tries === 0) {
@@ -197,7 +197,7 @@ const ganhei = ({
   loop(50);
 };
 
-const minutos = ({ twitchReply, sprint, username, ranking }) => {
+const minutos = ({ twitchActionSay, sprint, username, ranking }) => {
   if (!sprint.ranking) {
     return;
   }
@@ -205,13 +205,13 @@ const minutos = ({ twitchReply, sprint, username, ranking }) => {
   const index = ranking.findIndex((p) => p.username === username);
 
   if (index === -1) {
-    twitchReply(`@${username} não está no ranking.`);
+    twitchActionSay(`@${username} não está no ranking.`);
     return;
   }
 
   const participant = ranking[index];
 
-  twitchReply(
+  twitchActionSay(
     `@${username} possui ${participant.minutes} minutos e sua posição é ${
       index + 1
     }°. Último resgate: ${new Date(participant.updatedAt).toLocaleString()}.`
@@ -220,17 +220,19 @@ const minutos = ({ twitchReply, sprint, username, ranking }) => {
 };
 
 const commands = {
-  "!unlink": ({ twitchReply, username }) => {
-    twitchReply(`@${username} seu perfil é: https://botfo.co/u/${username}`);
+  "!unlink": ({ twitchActionSay, username }) => {
+    twitchActionSay(
+      `@${username} seu perfil é: https://botfo.co/u/${username}`
+    );
   },
-  "!unlivro": ({ twitchReply, message, username }) => {
+  "!unlivro": ({ twitchActionSay, message, username }) => {
     const paginas = message
       .replace(new RegExp("[^0-9]", "g"), " ")
       .split(" ")
       .filter(Boolean);
 
     if (paginas.length !== 3) {
-      twitchReply(
+      twitchActionSay(
         'Inválido, digite nessa ordem: "possui 300, começa na 20 e estou na 50"'
       );
       return;
@@ -246,15 +248,17 @@ const commands = {
     const porcentagem = ((atualReal / totalReal) * 100)
       .toFixed(2)
       .replace(".", ",");
-    twitchReply(`@${username} já leu ${porcentagem}% do livro`);
+    twitchActionSay(`@${username} já leu ${porcentagem}% do livro`);
   },
-  "!unsprint": ({ twitchReply }) => {
-    twitchReply(
+  "!unsprint": ({ twitchActionSay }) => {
+    twitchActionSay(
       `unSprint é um jogo onde todos sprintam, enquanto tiver no sprint você pode apenas falar no chat se tiver vidas e ao final os participantes ganharão pontos na lojinha. Para saber os comandos digite !uncomandos`
     );
   },
-  "!uncomandos": ({ twitchReply }) => {
-    twitchReply(`!unsprint / !iniciar / !vida / !tempo / !ganhei / !unranking`);
+  "!uncomandos": ({ twitchActionSay }) => {
+    twitchActionSay(
+      `!unsprint / !iniciar / !vida / !tempo / !ganhei / !unranking`
+    );
   },
   "!unranking": ({ twitchActionSay, sprint, ranking }) => {
     if (!sprint.ranking) {
@@ -288,14 +292,14 @@ const commands = {
     sprint,
     config,
     special,
-    twitchReply,
+    twitchActionSay,
     participant,
     username,
     isSubscriber,
     isVip,
   }) => {
     if (!participant) {
-      twitchReply(sprint.messageAnxious.replace("@nome", `@${username}`));
+      twitchActionSay(sprint.messageAnxious.replace("@nome", `@${username}`));
       return;
     }
 
@@ -319,12 +323,12 @@ const commands = {
       .replace("@tempo", `${minutes}`)
       .replace("@resultado", `${points} ${config.loyalty}`);
 
-    twitchReply(reply);
+    twitchActionSay(reply);
   },
   "!vida": ({
     message,
     sprint,
-    twitchReply,
+    twitchActionSay,
     dispatch,
     participant,
     username,
@@ -335,7 +339,7 @@ const commands = {
       const { lives } = participant;
       const textLives = `vida${lives > 1 ? "s" : ""}`;
 
-      twitchReply(`@${username} possui ${lives} ${textLives}.`);
+      twitchActionSay(`@${username} possui ${lives} ${textLives}.`);
       return;
     }
 
@@ -344,7 +348,7 @@ const commands = {
     }
 
     if (sprint.finished) {
-      twitchReply(
+      twitchActionSay(
         `@${username} só é possível dar vidas enquanto estiver acontecendo o sprint.`
       );
       return;
@@ -354,11 +358,11 @@ const commands = {
     const lives = parseInt(message.split(" ")[1]);
 
     if (Number.isNaN(lives)) {
-      twitchReply(`@${username} informe corretamente as vidas.`);
+      twitchActionSay(`@${username} informe corretamente as vidas.`);
       return;
     } else {
       const reply = sprint.messageBonus.replace("@vida", `${lives} vida(s)`);
-      twitchReply(reply);
+      twitchActionSay(reply);
       dispatch({
         type: PARTICIPANTS_ADD_LIVES,
         lives,
@@ -366,7 +370,7 @@ const commands = {
     }
   },
   "!morte": ({
-    twitchReply,
+    twitchActionSay,
     sprint,
     dispatch,
     isMod,
@@ -408,7 +412,7 @@ const commands = {
         ],
       });
 
-      twitchReply(
+      twitchActionSay(
         `@${username} não sobreviveu, digite !iniciar novamente para recomeçar na partida.`
       );
       return;
@@ -421,7 +425,7 @@ const commands = {
     });
 
     if (sprint.warnMissingLives) {
-      twitchReply(
+      twitchActionSay(
         `@${username} mandou mensagem no chat e perdeu 1 vida, restam ${
           lives - 1
         } vida(s).`
