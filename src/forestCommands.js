@@ -226,7 +226,11 @@ const commands = {
           twitchActionSay(`${joinMessage}${data.token}`);
       });
       return;
-    } else if (parameter.startsWith("remov")) {
+    } else if (
+      parameter.startsWith("remov") ||
+      parameter.startsWith("exclu") ||
+      parameter.startsWith("limpa")
+    ) {
       dispatch({
         type: FOREST_UPDATE,
         roomId: 0,
