@@ -60,7 +60,7 @@ function useTmi({ enableSprint = true, enableForest = true }) {
       return;
     } // Ignore messages from the bot
 
-    let { username, "user-id": userId } = context;
+    let { username, "user-id": userId, id: msgId } = context;
 
     let message = msg.toLowerCase().trim();
     message = Object.keys(dict).reduce(
@@ -82,6 +82,10 @@ function useTmi({ enableSprint = true, enableForest = true }) {
       twitchSay: (msg) => {
         if (!msg || silent) return;
         this.say(target, msg);
+      },
+      twitchReply: (msg) => {
+        if (!msg || silent) return;
+        this.say(target, msg, { "reply-parent-msg-id": msgId });
       },
       twitchActionSay: (msg) => {
         if (!msg || silent) return;

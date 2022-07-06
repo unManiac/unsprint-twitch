@@ -25,7 +25,7 @@
     "redux-localstorage-simple": "^2.4.1",
     "redux-logger": "^3.0.6",
     "redux-thunk": "^2.4.0",
-    "tmi.js": "^1.8.5",
+    "tmi.js": "tmijs/tmi.js#feature-send-tags",
     "uuid": "^8.3.2",
     "web-vitals": "^1.0.1"
   },
