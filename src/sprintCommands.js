@@ -12,7 +12,7 @@ import { addPoints } from "./requests";
 
 export const dict = {
   iniciar:
-    /inica|inicar|inciar|inica|teamobot|melhorbot|botdesprintmelhorquealgunsoutrosquexistemai|estudar|trabalhar|shade|foquei|focada|focado|sprintei|mamei/,
+    /inica|inicar|inciar|inica|teamobot|melhorbot|botdesprintmelhorquealgunsoutrosquexistemai|estudar|trabalhar|shade|foco|foquei|focada|focado|sprintei|mamei/,
   minutos: /minuts|mins|resgate|resgatado/,
 };
 
