@@ -30,7 +30,7 @@ export function getLastMonday() {
   prevMonday = prevMonday.setDate(
     prevMonday.getDate() - ((prevMonday.getDay() + 6) % 7)
   );
-  return new Date(prevMonday).setHours(5, 0, 0, 0);
+  return new Date(prevMonday).setHours(0, 0, 0, 0);
 }
 
 export function getNextMonday() {

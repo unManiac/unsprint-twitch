@@ -72,6 +72,7 @@ export function startTime(twitch, minutes) {
     }
 
     if (
+      !sprint.disableResetRanking &&
       sprint.ranking &&
       rankingLastReset &&
       rankingLastReset < getLastMonday()

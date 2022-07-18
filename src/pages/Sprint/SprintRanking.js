@@ -132,13 +132,16 @@ function SprintRanking() {
     state.ranking.list.map((p, idx) => ({ ...p, position: idx + 1 }))
   );
   const rankingLastReset = useSelector((state) => state.ranking.lastReset);
+  const sprint = useSelector((state) => state.sprint);
 
   useEffect(() => {
     if (!rankingLastReset) {
       dispatch({ type: RANKING_RESET });
     }
-    setRankingWillReset(rankingLastReset < getLastMonday());
-  }, [rankingLastReset, dispatch]);
+    setRankingWillReset(
+      !sprint.disableResetRanking && rankingLastReset < getLastMonday()
+    );
+  }, [rankingLastReset, sprint, dispatch]);
 
   const filteredRanking = ranking.filter(
     (p) => !search || p.username.includes(search)
@@ -182,6 +185,9 @@ function SprintRanking() {
             O ranking será resetado e os prêmios distribuídos assim que você
             iniciar um novo sprint.
           </Alert>
+        )}
+        {sprint.disableResetRanking && (
+          <Alert severity="error">Ranking não será resetado.</Alert>
         )}
 
         <p className={classes.total} style={{ color: BLUE }}>

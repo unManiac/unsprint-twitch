@@ -77,10 +77,31 @@ const commands = {
           lives,
         });
       }
-    } else if (parameter.startsWith("rankingreseta")) {
+    } else if (parameter.startsWith("rankingreset") && parts.length > 2) {
+      if (!["on", "off", "reiniciar"].includes(parts[2])) {
+        return;
+      }
+      if (parts[2] === "reiniciar") {
+        dispatch({
+          type: RANKING_RESET,
+        });
+        twitchActionSay(`Ranking reiniciado.`);
+        return;
+      }
+
+      const disableResetRanking = parts[2] === "off";
       dispatch({
-        type: RANKING_RESET,
+        type: SPRINT_PARTIAL_UPDATE,
+        sprint: {
+          disableResetRanking,
+        },
       });
+
+      if (disableResetRanking) {
+        twitchActionSay(`Ranking NÃO será mais resetado.`);
+      } else {
+        twitchActionSay(`Ranking será resetado na segunda-feira.`);
+      }
     } else if (parameter.startsWith("atualiza")) {
       window.location.reload();
     } else if (parameter.startsWith("reconfigura")) {

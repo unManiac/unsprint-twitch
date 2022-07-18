@@ -35,6 +35,7 @@ export const initialState = {
   rankingPrize3: undefined,
   implicitReedemSilent: false,
   allImmune: false,
+  disableResetRanking: false,
 };
 
 const sprint = (state = initialState, action) => {
