@@ -2,6 +2,27 @@ import { CONFIGURATION_UPDATE, FOREST_UPDATE } from "./constants/actionTypes";
 import { arvores } from "./utils/arvores";
 import { forestFetch } from "./utils/proxy";
 
+const updateLang = (parameter) => {
+  if (
+    parameter.startsWith("room") ||
+    parameter.startsWith("tree") ||
+    parameter.startsWith("start") ||
+    parameter.startsWith("time")
+  ) {
+    localStorage.setItem("lang", "en");
+    return "en";
+  } else if (
+    parameter.startsWith("sala") ||
+    parameter.startsWith("arvore") ||
+    parameter.startsWith("inici") ||
+    parameter.startsWith("tempo")
+  ) {
+    localStorage.setItem("lang", "pt");
+    return "pt";
+  }
+  return localStorage.getItem("lang");
+};
+
 const findTitle = (id) => {
   return arvores.find((a) => a.id === `tree_type_${id}_title`)?.title;
 };
@@ -55,9 +76,11 @@ const commands = {
     twitchSay,
     message,
   }) => {
+    let isEn = localStorage.getItem("lang") === "en";
     const parts = message.split(" ");
 
-    const joinMessage = `Entre no Forest: https://forestapp.cc/join-room/?token=`;
+    const jMsg = isEn ? `Join the room` : `Entre no Forest`;
+    const joinMessage = `${jMsg}: https://forestapp.cc/join-room/?token=`;
     const allowed = isStreamer || isMod;
 
     if (parts.length === 1) {
@@ -65,7 +88,11 @@ const commands = {
       if (forest.roomToken) {
         twitchActionSay(`${joinMessage}${forest.roomToken}`);
       } else if (allowed) {
-        twitchActionSay(`Digite "!unforest sala" pra criar uma nova sala.`);
+        twitchActionSay(
+          isEn
+            ? `Type "!unforest room" to create a new room`
+            : `Digite "!unforest sala" pra criar uma nova sala.`
+        );
       }
       return;
     }
@@ -74,9 +101,10 @@ const commands = {
       return;
     }
 
-    const parameter = parts[1];
+    const parameter = parts[1] || "";
+    isEn = updateLang(parameter) === "en";
 
-    if (parameter.startsWith("arvores")) {
+    if (parameter.startsWith("arvores") || parameter.startsWith("trees")) {
       forestFetch("tree_types/unlocked", {
         headers: new Headers({
           token: `remember_token=${config.forestToken}`,
@@ -86,8 +114,8 @@ const commands = {
         const trees = data
           .map((d) => ({
             id: d.gid,
-            title: findTitle(d.gid) || d.title.trim(),
-            titleOriginal: d.title.trim(),
+            title: isEn ? d.title.trim() : findTitle(d.gid) || d.title.trim(),
+            titleOriginal: isEn ? d.title.trim() : findTitle(d.gid),
           }))
           .sort((a, b) => a.id - b.id);
 
@@ -102,24 +130,33 @@ const commands = {
           trees,
         });
 
+        const msg = isEn ? "Options are" : "As opções disponíveis são";
+
         twitchSay(
-          `As opções disponíveis são: ${trees
+          `${msg}: ${trees
             .map((t) => `[${t.id}] ${t.title}`)
             .join(" / ")
             .trim()}`
         );
       });
       return;
-    } else if (parameter.startsWith("arvore") && parts.length > 2) {
-      const arvore = message.split(" arvore ")[1].trim().toLowerCase();
+    } else if (
+      (parameter.startsWith("arvore") || parameter.startsWith("tree")) &&
+      parts.length > 2
+    ) {
+      const arvore = message
+        .split(isEn ? " tree " : " arvore ")[1]
+        .trim()
+        .toLowerCase();
       const codigo = Number.parseInt(arvore);
 
       const found = findArvore(arvore, codigo, forest.trees);
 
       if (!found) {
-        twitchActionSay(
-          `Nenhuma árvore encontrado usando o termo "${arvore}".`
-        );
+        const msg = isEn
+          ? "No tree found by"
+          : "Nenhuma árvore encontrado usando o termo";
+        twitchActionSay(`${msg} "${arvore}".`);
         return;
       }
 
@@ -145,16 +182,24 @@ const commands = {
           body: `target_duration=${forest.duration}&tree_type=${found.id}`,
         }).then(() => {
           twitchActionSay(
-            `Sala ${forest.roomToken} está plantando "${found.title}".`
+            isEn
+              ? `Room ${forest.roomToken} is now planting "${found.title}".`
+              : `Sala ${forest.roomToken} está plantando "${found.title}".`
           );
         });
       } else {
         twitchActionSay(`Árvore atualizada para "${found.title}"`);
       }
       return;
-    } else if (parameter.startsWith("tempo") && parts.length > 2) {
+    } else if (
+      (parameter.startsWith("tempo") || parameter.startsWith("time")) &&
+      parts.length > 2
+    ) {
       const minutos = Number.parseInt(
-        message.split(" tempo ")[1].trim().toLowerCase()
+        message
+          .split(isEn ? " time " : " tempo ")[1]
+          .trim()
+          .toLowerCase()
       );
 
       if (Number.isNaN(minutos)) {
@@ -193,14 +238,20 @@ const commands = {
           body: `target_duration=${duration}&tree_type=${forest.treeType}`,
         }).then(() => {
           twitchActionSay(
-            `Sala ${forest.roomToken} com duração de "${minutos}" minutos.`
+            isEn
+              ? `Room ${forest.roomToken} set to "${minutos}" minutes.`
+              : `Sala ${forest.roomToken} com duração de "${minutos}" minutos.`
           );
         });
       } else {
-        twitchActionSay(`Tempo atualizado para "${minutos}" minutos`);
+        twitchActionSay(
+          isEn
+            ? `Time updated to "${minutos}" minutes`
+            : `Tempo atualizado para "${minutos}" minutos`
+        );
       }
       return;
-    } else if (parameter.startsWith("sala")) {
+    } else if (parameter.startsWith("sala") || parameter.startsWith("room")) {
       forestFetch("rooms", {
         headers: new Headers({
           token: `remember_token=${config.forestToken}`,
@@ -242,9 +293,11 @@ const commands = {
         email: config.forestEmail,
       });
 
-      twitchActionSay(`Última sala criada foi removida.`);
+      twitchActionSay(
+        isEn ? `Last room was removed.` : `Última sala criada foi removida.`
+      );
       return;
-    } else if (parameter.startsWith("ini")) {
+    } else if (parameter.startsWith("ini") || parameter.startsWith("start")) {
       window.analytics?.track("Forest - Iniciou sala", {
         userId: config.channel,
         email: config.forestEmail,
@@ -258,15 +311,24 @@ const commands = {
         method: "PUT",
       })
         .then(() => {
-          twitchActionSay(`Sala ${forest.roomToken} iniciada.`);
+          twitchActionSay(
+            isEn
+              ? `Room ${forest.roomToken} started.`
+              : `Sala ${forest.roomToken} iniciada.`
+          );
         })
         .catch(() => {
           twitchActionSay(
-            `Não foi possível iniciar a sala ${forest.roomToken}, precisa ter no mínimo 2 pessoas.`
+            isEn
+              ? `Not possible to start room ${forest.roomToken}, you need at least 2 people.`
+              : `Não foi possível iniciar a sala ${forest.roomToken}, precisa ter no mínimo 2 pessoas.`
           );
         });
       return;
-    } else if (parameter.startsWith("atualiza")) {
+    } else if (
+      parameter.startsWith("atualiza") ||
+      parameter.startsWith("update")
+    ) {
       window.location.reload();
     } else if (parameter.startsWith("announce") && parts.length > 2) {
       const action = parts[2];

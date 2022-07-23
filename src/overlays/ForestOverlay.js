@@ -45,9 +45,11 @@ function ForestOverlay({ location }) {
     return "Configure novamente";
   }
 
+  const isEn = localStorage.getItem("lang") === "en";
+
   return (
     <div>
-      <div>{forest.roomToken || "Pronto"}</div>
+      <div>{forest.roomToken || (isEn ? "Ready" : "Pronto")}</div>
     </div>
   );
 }
