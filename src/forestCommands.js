@@ -255,7 +255,7 @@ const commands = {
           roomId: data.id,
         });
 
-        for (let i = 0; i < 5; i++)
+        for (let i = 0; i < 3; i++)
           twitchActionSay(`${joinMessage}${data.token}`);
       });
       return;
