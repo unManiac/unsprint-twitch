@@ -9,6 +9,7 @@ import {
 } from "../constants/actionTypes";
 import { getLastMonday } from "../helper";
 import { addPoints, saveSprint } from "../requests";
+import { segmentIdentify, segmentTrack } from "../utils/segment";
 
 function addPointsByRanking(twitch, position) {
   return function (dispatch, getState) {
@@ -62,10 +63,6 @@ export function startTime(twitch, minutes) {
 
     const selectedMinutes = minutes || sprint.minutes;
 
-    if (window.analytics && window.analytics?.user().id() !== config.channel) {
-      window.analytics.identify(config.channel, {});
-    }
-
     if (sprint.ends) {
       dispatch(changeTime(twitch, selectedMinutes));
       return;
@@ -87,7 +84,7 @@ export function startTime(twitch, minutes) {
       ends: Date.now() + selectedMinutes * 60 * 1000,
     };
 
-    saveSprint(config.oauth, [
+    saveSprint(config.oauth, config.channel, [
       {
         username: config.channel,
         sprint: newSprint.uuid,
@@ -102,12 +99,6 @@ export function startTime(twitch, minutes) {
     });
     dispatch({ type: PARTICIPANTS_RESET });
 
-    window.analytics?.track("Iniciar Sprint", {
-      minutos: newSprint.minutes,
-      sprint: newSprint.uuid,
-      userId: config.channel,
-    });
-
     const { messageStarted } = sprint;
 
     if (messageStarted) {
@@ -115,6 +106,13 @@ export function startTime(twitch, minutes) {
         `${messageStarted.replace("@tempo", `${selectedMinutes}`)}`
       );
     }
+
+    segmentIdentify(config.channel);
+    segmentTrack("Iniciar Sprint", {
+      minutos: newSprint.minutes,
+      sprint: newSprint.uuid,
+      userId: config.channel,
+    });
   };
 }
 
@@ -130,7 +128,7 @@ export function changeTime(twitch, minutes) {
       return { message: "Tempo incorreto", severity: "warning" };
     }
 
-    saveSprint(config.oauth, [
+    saveSprint(config.oauth, config.channel, [
       {
         username: config.channel,
         sprint: sprint.uuid,
@@ -139,7 +137,7 @@ export function changeTime(twitch, minutes) {
       },
     ]);
 
-    window.analytics?.track("Modificou tempo Sprint", {
+    segmentTrack("Modificou tempo Sprint", {
       minutos: selectedMinutes,
       userId: config.channel,
       sprint: sprint.uuid,
@@ -163,7 +161,7 @@ export function end(twitch) {
     const config = getState().configuration;
     const { messageEnded } = sprint;
 
-    saveSprint(config.oauth, [
+    saveSprint(config.oauth, config.channel, [
       {
         username: config.channel,
         sprint: sprint.uuid,
@@ -172,7 +170,7 @@ export function end(twitch) {
       },
     ]);
 
-    window.analytics?.track("Encerrou Sprint", {
+    segmentTrack("Encerrou Sprint", {
       userId: config.channel,
       sprint: sprint.uuid,
     });
@@ -190,7 +188,7 @@ export function cancel() {
     const config = getState().configuration;
     const sprint = getState().sprint;
 
-    saveSprint(config.oauth, [
+    saveSprint(config.oauth, config.channel, [
       {
         username: config.channel,
         sprint: sprint.uuid,

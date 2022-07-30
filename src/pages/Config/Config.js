@@ -14,6 +14,7 @@ import { withRouter } from "react-router";
 import { CONFIGURATION_UPDATE } from "../../constants/actionTypes";
 import { GREEN, WHITE } from "../../constants/colors";
 import { forestFetch } from "../../utils/proxy";
+import { segmentTrack } from "../../utils/segment";
 
 const useStyles = makeStyles((theme) => ({
   root: {},
@@ -105,11 +106,6 @@ function Config({ location }) {
   };
 
   const forestLogin = () => {
-    window.analytics?.track("Forest - Validando usuário", {
-      userId: channel,
-      email: forestEmail,
-    });
-
     setForestLoading(true);
     forestFetch(`sessions`, {
       headers: new Headers({
@@ -128,7 +124,13 @@ function Config({ location }) {
         setForestError(true);
         setForestToken("");
       })
-      .finally(() => setForestLoading(false));
+      .finally(() => {
+        setForestLoading(false);
+        segmentTrack("Forest - Validando usuário", {
+          userId: channel,
+          email: forestEmail,
+        });
+      });
   };
 
   const onSave = (e) => {

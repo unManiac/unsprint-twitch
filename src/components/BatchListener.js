@@ -15,7 +15,7 @@ function BatchListener() {
     clearTimeout(timeoutId.current);
     timeoutId.current = setTimeout(() => {
       if (batches.length) {
-        saveSprint(config.oauth, batches);
+        saveSprint(config.oauth, config.channel, batches);
       }
       dispatch({
         type: BATCH_REMOVE,

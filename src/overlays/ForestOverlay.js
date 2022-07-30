@@ -1,13 +1,15 @@
 import React, { useEffect, useMemo } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { connect, useDispatch, useSelector } from "react-redux";
 import { withRouter } from "react-router-dom";
 import useTmi from "../useTmi";
 import { CONFIGURATION_UPDATE } from "../constants/actionTypes";
 import "./SprintOverlay.css";
 import { b64DecodeUnicode } from "../helper";
+import { end } from "../actions/forest";
+import Countdown from "react-countdown";
 
-function ForestOverlay({ location }) {
-  const [, failed] = useTmi({
+function ForestOverlay({ location, end }) {
+  const [twitch, failed] = useTmi({
     enableSprint: false,
     enableForest: true,
   });
@@ -50,8 +52,21 @@ function ForestOverlay({ location }) {
   return (
     <div>
       <div>{forest.roomToken || (isEn ? "Ready" : "Pronto")}</div>
+      <div style={{ visibility: "hidden" }}>
+        {forest.ends && (
+          <Countdown
+            date={forest.ends}
+            controlled={false}
+            onComplete={() => end(twitch)}
+          />
+        )}
+      </div>
     </div>
   );
 }
 
-export default withRouter(ForestOverlay);
+export default withRouter(
+  connect(undefined, {
+    end,
+  })(ForestOverlay)
+);

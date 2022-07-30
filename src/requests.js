@@ -1,3 +1,5 @@
+import { segmentTrack } from "./utils/segment";
+
 export function addPoints(username, points, config) {
   return fetch(
     `https://api.streamelements.com/kappa/v2/points/${
@@ -38,15 +40,18 @@ export function updateStoreItem(id, item, config) {
   ).then((resp) => resp.json());
 }
 
-export function saveSprint(oauth, body) {
-  return fetch(`https://maratona.app/api/unsprint/participantes`, {
-    method: "POST",
-    headers: {
-      Authorization: oauth,
-      "content-type": "application/json",
-    },
-    body: JSON.stringify(body),
-  })
+export function saveSprint(oauth, channel, body) {
+  return fetch(
+    `https://maratona.app/api/unsprint/participantes?channel=${channel}`,
+    {
+      method: "POST",
+      headers: {
+        Authorization: oauth,
+        "content-type": "application/json",
+      },
+      body: JSON.stringify(body),
+    }
+  )
     .then((resp) => resp.json())
-    .catch((err) => window.analytics?.track("Erro integração", { body, error: err }));
+    .catch((err) => segmentTrack("Erro integração", { body, error: err }));
 }

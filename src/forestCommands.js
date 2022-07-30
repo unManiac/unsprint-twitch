@@ -1,27 +1,8 @@
 import { CONFIGURATION_UPDATE, FOREST_UPDATE } from "./constants/actionTypes";
 import { arvores } from "./utils/arvores";
+import { updateLang } from "./utils/lang";
 import { forestFetch } from "./utils/proxy";
-
-const updateLang = (parameter) => {
-  if (
-    parameter.startsWith("room") ||
-    parameter.startsWith("tree") ||
-    parameter.startsWith("start") ||
-    parameter.startsWith("time")
-  ) {
-    localStorage.setItem("lang", "en");
-    return "en";
-  } else if (
-    parameter.startsWith("sala") ||
-    parameter.startsWith("arvore") ||
-    parameter.startsWith("inici") ||
-    parameter.startsWith("tempo")
-  ) {
-    localStorage.setItem("lang", "pt");
-    return "pt";
-  }
-  return localStorage.getItem("lang");
-};
+import { segmentTrack } from "./utils/segment";
 
 const findTitle = (id) => {
   return arvores.find((a) => a.id === `tree_type_${id}_title`)?.title;
@@ -124,7 +105,7 @@ const commands = {
           trees,
         });
 
-        window.analytics?.track("Forest - Listagem", {
+        segmentTrack("Forest - Listagem", {
           userId: config.channel,
           email: config.forestEmail,
           trees,
@@ -165,7 +146,7 @@ const commands = {
         treeType: found.id,
       });
 
-      window.analytics?.track("Forest - Atualizou árvore", {
+      segmentTrack("Forest - Atualizou árvore", {
         userId: config.channel,
         email: config.forestEmail,
         tree: found.title,
@@ -207,7 +188,7 @@ const commands = {
         return;
       }
 
-      window.analytics?.track("Forest - Atualizou tempo", {
+      segmentTrack("Forest - Atualizou tempo", {
         userId: config.channel,
         email: config.forestEmail,
         minutes: minutos,
@@ -266,7 +247,7 @@ const commands = {
           roomToken: data.token,
         });
 
-        window.analytics?.track("Forest - Nova sala", {
+        segmentTrack("Forest - Nova sala", {
           userId: config.channel,
           email: config.forestEmail,
           roomToken: data.token,
@@ -288,7 +269,7 @@ const commands = {
         roomToken: "",
       });
 
-      window.analytics?.track("Forest - Remover sala", {
+      segmentTrack("Forest - Remover sala", {
         userId: config.channel,
         email: config.forestEmail,
       });
@@ -298,7 +279,7 @@ const commands = {
       );
       return;
     } else if (parameter.startsWith("ini") || parameter.startsWith("start")) {
-      window.analytics?.track("Forest - Iniciou sala", {
+      segmentTrack("Forest - Iniciou sala", {
         userId: config.channel,
         email: config.forestEmail,
         token: forest.roomToken,
@@ -311,6 +292,11 @@ const commands = {
         method: "PUT",
       })
         .then(() => {
+          dispatch({
+            type: FOREST_UPDATE,
+            ends: Date.now() + forest.duration * 1000,
+          });
+
           twitchActionSay(
             isEn
               ? `Room ${forest.roomToken} started.`
