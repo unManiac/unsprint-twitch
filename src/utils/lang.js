@@ -1,4 +1,4 @@
-export const updateLang = (parameter) => {
+export const updateLang = (parameter = "") => {
   if (
     parameter.startsWith("room") ||
     parameter.startsWith("tree") ||

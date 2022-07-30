@@ -17,7 +17,7 @@ export function end(twitch) {
       userId: config.channel,
     });
 
-    const isEn = updateLang() === "en";
+    const isEn = updateLang("") === "en";
 
     twitch.actionSay(
       isEn ? `Forest room is now finished` : `Acabou o tempo da sala do Forest`
