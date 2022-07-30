@@ -9,6 +9,8 @@ export function end(twitch) {
     dispatch({
       type: FOREST_UPDATE,
       ends: undefined,
+      roomId: 0,
+      roomToken: "",
     });
 
     segmentTrack("Forest - Encerrou tempo", {

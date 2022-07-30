@@ -245,6 +245,7 @@ const commands = {
           type: FOREST_UPDATE,
           roomId: data.id,
           roomToken: data.token,
+          ends: undefined,
         });
 
         segmentTrack("Forest - Nova sala", {
