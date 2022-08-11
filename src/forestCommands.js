@@ -324,6 +324,8 @@ const commands = {
       parameter.startsWith("update")
     ) {
       window.location.reload();
+    } else if (parameter.startsWith("discord")) {
+      discordClient("1, 2, 3...");
     } else if (parameter.startsWith("announce") && parts.length > 2) {
       const action = parts[2];
       if (action.startsWith("on")) {
