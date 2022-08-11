@@ -53,12 +53,12 @@ function Config({ location }) {
   const [loyalty, setLoyalty] = useState(config.loyalty);
   const [channelId, setChannelId] = useState(config.channelId);
   const [enableAnnounce, setEnableAnnounce] = useState(config.enableAnnounce);
-  const [enableAnnounceForest, setEnableAnnounceForest] = useState(
-    config.enableAnnounceForest
-  );
   const [forestEmail, setForestEmail] = useState(config.forestEmail ?? "");
   const [forestPassword, setForestPassword] = useState(
     config.forestPassword ?? ""
+  );
+  const [discordWebhook, setDiscordWebhook] = useState(
+    config.discordWebhook ?? ""
   );
   const [forestToken, setForestToken] = useState(config.forestToken ?? "");
 
@@ -146,7 +146,7 @@ function Config({ location }) {
         loyalty,
         channelId,
         enableAnnounce,
-        enableAnnounceForest,
+        discordWebhook,
         forestEmail,
         forestPassword,
         forestToken,
@@ -351,6 +351,7 @@ function Config({ location }) {
             name="forestPassword"
             placeholder="**********"
             type="password"
+            onBlur={() => forestLogin()}
             onChange={({ target: { value } }) => setForestPassword(value)}
             fullWidth
             error={forestError}
@@ -371,20 +372,18 @@ function Config({ location }) {
           </Button>
         </Grid>
 
-        <Grid item xs={12}>
-          <FormControlLabel
-            control={
-              <Checkbox
-                disabled
-                checked={enableAnnounceForest}
-                onChange={({ target: { checked } }) =>
-                  setEnableAnnounceForest(checked)
-                }
-                color="primary"
-                name="enableAnnounceForest"
-              />
-            }
-            label="Habilitar /announce nas mensagens do Forest (Desabilitado por não funcionar corretamente no celular)"
+        <Grid item xs={12} sm={12}>
+          <TextField
+            value={discordWebhook}
+            variant="outlined"
+            label="Discord webhook URL (avisar salas criadas)"
+            name="discordWebhook"
+            placeholder="**********"
+            type="password"
+            onChange={({ target: { value } }) => setDiscordWebhook(value)}
+            fullWidth
+            helperText="https://csaller.medium.com/usando-webhooks-do-discord-para-automatizar-posts-d57eb505791a"
+            error={forestError}
           />
         </Grid>
 

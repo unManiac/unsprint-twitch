@@ -12,6 +12,7 @@ const configuration = (
     forestEmail: "",
     forestPassword: "",
     forestToken: "",
+    discordWebhook: "",
   },
   action
 ) => {

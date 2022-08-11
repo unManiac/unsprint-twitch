@@ -1,4 +1,5 @@
 import { CONFIGURATION_UPDATE, FOREST_UPDATE } from "./constants/actionTypes";
+import { discordMessage } from "./requests";
 import { arvores } from "./utils/arvores";
 import { updateLang } from "./utils/lang";
 import { forestFetch } from "./utils/proxy";
@@ -81,6 +82,9 @@ const commands = {
     if (!allowed) {
       return;
     }
+
+    const { discordWebhook } = config;
+    const discordClient = (msg) => discordMessage(discordWebhook, msg);
 
     const parameter = parts[1] || "";
     isEn = updateLang(parameter) === "en";
@@ -248,15 +252,17 @@ const commands = {
           ends: undefined,
         });
 
+        for (let i = 0; i < 3; i++)
+          twitchActionSay(`${joinMessage}${data.token}`);
+
+        discordClient(`${joinMessage}${data.token}`);
+
         segmentTrack("Forest - Nova sala", {
           userId: config.channel,
           email: config.forestEmail,
           roomToken: data.token,
           roomId: data.id,
         });
-
-        for (let i = 0; i < 3; i++)
-          twitchActionSay(`${joinMessage}${data.token}`);
       });
       return;
     } else if (
@@ -298,11 +304,12 @@ const commands = {
             ends: Date.now() + forest.duration * 1000,
           });
 
-          twitchActionSay(
-            isEn
-              ? `Room ${forest.roomToken} started.`
-              : `Sala ${forest.roomToken} iniciada.`
-          );
+          const msg = isEn
+            ? `Room ${forest.roomToken} started.`
+            : `Sala ${forest.roomToken} iniciada.`;
+
+          twitchActionSay(msg);
+          discordClient(msg);
         })
         .catch(() => {
           twitchActionSay(

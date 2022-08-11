@@ -55,3 +55,21 @@ export function saveSprint(oauth, channel, body) {
     .then((resp) => resp.json())
     .catch((err) => segmentTrack("Erro integração", { body, error: err }));
 }
+
+export function discordMessage(webhookUrl, content) {
+  if (!webhookUrl) {
+    return Promise.resolve();
+  }
+
+  return fetch(webhookUrl, {
+    method: "POST",
+    headers: {
+      "content-type": "application/json",
+    },
+    body: JSON.stringify({
+      content,
+    }),
+  })
+    .then((resp) => resp.json())
+    .catch((err) => segmentTrack("Erro discord", { error: err }));
+}
