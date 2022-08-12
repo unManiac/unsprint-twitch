@@ -115,7 +115,7 @@ function SprintOverlay({ end, location }) {
           ...(configParsed.vip || {}),
         });
       }
-      localStorage.setItem("unconfig", configParam);
+      localStorage.setItem("hash_unconfig", configParam);
     }
   }, [dispatch, sprint, vip, configParam]);
 

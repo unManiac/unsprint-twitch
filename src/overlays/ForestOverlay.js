@@ -38,7 +38,7 @@ function ForestOverlay({ location, end }) {
           configuration: configParsed.config,
         });
       }
-      localStorage.setItem("unforest", configParam);
+      localStorage.setItem("hash_unforest", configParam);
       window.location.reload();
     }
   }, [dispatch, configParam]);

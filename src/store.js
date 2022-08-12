@@ -6,7 +6,13 @@ import { save, load } from "redux-localstorage-simple";
 import reducer from "./reducer";
 
 const getMiddleware = () => {
-  return applyMiddleware(thunk, save(), createLogger());
+  let namespace = undefined;
+  if (document.location.href.includes("overlay/forest")) {
+    namespace = "simple_local_forest";
+  } else if (document.location.href.includes("overlay/sprint")) {
+    namespace = "simple_local_sprint";
+  }
+  return applyMiddleware(thunk, save({ namespace }), createLogger());
 };
 
 export const store = createStore(
