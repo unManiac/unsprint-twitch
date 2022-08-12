@@ -29,7 +29,7 @@ function ForestOverlay({ location, end }) {
   );
 
   useEffect(() => {
-    if (configParam && localStorage.getItem("unforest") !== configParam) {
+    if (configParam && localStorage.getItem("hash_unforest") !== configParam) {
       const configParsed = JSON.parse(b64DecodeUnicode(configParam));
 
       if (configParsed.config) {

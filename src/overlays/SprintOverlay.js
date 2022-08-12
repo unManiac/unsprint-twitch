@@ -87,7 +87,7 @@ function SprintOverlay({ end, location }) {
   }, [participants, scrollParam]);
 
   useEffect(() => {
-    if (configParam && localStorage.getItem("unconfig") !== configParam) {
+    if (configParam && localStorage.getItem("hash_unconfig") !== configParam) {
       var configParsed = JSON.parse(b64DecodeUnicode(configParam));
       delete configParsed.sprint.ends;
       delete configParsed.sprint.ended;
