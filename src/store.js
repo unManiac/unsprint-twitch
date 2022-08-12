@@ -5,18 +5,23 @@ import { composeWithDevTools } from "redux-devtools-extension/developmentOnly";
 import { save, load } from "redux-localstorage-simple";
 import reducer from "./reducer";
 
-const getMiddleware = () => {
-  let namespace = undefined;
+const getNamespace = () => {
   if (document.location.href.includes("overlay/forest")) {
-    namespace = "simple_local_forest";
-  } else if (document.location.href.includes("overlay/sprint")) {
-    namespace = "simple_local_sprint";
+    return "simple_local_forest";
   }
-  return applyMiddleware(thunk, save({ namespace }), createLogger());
+  return undefined;
+};
+
+const getMiddleware = () => {
+  return applyMiddleware(
+    thunk,
+    save({ namespace: getNamespace() }),
+    createLogger()
+  );
 };
 
 export const store = createStore(
   reducer,
-  load(),
+  load({ namespace: getNamespace() }),
   composeWithDevTools(getMiddleware())
 );
