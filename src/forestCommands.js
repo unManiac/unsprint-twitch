@@ -135,7 +135,17 @@ const commands = {
         .toLowerCase();
       const codigo = Number.parseInt(arvore);
 
-      const found = findArvore(arvore, codigo, forest.trees);
+      let found = undefined;
+      if (arvore.startsWith("?")) {
+        twitchActionSay(
+          isEn
+            ? `Looking for a random tree...`
+            : `Procurando uma árvore aleatória...`
+        );
+        found = forest.trees[Math.floor(Math.random() * forest.trees?.length)];
+      } else {
+        found = findArvore(arvore, codigo, forest.trees);
+      }
 
       if (!found) {
         const msg = isEn

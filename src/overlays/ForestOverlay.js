@@ -54,8 +54,8 @@ function ForestOverlay({ location, end }) {
       <div>
         {forest.ends
           ? isEn
-            ? "Started"
-            : "Iniciado"
+            ? "Planting..."
+            : "Plantando..."
           : forest.roomToken || (isEn ? "Ready" : "Pronto")}
       </div>
       <div style={{ visibility: "hidden" }}>
