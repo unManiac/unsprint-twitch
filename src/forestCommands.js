@@ -69,6 +69,7 @@ const commands = {
       // reenviar link da sala
       if (forest.roomToken) {
         twitchSay(`${joinMessage}${forest.roomToken}`);
+        twitchSay(forest.roomToken);
       } else if (allowed) {
         twitchActionSay(
           isEn
@@ -262,8 +263,8 @@ const commands = {
           ends: undefined,
         });
 
-        for (let i = 0; i < 3; i++)
-          twitchSay(`${joinMessage}${data.token}`);
+        for (let i = 0; i < 3; i++) twitchSay(`${joinMessage}${data.token}`);
+        twitchSay(data.token);
 
         discordClient(`${joinMessage}${data.token}`);
 
