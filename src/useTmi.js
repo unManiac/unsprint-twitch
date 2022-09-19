@@ -161,6 +161,8 @@ function useTmi({ enableSprint = true, enableForest = true }) {
     if (!found && enableSprint) {
       if (message.startsWith("!unlivro")) {
         sprintCommands["!unlivro"](params);
+      } else if (message.startsWith("!estante")) {
+        sprintCommands["!estante"](params);
       }
 
       if (isStreamer && message.startsWith("!vida")) {
