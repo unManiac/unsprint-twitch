@@ -611,7 +611,7 @@ function SprintConfig({ open, updateAlert, onClose, ...rest }) {
                 <br />
                 <span>
                   - CSS personalizado:{" "}
-                  <pre>{`body { background-color: rgba(0, 0, 0, 0); margin: 0px auto; overflow: hidden; color: white; font-size: 100px; text-align: center; }`}</pre>
+                  <pre>{`body { background-color: rgba(0, 0, 0, 0); margin: 0px auto; overflow: hidden; color: white; font-size: 100px; }`}</pre>
                 </span>
                 <br />
               </Grid>
