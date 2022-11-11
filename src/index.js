@@ -10,6 +10,7 @@ import { store } from "./store";
 import "./index.css";
 import SprintOverlay from "./overlays/SprintOverlay";
 import ForestOverlay from "./overlays/ForestOverlay";
+import TimerOverlay from "./overlays/TimerOverlay";
 
 Sentry.init({
   dsn: "https://22f4233bfca74092907d0c5c44a6732e@o347973.ingest.sentry.io/6410338",
@@ -22,6 +23,9 @@ ReactDOM.render(
     <Provider store={store}>
       <Router basename={process.env.REACT_APP_BASE_URL}>
         <Switch>
+          <Route path="/overlay/timer">
+            <TimerOverlay />
+          </Route>
           <Route path="/overlay/forest">
             <ForestOverlay />
           </Route>

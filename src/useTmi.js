@@ -3,13 +3,19 @@ import { useDispatch, useSelector } from "react-redux";
 import tmi from "tmi.js";
 import sprintCommands, { dict } from "./sprintCommands";
 import sprintStreamerCommands from "./sprintStreamerCommands";
+import timerCommands from "./timerCommands";
 import forestCommands from "./forestCommands";
 import { store } from "./store";
 import { action } from "./utils/announce";
 
 let externalClient = null;
 
-function useTmi({ enableSprint = true, enableForest = true }) {
+function useTmi({
+  enableSprint = true,
+  enableForest = true,
+  enableTimer = false,
+  channel = "",
+}) {
   const [client, setClient] = useState(null);
   const [failed, setFailed] = useState(false);
 
@@ -28,13 +34,17 @@ function useTmi({ enableSprint = true, enableForest = true }) {
 
   const connect = (config) => {
     externalClient?.disconnect();
-    const client = new tmi.client({
-      identity: {
-        username: config.channel,
-        password: config.oauth,
-      },
-      channels: [config.channel],
-    });
+    const client = new tmi.client(
+      channel
+        ? { channels: [channel] }
+        : {
+            identity: {
+              username: config.channel,
+              password: config.oauth,
+            },
+            channels: [config.channel],
+          }
+    );
     setClient(client);
     externalClient = client;
 
@@ -131,6 +141,13 @@ function useTmi({ enableSprint = true, enableForest = true }) {
     if (enableForest) {
       if (message.startsWith("!unforest") || message.startsWith("!uf")) {
         forestCommands["!unforest"](params);
+      }
+      return;
+    }
+
+    if (enableTimer) {
+      if (message.startsWith("!un")) {
+        timerCommands["!un"](params);
       }
       return;
     }

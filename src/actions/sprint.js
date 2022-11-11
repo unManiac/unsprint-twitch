@@ -55,7 +55,7 @@ function resetRanking(twitch) {
   };
 }
 
-export function startTime(twitch, minutes) {
+export function startTime(twitch, minutes, silence) {
   return function (dispatch, getState) {
     const sprint = getState().sprint;
     const config = getState().configuration;
@@ -64,11 +64,12 @@ export function startTime(twitch, minutes) {
     const selectedMinutes = minutes || sprint.minutes;
 
     if (sprint.ends) {
-      dispatch(changeTime(twitch, selectedMinutes));
+      dispatch(changeTime(twitch, selectedMinutes, silence));
       return;
     }
 
     if (
+      !silence &&
       !sprint.disableResetRanking &&
       sprint.ranking &&
       rankingLastReset &&
@@ -84,6 +85,16 @@ export function startTime(twitch, minutes) {
       ends: Date.now() + selectedMinutes * 60 * 1000,
     };
 
+    dispatch({
+      type: SPRINT_STARTED,
+      sprint: newSprint,
+    });
+    dispatch({ type: PARTICIPANTS_RESET });
+
+    if (silence) {
+      return;
+    }
+
     saveSprint(config.oauth, config.channel, [
       {
         username: config.channel,
@@ -92,12 +103,6 @@ export function startTime(twitch, minutes) {
         evento: "criar",
       },
     ]);
-
-    dispatch({
-      type: SPRINT_STARTED,
-      sprint: newSprint,
-    });
-    dispatch({ type: PARTICIPANTS_RESET });
 
     const { messageStarted } = sprint;
 
@@ -116,7 +121,7 @@ export function startTime(twitch, minutes) {
   };
 }
 
-export function changeTime(twitch, minutes) {
+export function changeTime(twitch, minutes, silence) {
   return function (dispatch, getState) {
     const config = getState().configuration;
     const sprint = getState().sprint;
@@ -126,6 +131,15 @@ export function changeTime(twitch, minutes) {
 
     if (Number.isNaN(selectedMinutes)) {
       return { message: "Tempo incorreto", severity: "warning" };
+    }
+
+    dispatch({
+      type: SPRINT_UPDATE_TIME,
+      minutes: selectedMinutes,
+    });
+
+    if (silence) {
+      return;
     }
 
     saveSprint(config.oauth, config.channel, [
@@ -143,10 +157,6 @@ export function changeTime(twitch, minutes) {
       sprint: sprint.uuid,
     });
 
-    dispatch({
-      type: SPRINT_UPDATE_TIME,
-      minutes: selectedMinutes,
-    });
     twitch.actionSay(
       `unSprint foi atualizado para ${selectedMinutes} minutos, para checar os novos pontos que irá ganhar digite !tempo`
     );
@@ -154,12 +164,16 @@ export function changeTime(twitch, minutes) {
   };
 }
 
-export function end(twitch) {
+export function end(twitch, silence) {
   return function (dispatch, getState) {
     dispatch({ type: SPRINT_ENDED });
     const sprint = getState().sprint;
     const config = getState().configuration;
     const { messageEnded } = sprint;
+
+    if (silence) {
+      return;
+    }
 
     saveSprint(config.oauth, config.channel, [
       {
@@ -183,10 +197,17 @@ export function end(twitch) {
   };
 }
 
-export function cancel() {
+export function cancel(silence) {
   return function (dispatch, getState) {
     const config = getState().configuration;
     const sprint = getState().sprint;
+
+    dispatch({ type: SPRINT_CANCELLED });
+    dispatch({ type: PARTICIPANTS_RESET });
+
+    if (silence) {
+      return;
+    }
 
     saveSprint(config.oauth, config.channel, [
       {
@@ -196,8 +217,5 @@ export function cancel() {
         evento: "cancelar",
       },
     ]);
-
-    dispatch({ type: SPRINT_CANCELLED });
-    dispatch({ type: PARTICIPANTS_RESET });
   };
 }

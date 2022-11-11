@@ -8,6 +8,8 @@ import reducer from "./reducer";
 const getNamespace = () => {
   if (document.location.href.includes("overlay/forest")) {
     return "simple_local_forest";
+  } else if (document.location.href.includes("overlay/timer")) {
+    return "simple_local_timer";
   }
   return undefined;
 };

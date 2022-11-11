@@ -164,13 +164,15 @@ function SprintConfig({ open, updateAlert, onClose, ...rest }) {
 
   const showOverlay = overlayBetaUsers.includes(config.channel?.toLowerCase());
 
-  const urlOverlay = showOverlay && `${
-    window.location.href
-  }overlay/sprint?scroll=20&nomsg=${window.encodeURI(
-    ": sem ranking"
-  )}&msg=${window.encodeURI(
-    ": @minutos minutos (@posicao°)"
-  )}&config=${b64EncodeUnicode(JSON.stringify({ sprint, config, vip }))}`;
+  const urlOverlay =
+    showOverlay &&
+    `${window.location.href}overlay/sprint?scroll=20&nomsg=${window.encodeURI(
+      ": sem ranking"
+    )}&msg=${window.encodeURI(
+      ": @minutos minutos (@posicao°)"
+    )}&config=${b64EncodeUnicode(JSON.stringify({ sprint, config, vip }))}`;
+
+  const urlTimer = `${window.location.href}overlay/timer?channel=${config.channel}&font=Kodchasan`;
 
   return (
     <>
@@ -561,8 +563,8 @@ function SprintConfig({ open, updateAlert, onClose, ...rest }) {
 
                   <Grid item xs={12}>
                     <span>
-                      Overlay, clique no texto abaixo que será copiado
-                      automaticamente
+                      Overlay do Bot de Sprint, clique no texto abaixo que será
+                      copiado automaticamente
                       <sup className={classes.beta}>Beta</sup>
                     </span>
                     <TextField
@@ -578,6 +580,30 @@ function SprintConfig({ open, updateAlert, onClose, ...rest }) {
                   </Grid>
                 </>
               )}
+
+              <Grid item xs={12}>
+                <Divider style={{ marginTop: 20, marginBottom: 10 }} />
+              </Grid>
+
+              <Grid item xs={12}>
+                <span>
+                  Overlay do Timer
+                  <br />
+                  Importante: apenas funciona com comandos digitados no chat.
+                  Clique no texto abaixo que será copiado automaticamente
+                  <sup className={classes.beta}>Beta</sup>
+                </span>
+                <TextField
+                  value={urlTimer}
+                  onClick={() => {
+                    navigator.clipboard.writeText(urlTimer);
+                  }}
+                  error
+                  helperText="Não compartilhe esse link com ninguém!"
+                  disabled
+                  fullWidth
+                />
+              </Grid>
             </Grid>
           </DialogContent>
 
