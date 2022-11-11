@@ -20,6 +20,8 @@ const commands = {
     } else if (parameter.startsWith("cancela")) {
       dispatch(cancel(true));
       return;
+    } else if (parameter.startsWith("atualiza")) {
+      window.location.reload();
     }
   },
 };
