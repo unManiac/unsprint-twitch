@@ -115,43 +115,66 @@ const commands = {
         )}`
       );
     } else if (parameter.startsWith("addvip") && parts.length > 2) {
-      const username = parts[2]
+      const usernames = parts
+        .slice(2)
+        .join(" ")
         .toLowerCase()
         .replace(new RegExp("@", "g"), "")
-        .trim();
+        .split(/[\s,]+/)
+        .filter(Boolean);
 
-      if (special.list.includes(username)) {
-        twitchActionSay(`${username} já existe na lista.`);
-        return;
-      }
+      usernames.forEach((username) => {
+        if (special.list.includes(username)) {
+          twitchActionSay(`${username} já existe na lista.`);
+          return;
+        }
 
-      dispatch({
-        type: VIP_ADD_PERSON,
-        username,
+        dispatch({
+          type: VIP_ADD_PERSON,
+          username,
+        });
+        twitchActionSay(`${username} foi adicionado na lista de vips.`);
       });
-      twitchActionSay(`${username} foi adicionado na lista de vips.`);
     } else if (parameter.startsWith("removevip") && parts.length > 2) {
-      const username = parts[2]
+      const usernames = parts
+        .slice(2)
+        .join(" ")
         .toLowerCase()
         .replace(new RegExp("@", "g"), "")
-        .trim();
+        .split(/[\s,]+/)
+        .filter(Boolean);
 
-      if (!special.list.includes(username)) {
-        twitchActionSay(`${username} não existe na lista.`);
-        return;
-      }
+      usernames.forEach((username) => {
+        if (!special.list.includes(username)) {
+          twitchActionSay(`${username} não existe na lista.`);
+          return;
+        }
 
-      dispatch({
-        type: VIP_REMOVE_PERSON,
-        username,
+        dispatch({
+          type: VIP_REMOVE_PERSON,
+          username,
+        });
+        twitchActionSay(`${username} foi removido na lista de vips.`);
       });
-      twitchActionSay(`${username} foi removido na lista de vips.`);
-    } else if (parameter.startsWith("zeravip")) {
+    } else if (parameter.startsWith("resetavip")) {
       dispatch({
         type: VIP_UPDATE,
         list: [],
       });
-      twitchActionSay(`${username} foi zerado a lista de vips.`);
+      twitchActionSay(`A lista de vips foi resetada.`);
+    } else if (parameter.startsWith("multiplicadorvip") && parts.length > 2) {
+      const multiplicadorVip = Number.parseInt(parts[2].trim());
+      if (Number.isNaN(multiplicadorVip)) {
+        twitchActionSay(`Digite um multiplicador correto.`);
+        return;
+      }
+      dispatch({
+        type: VIP_UPDATE,
+        multiplier: multiplicadorVip,
+      });
+      twitchActionSay(
+        `O multiplicador de vips foi alterado para ${multiplicadorVip}.`
+      );
     } else if (parameter.startsWith("loja") && parts.length > 2) {
       const action = parts[2];
       if (action.startsWith("pausa")) {
