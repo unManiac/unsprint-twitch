@@ -563,8 +563,8 @@ function SprintConfig({ open, updateAlert, onClose, ...rest }) {
 
                   <Grid item xs={12}>
                     <span>
-                      Overlay do Bot de Sprint, clique no texto abaixo que será
-                      copiado automaticamente
+                      <strong>Overlay do Bot de Sprint</strong>, clique no texto
+                      abaixo que será copiado automaticamente
                       <sup className={classes.beta}>Beta</sup>
                     </span>
                     <TextField
@@ -587,7 +587,7 @@ function SprintConfig({ open, updateAlert, onClose, ...rest }) {
 
               <Grid item xs={12}>
                 <span>
-                  Overlay do Timer
+                  <strong>Overlay do Timer</strong>
                   <br />
                   Importante: apenas funciona com comandos digitados no chat.
                   Clique no texto abaixo que será copiado automaticamente
@@ -603,6 +603,17 @@ function SprintConfig({ open, updateAlert, onClose, ...rest }) {
                   disabled
                   fullWidth
                 />
+                <strong>Sugestão de configuração:</strong>
+                <br />
+                <span>- Largura: 500</span>
+                <br />
+                <span>- Altura: 140</span>
+                <br />
+                <span>
+                  - CSS personalizado:{" "}
+                  <pre>{`body { background-color: rgba(0, 0, 0, 0); margin: 0px auto; overflow: hidden; color: white; font-size: 100px; text-align: center; }`}</pre>
+                </span>
+                <br />
               </Grid>
             </Grid>
           </DialogContent>
