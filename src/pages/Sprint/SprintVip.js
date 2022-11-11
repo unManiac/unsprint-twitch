@@ -45,7 +45,7 @@ const TagsInput = memo(({ tags, selectedTags, placeholder, ...other }) => {
 
   function handleKeyDown(event) {
     if (event.key === "Enter") {
-      event.preventDefault();
+      event.preventDefault?.();
       const newSelectedItem = [...selectedItem];
       const duplicatedValues = newSelectedItem.indexOf(
         event.target.value.trim()
@@ -119,7 +119,10 @@ const TagsInput = memo(({ tags, selectedTags, placeholder, ...other }) => {
                       ))}
                     </div>
                   ),
-                  onBlur,
+                  onBlur: (event) => {
+                    handleKeyDown({ key: "Enter", target: event.target });
+                    onBlur(event);
+                  },
                   onChange: (event) => {
                     handleInputChange(event);
                     onChange(event);
@@ -201,7 +204,7 @@ function SprintVip({ open, onClose, ...rest }) {
               <TagsInput
                 tags={list}
                 fullWidth
-                placeholder="Digite o usuário da twitch"
+                placeholder="Digite o usuário da twitch e de enter pra adicionar"
                 label="Usuários Twitch"
                 selectedTags={setList}
               />
