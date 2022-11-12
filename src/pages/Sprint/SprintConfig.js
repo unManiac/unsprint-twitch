@@ -596,7 +596,9 @@ function SprintConfig({
                   <strong>
                     Quando habilitado, o sprint não funciona mais por esta aba,
                     apenas pelo Overlay. Desabilite se quiser que volte a
-                    funcionar como anteriormente.
+                    funcionar como anteriormente. Digite "!un comandos" no chat
+                    pra ver como iniciar, modificar e encerrar o sprint sem a
+                    interface.
                   </strong>
                 </Grid>
               )}
