@@ -23,6 +23,10 @@ function useTmi({
   const config = useSelector((state) => state.configuration);
 
   useEffect(() => {
+    if (!enableTimer && !enableForest && !enableSprint) {
+      return;
+    }
+
     setFailed(false);
     connect(config);
 
@@ -30,7 +34,22 @@ function useTmi({
       externalClient?.disconnect();
     };
     // eslint-disable-next-line
-  }, [config?.oauth, config?.channel, setFailed]);
+  }, [
+    config?.oauth,
+    config?.channel,
+    enableForest,
+    enableSprint,
+    enableTimer,
+    setFailed,
+  ]);
+
+  useEffect(() => {
+    if (!client || enableSprint || enableForest || enableTimer) {
+      return;
+    }
+    externalClient?.disconnect();
+    // eslint-disable-next-line
+  }, [client, enableSprint, enableForest, enableTimer]);
 
   const connect = (config) => {
     externalClient?.disconnect();
@@ -58,7 +77,7 @@ function useTmi({
         setFailed(false);
         setClient(client);
       })
-      .catch(() => {
+      .catch((err) => {
         setFailed(true);
         setClient(null);
       });

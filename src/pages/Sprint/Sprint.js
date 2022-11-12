@@ -60,13 +60,16 @@ const useStyles = makeStyles(() => ({
 
 function Sprint({ history }) {
   const classes = useStyles();
-  const [twitch, failed] = useTmi({
-    enableSprint: true,
-    enableForest: false,
-  });
 
   const [openConfig, setOpenConfig] = useState(false);
+  const [overlaySprint, setOverlaySprint] = useState(
+    localStorage.getItem("overlay_sprint") === "true"
+  );
   const [alert, setAlert] = useState();
+  const [twitch, failed] = useTmi({
+    enableSprint: !overlaySprint,
+    enableForest: false,
+  });
 
   const dispatch = useDispatch();
 
@@ -129,6 +132,7 @@ function Sprint({ history }) {
         <SprintConfig
           open
           updateAlert={updateAlert}
+          onToggleOverlay={setOverlaySprint}
           onClose={() => setOpenConfig(false)}
         />
       )}

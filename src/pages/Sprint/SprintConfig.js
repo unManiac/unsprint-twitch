@@ -54,9 +54,25 @@ const overlayBetaUsers = [
   "andreabistafa",
   "ayaliteraria",
   "flaviafialho",
+  "focandoconcursos",
+  "glauciacassia",
+  "joylannd",
+  "comamorlivro",
+  "nathytalendo",
+  "mundoliterariodalu",
+  "lauraabrand",
+  "caumunhoz",
+  "fabsmartim",
+  "naneverso",
 ];
 
-function SprintConfig({ open, updateAlert, onClose, ...rest }) {
+function SprintConfig({
+  open,
+  updateAlert,
+  onToggleOverlay,
+  onClose,
+  ...rest
+}) {
   const classes = useStyles();
 
   const dispatch = useDispatch();
@@ -67,6 +83,9 @@ function SprintConfig({ open, updateAlert, onClose, ...rest }) {
   const [messageStarted, setMessageStarted] = useState(sprint.messageStarted);
   const [messageEnded, setMessageEnded] = useState(sprint.messageEnded);
   const [messageBonus, setMessageBonus] = useState(sprint.messageBonus);
+  const [overlaySprint, setOverlaySprint] = useState(
+    localStorage.getItem("overlay_sprint") === "true"
+  );
   const [messageConfirmation, setMessageConfirmation] = useState(
     sprint.messageConfirmation
   );
@@ -561,23 +580,48 @@ function SprintConfig({ open, updateAlert, onClose, ...rest }) {
                     <Divider style={{ marginTop: 20, marginBottom: 10 }} />
                   </Grid>
 
-                  <Grid item xs={12}>
-                    <span>
-                      <strong>Overlay do Bot de Sprint</strong>, clique no texto
-                      abaixo que será copiado automaticamente
-                      <sup className={classes.beta}>Beta</sup>
-                    </span>
-                    <TextField
-                      value={urlOverlay}
-                      onClick={() => {
-                        navigator.clipboard.writeText(urlOverlay);
-                      }}
-                      error
-                      helperText="Não compartilhe esse link com ninguém!"
-                      disabled
-                      fullWidth
-                    />
-                  </Grid>
+                  <FormControlLabel
+                    control={
+                      <Switch
+                        checked={overlaySprint}
+                        color="primary"
+                        onChange={() => {
+                          setOverlaySprint(!overlaySprint);
+                          onToggleOverlay(!overlaySprint);
+                          localStorage.setItem(
+                            "overlay_sprint",
+                            String(!overlaySprint)
+                          );
+                        }}
+                      />
+                    }
+                    label="Habilitar overlay do Bot de Sprint"
+                  />
+
+                  {overlaySprint && (
+                    <Grid item xs={12}>
+                      <span>
+                        <strong>Overlay do Bot de Sprint</strong>, clique no
+                        texto abaixo que será copiado automaticamente
+                        <sup className={classes.beta}>Beta</sup>
+                      </span>
+                      <TextField
+                        value={urlOverlay}
+                        onClick={() => {
+                          navigator.clipboard.writeText(urlOverlay);
+                        }}
+                        error
+                        helperText="Não compartilhe esse link com ninguém!"
+                        disabled
+                        fullWidth
+                      />
+                      <strong>
+                        Quando habilitado, o sprint não funciona mais por esta
+                        aba, apenas pelo Overlay. Desabilite se quiser que volte
+                        a funcionar como anteriormente.
+                      </strong>
+                    </Grid>
+                  )}
                 </>
               )}
 
