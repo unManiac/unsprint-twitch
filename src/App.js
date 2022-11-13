@@ -12,6 +12,7 @@ import Config from "./pages/Config/Config";
 import Sprint from "./pages/Sprint/Sprint";
 import Forest from "./pages/Forest/Forest";
 import { GREEN } from "./constants/colors";
+import Glossary from "./pages/Glossary/Glossary";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -66,6 +67,14 @@ function App() {
               )}
             />
             <NavLink
+              to="/comandos"
+              component={(props) => (
+                <Button {...props} color="primary">
+                  Glossário
+                </Button>
+              )}
+            />
+            <NavLink
               to="/contact"
               component={(props) => (
                 <Button {...props} color="default">
@@ -95,6 +104,9 @@ function App() {
           </Route>
           <Route path="/forest">
             <Forest />
+          </Route>
+          <Route path="/comandos">
+            <Glossary />
           </Route>
           <Route path="/contact">
             <div style={{ marginTop: 50 }}>

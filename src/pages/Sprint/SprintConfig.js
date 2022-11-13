@@ -559,23 +559,33 @@ function SprintConfig({
                 <Divider style={{ marginTop: 20, marginBottom: 10 }} />
               </Grid>
 
-              <FormControlLabel
-                control={
-                  <Switch
-                    checked={overlaySprint}
-                    color="primary"
-                    onChange={() => {
-                      setOverlaySprint(!overlaySprint);
-                      onToggleOverlay(!overlaySprint);
-                      localStorage.setItem(
-                        "overlay_sprint",
-                        String(!overlaySprint)
-                      );
-                    }}
-                  />
-                }
-                label="Habilitar overlay do Bot de Sprint"
-              />
+              <Grid item xs={12}>
+                <h2 style={{ color: "purple" }}>
+                  Configurações avançadas abaixo. Essas configurações não são
+                  obrigatórias para utilizar o bot, utilize apenas se tiver
+                  conhecimento ou assistência de alguém.
+                </h2>
+              </Grid>
+
+              <Grid item xs={12}>
+                <FormControlLabel
+                  control={
+                    <Switch
+                      checked={overlaySprint}
+                      color="primary"
+                      onChange={() => {
+                        setOverlaySprint(!overlaySprint);
+                        onToggleOverlay(!overlaySprint);
+                        localStorage.setItem(
+                          "overlay_sprint",
+                          String(!overlaySprint)
+                        );
+                      }}
+                    />
+                  }
+                  label="Habilitar overlay do Bot de Sprint"
+                />
+              </Grid>
 
               {overlaySprint && (
                 <Grid item xs={12}>
@@ -610,10 +620,11 @@ function SprintConfig({
               <Grid item xs={12}>
                 <span>
                   <strong>Overlay do Timer</strong>
+                  <sup className={classes.beta}>Beta</sup>
                   <br />
                   Importante: apenas funciona com comandos digitados no chat.
+                  Acesse a aba "Glossário" no topo para saber os comandos.
                   Clique no texto abaixo que será copiado automaticamente
-                  <sup className={classes.beta}>Beta</sup>
                 </span>
                 <TextField
                   value={urlTimer}

@@ -39,7 +39,9 @@ function Forest({ history }) {
   const urlOverlay = `${window.location.href.replace(
     "forest",
     ""
-  )}overlay/forest?config=${b64EncodeUnicode(JSON.stringify({ config }))}`;
+  )}overlay/forest?hide=********************************************************************************************************&config=${b64EncodeUnicode(
+    JSON.stringify({ config })
+  )}`;
 
   return (
     <Grid container className={classes.root} spacing={1} alignItems="center">
@@ -132,6 +134,8 @@ function Forest({ history }) {
           <b>!unforest arvore nome</b> ou <b>!unforest arvore codigo</b>. Por
           exemplo: <b>!unforest arvore coral estrelado</b> ou{" "}
           <b>!unforest arvore 6</b>
+          <br />
+          Para utilizar uma árvore aleatória, digite <b>!unforest arvore ?</b>
           <br />
           <br />
           Acentos são desconsiderados, e se caso o nome exato não for

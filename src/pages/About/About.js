@@ -18,6 +18,7 @@ const useStyles = makeStyles((theme) => ({
     margin: "0 0 20px 0",
     color: "#333",
   },
+  video: { display: "flex", justifyContent: "center", marginBottom: 30 },
 }));
 
 const Question = ({ title, children }) => {
@@ -37,6 +38,18 @@ export default function About() {
   const classes = useStyles();
   return (
     <Grid container className={classes.root} spacing={1} alignItems="center">
+      <Grid item xs={12} className={classes.video}>
+        <iframe
+          width="800"
+          height="450"
+          src="https://www.youtube.com/embed/aHp66UUH7Vo"
+          title="YouTube video player"
+          frameborder="0"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowfullscreen
+        ></iframe>
+      </Grid>
+
       <Question title="1. O que é o unSprint?">
         É uma ferramenta que permite Streamers engajar e premiar pessoas que
         querem fazer parte do sprint.

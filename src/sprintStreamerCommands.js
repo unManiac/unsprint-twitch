@@ -2,7 +2,6 @@ import { cancel, end, startTime } from "./actions/sprint";
 import {
   CONFIGURATION_UPDATE,
   PARTICIPANTS_ADD_LIVES,
-  RANKING_RESET,
   SPRINT_PARTIAL_UPDATE,
   VIP_ADD_PERSON,
   VIP_REMOVE_PERSON,
@@ -12,7 +11,6 @@ import { getStoreItems, updateStoreItem } from "./requests";
 
 const commands = {
   "!un": async ({
-    isStreamer,
     twitch,
     target,
     dispatch,
@@ -48,7 +46,7 @@ const commands = {
       );
       return;
     } else if (parameter.startsWith("vida") && parts.length > 2) {
-      if (isStreamer && ["on", "off"].includes(parts[2])) {
+      if (["on", "off"].includes(parts[2])) {
         const allImmune = parts[2] === "off";
         dispatch({
           type: SPRINT_PARTIAL_UPDATE,
@@ -77,35 +75,7 @@ const commands = {
           lives,
         });
       }
-    } else if (parameter.startsWith("rankingreset") && parts.length > 2) {
-      if (!["on", "off", "reiniciar"].includes(parts[2])) {
-        return;
-      }
-      if (parts[2] === "reiniciar") {
-        dispatch({
-          type: RANKING_RESET,
-        });
-        twitchActionSay(`Ranking reiniciado.`);
-        return;
-      }
-
-      const disableResetRanking = parts[2] === "off";
-      dispatch({
-        type: SPRINT_PARTIAL_UPDATE,
-        sprint: {
-          disableResetRanking,
-        },
-      });
-
-      if (disableResetRanking) {
-        twitchActionSay(`Ranking NÃO será mais resetado.`);
-      } else {
-        twitchActionSay(`Ranking será resetado na segunda-feira.`);
-      }
     } else if (parameter.startsWith("atualiza")) {
-      window.location.reload();
-    } else if (parameter.startsWith("reconfigura")) {
-      localStorage.removeItem("unconfig");
       window.location.reload();
     } else if (parameter.startsWith("vips")) {
       twitch.say(

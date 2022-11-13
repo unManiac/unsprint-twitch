@@ -6,6 +6,7 @@ import {
   TableHead,
   TableRow,
   TableBody,
+  Box,
   TableCell,
   withStyles,
   Grid,
@@ -119,13 +120,26 @@ function Sprint({ history }) {
       <Grid container justifyContent="space-between" alignItems="center">
         <h2 style={{ display: "inline-block" }}>Preparando o unSprint</h2>
 
-        <Button
-          onClick={() => setOpenConfig(true)}
-          color="primary"
-          variant="outlined"
-        >
-          Editar configurações
-        </Button>
+        <Box>
+          <Button
+            onClick={() => setOpenConfig(true)}
+            color="default"
+            variant="outlined"
+            style={{ marginRight: 20 }}
+            href="https://www.youtube.com/watch?v=aHp66UUH7Vo"
+            target="_blank"
+          >
+            Precisa de ajuda?
+          </Button>
+
+          <Button
+            onClick={() => setOpenConfig(true)}
+            color="primary"
+            variant="outlined"
+          >
+            Editar configurações
+          </Button>
+        </Box>
       </Grid>
 
       {openConfig && (
