@@ -44,6 +44,7 @@ function TimerOverlay({ location, end }) {
           onComplete={() => {
             end(twitch, true);
             try {
+              audioEncerrouRef.current.currentTime = 0;
               audioEncerrouRef.current.volume = 0.2;
               audioEncerrouRef.current.play();
             } catch (err) {}
