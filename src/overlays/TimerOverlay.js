@@ -1,13 +1,15 @@
-import React, { useMemo } from "react";
+import React, { useMemo, createRef } from "react";
 import { connect, useSelector } from "react-redux";
 import { withRouter } from "react-router-dom";
 import useTmi from "../useTmi";
 import "./SprintOverlay.css";
 import { end } from "../actions/sprint";
 import Countdown from "react-countdown";
+import encerrouMp3 from "./assets/encerrou.mp3";
 
 function TimerOverlay({ location, end }) {
   const sprint = useSelector((state) => state.sprint);
+  const audioEncerrouRef = createRef();
 
   const parameters = useMemo(
     () => new URLSearchParams(location.search),
@@ -39,7 +41,13 @@ function TimerOverlay({ location, end }) {
           zeroPadDays={null}
           date={sprint.ends}
           controlled={false}
-          onComplete={() => end(twitch, true)}
+          onComplete={() => {
+            end(twitch, true);
+            try {
+              audioEncerrouRef.current.volume = 0.2;
+              audioEncerrouRef.current.play();
+            } catch (err) {}
+          }}
           renderer={({ hours, minutes, seconds, completed }) => {
             if (completed) {
               return "00:00:00";
@@ -57,6 +65,10 @@ function TimerOverlay({ location, end }) {
       ) : (
         "00:00:00"
       )}
+
+      <audio ref={audioEncerrouRef} style={{ display: "none" }}>
+        <source src={encerrouMp3} />
+      </audio>
     </div>
   );
 }
