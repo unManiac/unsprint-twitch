@@ -199,6 +199,8 @@ function useTmi({
         sprintCommands["!unlivro"](params);
       } else if (message.startsWith("!estante")) {
         sprintCommands["!estante"](params);
+      } else if (message.startsWith("!quiz")) {
+        sprintCommands["!quiz"](params);
       }
 
       if (isStreamer && message.startsWith("!vida")) {

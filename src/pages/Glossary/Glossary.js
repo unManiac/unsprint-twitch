@@ -230,6 +230,18 @@ export default function Glossary() {
         </Grid>
 
         <Grid item className={classes.comando}>
+          <strong>
+            !quiz
+            <br />
+            !quiz @usuario
+          </strong>
+          <div>
+            Compartilha o link para jogar o "Qual a capa?" usando as estantes do
+            usuário no maratona.app
+          </div>
+        </Grid>
+
+        <Grid item className={classes.comando}>
           <strong>!unlivro</strong>
           <div>
             Calcula qual sua porcentagem da leitura atual, o comando precisa ser

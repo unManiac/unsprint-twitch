@@ -231,6 +231,12 @@ const commands = {
       `link: https://maratona.app/u/${username2 || username}/estantes`
     );
   },
+  "!quiz": ({ twitchActionSay, username, message }) => {
+    const username2 = (message.split(" ")[1] || "").replace("@", "");
+    twitchActionSay(
+      `link: https://maratona.app/quiz?u=${username2 || username}`
+    );
+  },
   "!unlivro": ({ twitchActionSay, message, username }) => {
     const paginas = message
       .replace(new RegExp("[^0-9]", "g"), " ")
