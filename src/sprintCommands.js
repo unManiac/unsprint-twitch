@@ -300,6 +300,15 @@ const commands = {
   "!i": iniciar,
   "!ganhei": ganhei,
   "!g": ganhei,
+  "!timer": ({ sprint, twitchActionSay }) => {
+    if (sprint.ends) {
+      const [, minutes] = calculatePoints(new Date(), sprint.ends);
+
+      twitchActionSay(`Tempo restante: ${minutes} minutos.`);
+      return;
+    }
+    twitchActionSay("Nenhum sprint está acontecendo.");
+  },
   "!tempo": ({
     sprint,
     config,

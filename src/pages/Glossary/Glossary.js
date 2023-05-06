@@ -195,6 +195,11 @@ export default function Glossary() {
         </Grid>
 
         <Grid item className={classes.comando}>
+          <strong>!timer</strong>
+          <div>Para saber quanto tempo falta no crônometro. (em minutos)</div>
+        </Grid>
+
+        <Grid item className={classes.comando}>
           <strong>
             !m
             <br />

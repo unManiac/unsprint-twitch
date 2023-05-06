@@ -88,7 +88,7 @@ export default function About() {
         enviada fará a pessoa perder imediatamente.
         <br /> <br />
         <b style={{ color: "red" }}>Importante: </b> Ficar com <i>Zero</i> vidas
-        significa perder, portanto caso queira queira permitir que a pessoa
+        significa perder, portanto caso queira permitir que a pessoa
         possa enviar 1 mensagem sem perder, o valor de vidas <b>precisa</b> ser
         2.{" "}
         <span style={{ color: "red" }}>
