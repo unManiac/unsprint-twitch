@@ -55,8 +55,16 @@ function useTmi({
     externalClient?.disconnect();
     const client = new tmi.client(
       channel
-        ? { channels: [channel] }
+        ? {
+            options: {
+              skipUpdatingEmotesets: true,
+            },
+            channels: [channel],
+          }
         : {
+            options: {
+              skipUpdatingEmotesets: true,
+            },
             identity: {
               username: config.channel,
               password: config.oauth,
