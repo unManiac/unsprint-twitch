@@ -205,6 +205,8 @@ function useTmi({
     if (!found && enableSprint) {
       if (message.startsWith("!unlivro")) {
         sprintCommands["!unlivro"](params);
+      } else if (message.startsWith("!calcula")) {
+        sprintCommands["!calcula"](params);
       } else if (message.startsWith("!estante")) {
         sprintCommands["!estante"](params);
       } else if (message.startsWith("!quiz")) {

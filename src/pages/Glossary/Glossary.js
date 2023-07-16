@@ -254,6 +254,14 @@ export default function Glossary() {
           </div>
         </Grid>
 
+        <Grid item className={classes.comando}>
+          <strong>!calcula</strong>
+          <div>
+            Calcula quantos minutos foram adicionados nas lives infinitas:
+            !calcula se 100 bits = 5min, quantos são 20 bits?
+          </div>
+        </Grid>
+
         <h2 className={classes.title}>Bot do Forest (Streamer/Mods):</h2>
 
         <Grid item className={classes.comando}>

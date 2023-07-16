@@ -237,6 +237,26 @@ const commands = {
       `link: https://maratona.app/quiz?u=${username2 || username}`
     );
   },
+  "!calcula": ({ twitchActionSay, message, username }) => {
+    const valores = message
+      .replace(new RegExp("[^0-9]", "g"), " ")
+      .split(" ")
+      .filter(Boolean);
+
+    if (valores.length !== 3) {
+      twitchActionSay(
+        'Inválido, digite nessa ordem: "se 100 bits = 5min, quantos são 20 bits?"'
+      );
+      return;
+    }
+
+    const valor = valores[0];
+    const minutos = valores[1];
+    const doado = valores[2];
+
+    const resultado = String((doado * minutos) / valor).replace(".", ",");
+    twitchActionSay(`@${username} acrescentou ${resultado} minuto(s)`);
+  },
   "!unlivro": ({ twitchActionSay, message, username }) => {
     const paginas = message
       .replace(new RegExp("[^0-9]", "g"), " ")
