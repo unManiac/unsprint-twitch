@@ -9,6 +9,8 @@ import {
 } from "./constants/actionTypes";
 import { calculatePoints, findBestMultiplier } from "./helper";
 import { addPoints } from "./requests";
+import moment from "moment-timezone";
+import "moment/locale/pt-br";
 
 export const dict = {
   iniciar:
@@ -255,7 +257,26 @@ const commands = {
     const doado = valores[2];
 
     const resultado = String((doado * minutos) / valor).replace(".", ",");
-    twitchActionSay(`@${username} acrescentou ${resultado} minuto(s)`);
+    twitchActionSay(`A ação de @${username} resulta em ${resultado}`);
+  },
+  "!acaba": ({ twitchActionSay, message, username }) => {
+    const valores = message
+      .replace(new RegExp("[^0-9]", "g"), " ")
+      .split(" ")
+      .filter(Boolean);
+
+    if (valores.length !== 1) {
+      twitchActionSay('Inválido, digite somente com horas, exemplo: "em 48h"');
+      return;
+    }
+
+    const horas = valores[0];
+
+    const tempoAtual = moment().locale("pt-br").add(horas, "hours");
+
+    twitchActionSay(
+      `Vai acabar em ${tempoAtual.format("LLL")} (${tempoAtual.format("dddd")})`
+    );
   },
   "!unlivro": ({ twitchActionSay, message, username }) => {
     const paginas = message

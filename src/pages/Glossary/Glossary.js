@@ -262,6 +262,14 @@ export default function Glossary() {
           </div>
         </Grid>
 
+        <Grid item className={classes.comando}>
+          <strong>!acaba</strong>
+          <div>
+            Calcula quando a live vai acabar de acordo com as horas informadas, recomendado nas lives infinitas:
+            !acaba em 48h
+          </div>
+        </Grid>
+
         <h2 className={classes.title}>Bot do Forest (Streamer/Mods):</h2>
 
         <Grid item className={classes.comando}>

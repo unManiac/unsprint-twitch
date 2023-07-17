@@ -207,6 +207,8 @@ function useTmi({
         sprintCommands["!unlivro"](params);
       } else if (message.startsWith("!calcula")) {
         sprintCommands["!calcula"](params);
+      } else if (message.startsWith("!acaba")) {
+        sprintCommands["!acaba"](params);
       } else if (message.startsWith("!estante")) {
         sprintCommands["!estante"](params);
       } else if (message.startsWith("!quiz")) {
