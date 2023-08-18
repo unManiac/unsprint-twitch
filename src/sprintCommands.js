@@ -335,6 +335,7 @@ const commands = {
       `Ranking atual: ${top}. Fique atento, pois os minutos serão zerados toda segunda-feira. Para conferir sua posição digite !minutos`
     );
   },
+  "!ovo": () => {}, // ignora mensagem
   "!minutos": minutos,
   "!m": minutos,
   "!iniciar": iniciar,
