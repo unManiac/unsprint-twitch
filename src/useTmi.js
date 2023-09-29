@@ -171,16 +171,16 @@ function useTmi({
       }
       return;
     }
+    const canUseStreamerCommand =
+      isStreamer || (params.isMod && sprint.modCanControlBot);
 
     if (enableTimer) {
-      if (message.startsWith("!un")) {
+      if (canUseStreamerCommand && message.startsWith("!un")) {
         timerCommands["!un"](params);
       }
       return;
     }
 
-    const canUseStreamerCommand =
-      isStreamer || (params.isMod && sprint.modCanControlBot);
     if (canUseStreamerCommand) {
       for (let i = 0; i < keySprintStreamerCommands.length; i++) {
         const key = keySprintStreamerCommands[i];
