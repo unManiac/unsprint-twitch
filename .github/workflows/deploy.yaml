@@ -18,7 +18,7 @@ jobs:
       shell: bash
     - run : npm ci --force
       shell: bash
-    - run : npx react-scripts --openssl-legacy-provider build
+    - run : CI=false npx react-scripts --openssl-legacy-provider build
       shell: bash
     - run : git config user.name github-actions
       shell: bash
