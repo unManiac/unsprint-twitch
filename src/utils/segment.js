@@ -10,7 +10,9 @@ export function segmentIdentify(channel) {
 
 export function segmentTrack(name, params) {
   try {
-    window.analytics?.track(name, params);
+    if (window.analytics?.track) {
+      window.analytics.track(name, params);
+    }
   } catch (err) {
     console.log(err);
   }

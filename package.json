@@ -4,10 +4,10 @@
   "homepage": "http://unmaniac.github.io/unsprint-twitch",
   "private": true,
   "dependencies": {
-    "@material-ui/core": "^4.12.3",
-    "@material-ui/icons": "^4.11.2",
-    "@material-ui/lab": "^4.0.0-alpha.60",
-    "@material-ui/styles": "^4.11.4",
+    "@material-ui/core": "^4.12.4",
+    "@material-ui/icons": "^4.11.3",
+    "@material-ui/lab": "^4.0.0-alpha.61",
+    "@material-ui/styles": "^4.11.5",
     "@sentry/react": "^6.19.7",
     "@sentry/tracing": "^6.19.7",
     "@testing-library/jest-dom": "^5.11.4",
@@ -22,7 +22,7 @@
     "react-dom": "^18.2.0",
     "react-redux": "^7.2.4",
     "react-router-dom": "^5.2.0",
-    "react-scripts": "^5.0.1",
+    "react-scripts": "^3.0.1",
     "redux-devtools-extension": "^2.13.9",
     "redux-localstorage-simple": "^2.4.1",
     "redux-logger": "^3.0.6",
@@ -32,7 +32,7 @@
     "web-vitals": "^1.0.1"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "react-scripts --openssl-legacy-provider start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
