@@ -45,7 +45,7 @@ const TagsInput = memo(({ tags, selectedTags, placeholder, ...other }) => {
 
   function handleKeyDown(event) {
     if (event.key === "Enter") {
-      event.preventDefault?.();
+      if (event.preventDefault) event.preventDefault();
       const newSelectedItem = [...selectedItem];
       const duplicatedValues = newSelectedItem.indexOf(
         event.target.value.trim()
