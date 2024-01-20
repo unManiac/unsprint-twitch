@@ -171,6 +171,13 @@ const ganhei = ({
   const loop = async (tries) => {
     addPoints(username, points, config)
       .then((result) => {
+        // Token expirado no StreamElements, envia mensagem no chat diretamente
+        if (!result.newAmount) {
+          twitchActionSay(`!addpoints @${username} ${points}`)
+          return;
+        }
+
+        // Deu certo o token
         const reply = sprint.messageFinished
           .replace("@nome", `@${username}`)
           .replace("@resultado", points)
@@ -190,10 +197,6 @@ const ganhei = ({
 
         // keep trying in loop
         setTimeout(() => loop(--tries), 5000);
-        // tell unmaniac we have a problem
-        console.log(
-          `Erro para atribuir pontos para o usuário ${username}, avise o unManiac.`
-        );
       });
   };
   loop(50);
