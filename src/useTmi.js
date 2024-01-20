@@ -31,7 +31,7 @@ function useTmi({
     connect(config);
 
     return () => {
-      externalClient?.disconnect();
+      if (externalClient?.disconnect) externalClient.disconnect();
     };
     // eslint-disable-next-line
   }, [
@@ -47,12 +47,12 @@ function useTmi({
     if (!client || enableSprint || enableForest || enableTimer) {
       return;
     }
-    externalClient?.disconnect();
+    if (externalClient?.disconnect) externalClient.disconnect();
     // eslint-disable-next-line
   }, [client, enableSprint, enableForest, enableTimer]);
 
   const connect = (config) => {
-    externalClient?.disconnect();
+    if (externalClient?.disconnect) externalClient.disconnect();
     const client = new tmi.client(
       channel
         ? {
