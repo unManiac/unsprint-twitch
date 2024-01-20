@@ -16,7 +16,7 @@ jobs:
 
     - run : npm i --force
       shell: bash
-    - run : npm ci
+    - run : npm ci --force
       shell: bash
     - run : npx react-scripts build
       shell: bash
