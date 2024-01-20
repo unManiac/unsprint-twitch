@@ -34,7 +34,7 @@ function addPointsByRanking(twitch, position) {
             `@${username} ficou em ${position}° e ganhou ${points}. Seu novo total é ${result.newAmount} ${config.loyalty}.`
           );
         } else {
-          twitch.actionSay(`!addpoints @${username} ${points}`);
+          twitch.actionSay(`!addpoints ${username} ${points}`);
         }
       })
       .catch(() => {

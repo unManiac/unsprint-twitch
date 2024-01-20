@@ -173,7 +173,7 @@ const ganhei = ({
       .then((result) => {
         // Token expirado no StreamElements, envia mensagem no chat diretamente
         if (!result.newAmount) {
-          twitchActionSay(`!addpoints @${username} ${points}`)
+          twitchActionSay(`!addpoints ${username} ${points}`)
           return;
         }
 
