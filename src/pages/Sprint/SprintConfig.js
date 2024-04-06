@@ -127,6 +127,10 @@ function SprintConfig({
       rankingPrize3,
       implicitReedemSilent,
       modCanControlBot,
+
+      // preserve original values
+      allImmune: sprint.allImmune,
+      disableResetRanking: sprint.disableResetRanking,
     };
 
     if (sprint.ranking && !ranking) {

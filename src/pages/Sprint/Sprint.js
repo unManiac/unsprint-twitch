@@ -13,11 +13,10 @@ import {
   Button,
 } from "@material-ui/core";
 import { Alert } from "@material-ui/lab";
-import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import React, { useState } from "react";
+import { useSelector } from "react-redux";
 import { withRouter } from "react-router-dom";
 import BatchListener from "../../components/BatchListener";
-import { SPRINT_UPDATE } from "../../constants/actionTypes";
 import { GREEN, WHITE } from "../../constants/colors";
 import { initialState } from "../../reducers/sprint";
 import useTmi from "../../useTmi";
@@ -72,35 +71,12 @@ function Sprint({ history }) {
     enableForest: false,
   });
 
-  const dispatch = useDispatch();
-
   const participants = useSelector((state) => state.participant.list);
   const sprint = useSelector((state) => state.sprint);
 
   if (failed) {
     history.push(`/config`);
   }
-
-  useEffect(() => {
-    // update new configuration
-    let update = false;
-
-    if (sprint.messageAnxious === undefined) {
-      sprint.messageFinished = initialState.messageFinished;
-      sprint.messageAlreadyConfirmed = initialState.messageAlreadyConfirmed;
-      sprint.messageAnxious = initialState.messageAnxious;
-      sprint.messageLate = initialState.messageLate;
-      sprint.messageTime = initialState.messageTime;
-    }
-
-    if (update) {
-      dispatch({
-        type: SPRINT_UPDATE,
-        sprint,
-      });
-      setTimeout(() => window.location.reload(), 1000);
-    }
-  }, [sprint, dispatch]);
 
   const updateAlert = (alert) => {
     setAlert(alert);
