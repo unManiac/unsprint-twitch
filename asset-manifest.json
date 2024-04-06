@@ -1,0 +1,25 @@
+{
+  "files": {
+    "main.css": "/unsprint-twitch/static/css/main.51721a50.chunk.css",
+    "main.js": "/unsprint-twitch/static/js/main.b3b922f6.chunk.js",
+    "main.js.map": "/unsprint-twitch/static/js/main.b3b922f6.chunk.js.map",
+    "runtime-main.js": "/unsprint-twitch/static/js/runtime-main.e6e4e8a8.js",
+    "runtime-main.js.map": "/unsprint-twitch/static/js/runtime-main.e6e4e8a8.js.map",
+    "static/js/2.72a22136.chunk.js": "/unsprint-twitch/static/js/2.72a22136.chunk.js",
+    "static/js/2.72a22136.chunk.js.map": "/unsprint-twitch/static/js/2.72a22136.chunk.js.map",
+    "static/js/3.d082f72b.chunk.js": "/unsprint-twitch/static/js/3.d082f72b.chunk.js",
+    "static/js/3.d082f72b.chunk.js.map": "/unsprint-twitch/static/js/3.d082f72b.chunk.js.map",
+    "index.html": "/unsprint-twitch/index.html",
+    "precache-manifest.8b3fb49370aa4e9a114f12139fb4c0e6.js": "/unsprint-twitch/precache-manifest.8b3fb49370aa4e9a114f12139fb4c0e6.js",
+    "service-worker.js": "/unsprint-twitch/service-worker.js",
+    "static/css/main.51721a50.chunk.css.map": "/unsprint-twitch/static/css/main.51721a50.chunk.css.map",
+    "static/js/2.72a22136.chunk.js.LICENSE.txt": "/unsprint-twitch/static/js/2.72a22136.chunk.js.LICENSE.txt",
+    "static/media/encerrou.mp3": "/unsprint-twitch/static/media/encerrou.fb803143.mp3"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.e6e4e8a8.js",
+    "static/js/2.72a22136.chunk.js",
+    "static/css/main.51721a50.chunk.css",
+    "static/js/main.b3b922f6.chunk.js"
+  ]
+}
