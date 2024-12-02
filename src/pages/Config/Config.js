@@ -176,9 +176,11 @@ function Config({ location }) {
       <Grid container spacing={1}>
         <h2>Configuração do Chat</h2>
         
-        <Alert severity="error" style={{ marginTop: 20, marginBottom: 20 }}>
-          O site Twitchapps está fora do ar, portanto não é possível fazer novas configurações.
-        </Alert>
+        <Grid item xs={12}>
+          <Alert severity="error" style={{ marginTop: 20, marginBottom: 20 }}>
+            O site Twitchapps está fora do ar, portanto não é possível fazer novas configurações.
+          </Alert>
+        </Grid>
           
         <Grid item xs={12}>
           <p className={classes.step}>
