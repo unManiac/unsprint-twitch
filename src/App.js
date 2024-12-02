@@ -74,23 +74,6 @@ function App() {
                 </Button>
               )}
             />
-            <NavLink
-              to="/contact"
-              component={(props) => (
-                <Button {...props} color="default">
-                  Contato
-                </Button>
-              )}
-            />
-            <Button
-              href="https://maratona.app/?origin=unsprint"
-              target="_blank"
-              color="primary"
-              style={{ float: "right" }}
-              variant="contained"
-            >
-              Maratonas? LCs?
-            </Button>
           </div>
         </Toolbar>
       </AppBar>
