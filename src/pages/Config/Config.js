@@ -1,10 +1,10 @@
 import {
   Button,
+  Checkbox,
+  FormControlLabel,
   Grid,
   lighten,
   makeStyles,
-  FormControlLabel,
-  Checkbox,
   TextField,
 } from "@material-ui/core";
 import { Alert } from "@material-ui/lab";
@@ -13,6 +13,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { withRouter } from "react-router";
 import { CONFIGURATION_UPDATE } from "../../constants/actionTypes";
 import { GREEN, WHITE } from "../../constants/colors";
+import { TWITCH_AUTH_URL } from "../../constants/oauth";
 import { forestFetch } from "../../utils/proxy";
 import { segmentTrack } from "../../utils/segment";
 
@@ -173,38 +174,8 @@ function Config({ location }) {
         </Alert>
       )}
 
+      <h2>Configuração do Chat</h2>
       <Grid container spacing={1}>
-        <h2>Configuração do Chat</h2>
-        
-        <Grid item xs={12}>
-          <Alert severity="error" style={{ marginTop: 20, marginBottom: 20 }}>
-            O site Twitchapps está fora do ar, portanto não é possível fazer novas configurações.
-          </Alert>
-        </Grid>
-          
-        <Grid item xs={12}>
-          <p className={classes.step}>
-            1. Acesse{" "}
-            <a
-              href="https://twitchapps.com/tmi/"
-              rel="noreferrer"
-              target="_blank"
-            >
-              https://twitchapps.com/tmi/
-            </a>
-          </p>
-        </Grid>
-
-        <Grid item xs={12}>
-          <p className={classes.step}>2. Clique em "Connect"</p>
-        </Grid>
-
-        <Grid item xs={12} style={{ marginBottom: 20 }}>
-          <p className={classes.step}>
-            3. Copie o código gerado e cole no campo "Código" abaixo, deve
-            começar com oauth:...
-          </p>
-        </Grid>
 
         <Grid item xs={12} sm={4}>
           <TextField
@@ -220,6 +191,17 @@ function Config({ location }) {
             error={validOauth}
             helperText={validOauth ? "Código inválido" : ""}
           />
+        </Grid>
+        
+        <Grid item xs={9} sm={2}>
+          <a href={TWITCH_AUTH_URL}>
+            <Button
+              variant="contained"
+              color="primary"
+              style={{ height: 56 }}>
+              Gerar código
+            </Button>
+          </a>
         </Grid>
 
         <Grid item xs={12} sm={8}>
@@ -262,7 +244,7 @@ function Config({ location }) {
             <a
               href="https://streamelements.com/dashboard/account/channels"
               rel="noreferrer"
-              target="_blank"
+              target="_blank" 
             >
               https://streamelements.com/dashboard/account/channels
             </a>

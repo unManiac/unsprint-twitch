@@ -11,6 +11,7 @@ import "./index.css";
 import SprintOverlay from "./overlays/SprintOverlay";
 import ForestOverlay from "./overlays/ForestOverlay";
 import TimerOverlay from "./overlays/TimerOverlay";
+import OAuthTwitch from "./components/OAuthTwitch";
 
 Sentry.init({
   dsn: "https://22f4233bfca74092907d0c5c44a6732e@o347973.ingest.sentry.io/6410338",
@@ -31,6 +32,9 @@ ReactDOM.render(
           </Route>
           <Route path="/overlay/sprint">
             <SprintOverlay />
+          </Route>
+          <Route path="/oauth/twitch">
+            <OAuthTwitch />
           </Route>
           <Route>
             <App />
