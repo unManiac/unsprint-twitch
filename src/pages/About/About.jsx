@@ -1,53 +1,58 @@
-import { Grid, makeStyles } from "@material-ui/core";
+import { Grid } from "@mui/material";
+import { styled } from "@mui/system";
 import React from "react";
 import { BLUE, GREEN } from "../../constants/colors";
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    marginTop: 30,
-  },
-  title: {
-    fontSize: 18,
-    fontWeight: "bold",
-    margin: "0",
-    color: GREEN,
-  },
-  answer: {
-    fontSize: 18,
-    fontWeight: 500,
-    margin: "0 0 20px 0",
-    color: "#333",
-  },
-  video: { display: "flex", justifyContent: "center", marginBottom: 30 },
+const RootContainer = styled("div")(({ theme }) => ({
+  marginTop: 30,
+}));
+
+const TitleText = styled("p")(({ theme }) => ({
+  fontSize: 18,
+  fontWeight: "bold",
+  margin: "0",
+  color: GREEN,
+}));
+
+const AnswerText = styled("p")(({ theme }) => ({
+  fontSize: 18,
+  fontWeight: 500,
+  margin: "0 0 20px 0",
+  color: "#333",
+}));
+
+const VideoContainer = styled("div")(({ theme }) => ({
+  display: "flex",
+  justifyContent: "center",
+  marginBottom: 30,
 }));
 
 const Question = ({ title, children }) => {
-  const classes = useStyles();
-
   return (
     <>
-      <p className={classes.title}>{title}</p>
+      <TitleText>{title}</TitleText>
       <Grid item xs={12}>
-        <p className={classes.answer}>{children}</p>
+        <AnswerText>{children}</AnswerText>
       </Grid>
     </>
   );
 };
 
 export default function About() {
-  const classes = useStyles();
   return (
-    <Grid container className={classes.root} spacing={1} alignItems="center">
-      <Grid item xs={12} className={classes.video}>
-        <iframe
-          width="800"
-          height="450"
-          src="https://www.youtube.com/embed/aHp66UUH7Vo"
-          title="YouTube video player"
-          frameborder="0"
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-          allowfullscreen
-        ></iframe>
+    <Grid container sx={{ marginTop: 2 }} spacing={1} alignItems="center">
+      <Grid item xs={12}>
+        <VideoContainer>
+          <iframe
+            width="800"
+            height="450"
+            src="https://www.youtube.com/embed/aHp66UUH7Vo"
+            title="YouTube video player"
+            frameBorder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowFullScreen
+          ></iframe>
+        </VideoContainer>
       </Grid>
 
       <Question title="1. O que é o unSprint?">
@@ -88,9 +93,8 @@ export default function About() {
         enviada fará a pessoa perder imediatamente.
         <br /> <br />
         <b style={{ color: "red" }}>Importante: </b> Ficar com <i>Zero</i> vidas
-        significa perder, portanto caso queira permitir que a pessoa
-        possa enviar 1 mensagem sem perder, o valor de vidas <b>precisa</b> ser
-        2.{" "}
+        significa perder, portanto caso queira permitir que a pessoa possa
+        enviar 1 mensagem sem perder, o valor de vidas <b>precisa</b> ser 2.{" "}
         <span style={{ color: "red" }}>
           Os comandos do unSprint não tiram vida, mas os comandos do seu canal e
           outras mensagens sim.

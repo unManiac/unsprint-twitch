@@ -14,11 +14,9 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    - run : npm i --force
+    - run : npm ci
       shell: bash
-    - run : npm ci --force
-      shell: bash
-    - run : CI=false npx react-scripts --openssl-legacy-provider build
+    - run : npm run build
       shell: bash
     - run : git config user.name github-actions
       shell: bash

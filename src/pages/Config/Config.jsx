@@ -3,40 +3,38 @@ import {
   Checkbox,
   FormControlLabel,
   Grid,
-  lighten,
-  makeStyles,
   TextField,
-} from "@material-ui/core";
-import { Alert } from "@material-ui/lab";
+} from "@mui/material";
+import { lighten } from "@mui/material/styles";
+import { styled } from "@mui/system";
 import React, { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { withRouter } from "react-router";
+import { useNavigate, useLocation } from "react-router-dom";
+import { toast, Toaster } from "sonner";
 import { CONFIGURATION_UPDATE } from "../../constants/actionTypes";
 import { GREEN, WHITE } from "../../constants/colors";
 import { TWITCH_AUTH_URL } from "../../constants/oauth";
 import { forestFetch } from "../../utils/proxy";
 import { segmentTrack } from "../../utils/segment";
 
-const useStyles = makeStyles((theme) => ({
-  root: {},
-  step: {
-    fontSize: 18,
-    fontWeight: "bold",
-    margin: "0",
-  },
-  save: {
-    backgroundColor: GREEN,
-    color: WHITE,
-    marginTop: 30,
-    fontSize: 18,
-    "&:hover,&:active,&:focus": {
-      backgroundColor: lighten(GREEN, 0.3),
-    },
+const StepText = styled("p")(({ theme }) => ({
+  fontSize: 18,
+  fontWeight: "bold",
+  margin: "0",
+}));
+
+const SaveButton = styled(Button)(({ theme }) => ({
+  backgroundColor: GREEN,
+  color: WHITE,
+  marginTop: 30,
+  fontSize: 18,
+  "&:hover,&:active,&:focus": {
+    backgroundColor: lighten(GREEN, 0.3),
   },
 }));
 
-function Config({ location }) {
-  const classes = useStyles();
+function Config({}) {
+  const location = useLocation();
 
   const parameters = useMemo(
     () => new URLSearchParams(location.search),
@@ -63,12 +61,17 @@ function Config({ location }) {
   );
   const [forestToken, setForestToken] = useState(config.forestToken ?? "");
 
-  const [success, setSuccess] = useState(false);
   const [forestError, setForestError] = useState(false);
   const [forestLoading, setForestLoading] = useState(false);
 
   const validOauth = !!oauth && !oauth.startsWith("oauth:");
   const validToken = !!token && !token.startsWith("ey");
+
+  useEffect(() => {
+    if (msg) {
+      toast.error(msg, { id: "error-msg", duration: 5000 });
+    }
+  }, [msg]);
 
   useEffect(() => {
     if (token) {
@@ -102,10 +105,16 @@ function Config({ location }) {
     })
       .then((resp) => resp.json())
       .then((channel) => {
+        if (!channel.loyalty.name) {
+          throw new Error("Loyalty not found");
+        }
+
         setLoyalty(channel.loyalty.name);
+      })
+      .catch(() => {
+        toast.error("Não encontrado, informe token corretamente.");
       });
   };
-
   const forestLogin = () => {
     setForestLoading(true);
     forestFetch(`sessions`, {
@@ -120,10 +129,12 @@ function Config({ location }) {
       .then((data) => {
         setForestError(false);
         setForestToken(data.remember_token);
+        toast.success("Token do Forest gerado com sucesso!");
       })
       .catch(() => {
         setForestError(true);
         setForestToken("");
+        toast.error("Email ou senha do Forest incorretos");
       })
       .finally(() => {
         setForestLoading(false);
@@ -133,11 +144,9 @@ function Config({ location }) {
         });
       });
   };
-
   const onSave = (e) => {
     e.preventDefault();
 
-    setSuccess(false);
     dispatch({
       type: CONFIGURATION_UPDATE,
       configuration: {
@@ -155,28 +164,13 @@ function Config({ location }) {
     });
 
     setTimeout(() => {
-      setSuccess(true);
-      setTimeout(() => setSuccess(false), 3000);
+      toast.success("Configurações salvas com sucesso.");
     }, 500);
   };
-
   return (
-    <form className={classes.root} onSubmit={onSave}>
-      {success && (
-        <Alert severity="success" style={{ marginTop: 20 }}>
-          Configurações salvas com sucesso.
-        </Alert>
-      )}
-
-      {!success && msg && (
-        <Alert severity="error" style={{ marginTop: 20 }}>
-          {msg}
-        </Alert>
-      )}
-
+    <form onSubmit={onSave}>
       <h2>Configuração do Chat</h2>
       <Grid container spacing={1}>
-
         <Grid item xs={12} sm={4}>
           <TextField
             value={oauth}
@@ -192,18 +186,13 @@ function Config({ location }) {
             helperText={validOauth ? "Código inválido" : ""}
           />
         </Grid>
-        
         <Grid item xs={9} sm={2}>
           <a href={TWITCH_AUTH_URL}>
-            <Button
-              variant="contained"
-              color="primary"
-              style={{ height: 56 }}>
+            <Button variant="contained" size="small" color="secondary">
               Gerar código
             </Button>
           </a>
         </Grid>
-
         <Grid item xs={12} sm={8}>
           <TextField
             value={channel}
@@ -219,51 +208,30 @@ function Config({ location }) {
             fullWidth
           />
         </Grid>
-
+        <Grid item xs={12} /> <h2>Configuração do StreamElements</h2>
         <Grid item xs={12}>
-          <FormControlLabel
-            control={
-              <Checkbox
-                checked={enableAnnounce}
-                disabled
-                onChange={({ target: { checked } }) =>
-                  setEnableAnnounce(checked)
-                }
-                color="primary"
-                name="enableAnnounce"
-              />
-            }
-            label="Habilitar /announce nas mensagens do Sprint (Desabilitado por não funcionar corretamente no celular)"
-          />
-        </Grid>
-
-        <h2>Configuração do StreamElements</h2>
-        <Grid item xs={12}>
-          <p className={classes.step}>
+          <StepText>
             1. Acesse{" "}
             <a
               href="https://streamelements.com/dashboard/account/channels"
               rel="noreferrer"
-              target="_blank" 
+              target="_blank"
             >
               https://streamelements.com/dashboard/account/channels
             </a>
-          </p>
+          </StepText>
         </Grid>
-
         <Grid item xs={12}>
-          <p className={classes.step}>
+          <StepText>
             2. Clique em "Show secrets" no canto superior direito
-          </p>
+          </StepText>
         </Grid>
-
         <Grid item xs={12} style={{ marginBottom: 20 }}>
-          <p className={classes.step}>
+          <StepText>
             3. Terá exibido uma seção com um valor chamado "JWT Token", copie e
             cole no campo "Token" abaixo, deve começar com ey...
-          </p>
+          </StepText>
         </Grid>
-
         <Grid item xs={12} sm={8}>
           <TextField
             value={token}
@@ -282,7 +250,6 @@ function Config({ location }) {
             helperText={validToken ? "Token inválido" : ""}
           />
         </Grid>
-
         <Grid item xs={9} sm={2}>
           <TextField
             value={loyalty}
@@ -293,12 +260,11 @@ function Config({ location }) {
             fullWidth
           />
         </Grid>
-
         <Grid item xs={9} sm={2}>
           <Button
             variant="contained"
-            color="primary"
-            style={{ height: 56 }}
+            size="small"
+            color="secondary"
             onClick={() => {
               fetchLoyalty(channelId, token);
             }}
@@ -307,12 +273,10 @@ function Config({ location }) {
             Atualizar nome
           </Button>
         </Grid>
-
         <h2>Configuração do Forest (opcional)</h2>
-
         <Grid item xs={12}></Grid>
-
         <Grid item xs={12} sm={5}>
+          {" "}
           <TextField
             value={forestEmail}
             variant="outlined"
@@ -322,16 +286,8 @@ function Config({ location }) {
             onChange={({ target: { value } }) => setForestEmail(value)}
             fullWidth
             error={forestError}
-            helperText={
-              forestError
-                ? "Email ou senha incorretos"
-                : forestToken
-                ? "Token gerado com sucesso."
-                : ""
-            }
           />
         </Grid>
-
         <Grid item xs={9} sm={5}>
           <TextField
             value={forestPassword}
@@ -346,12 +302,12 @@ function Config({ location }) {
             error={forestError}
           />
         </Grid>
-
         <Grid item xs={9} sm={2}>
           <Button
             variant="contained"
-            color="primary"
-            style={{ height: 56, background: forestToken ? GREEN : undefined }}
+            size="small"
+            color="secondary"
+            style={{ background: forestToken ? GREEN : undefined }}
             onClick={() => {
               forestLogin();
             }}
@@ -360,7 +316,6 @@ function Config({ location }) {
             {forestLoading ? "Gerando..." : "Gerar token"}
           </Button>
         </Grid>
-
         <Grid item xs={12} sm={12}>
           <TextField
             value={discordWebhook}
@@ -374,21 +329,19 @@ function Config({ location }) {
             helperText="https://csaller.medium.com/usando-webhooks-do-discord-para-automatizar-posts-d57eb505791a"
             error={forestError}
           />
-        </Grid>
-
+        </Grid>{" "}
         <Grid item xs={12}>
-          <Button
-            variant="contained"
+          <SaveButton
             type="submit"
+            variant="contained"
             disabled={forestLoading}
-            className={classes.save}
           >
             Salvar
-          </Button>
+          </SaveButton>
         </Grid>
       </Grid>
     </form>
   );
 }
 
-export default withRouter(Config);
+export default Config;
