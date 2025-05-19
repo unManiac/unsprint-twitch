@@ -20,13 +20,7 @@ export default defineConfig(({ mode }) => {
       },
     },
     // For GitHub Pages deployment
-    base: "/unsprint-twitch/",
-    define: {
-      // Enable legacy env variables for compatibility
-      "process.env": {},
-      // Expose .env as import.meta.env instead of process.env
-      // This is important for Vite
-    },
+    base: process.env.VITE_BASE_URL || "/unsprint-twitch/",
     server: {
       port: 3001,
       open: true,
