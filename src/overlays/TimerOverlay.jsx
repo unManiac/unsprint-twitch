@@ -3,10 +3,12 @@ import { connect, useSelector } from "react-redux";
 import useTmi from "../useTmi";
 import "./SprintOverlay.css";
 import { end } from "../actions/sprint";
+import { useLocation } from "react-router-dom";
 import Countdown from "react-countdown";
 import encerrouMp3 from "./assets/encerrou.mp3";
 
-function TimerOverlay({ location, end }) {
+function TimerOverlay({ end }) {
+  const location = useLocation();
   const sprint = useSelector((state) => state.sprint);
   const audioEncerrouRef = createRef();
 

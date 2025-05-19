@@ -1,16 +1,14 @@
 import {
   Button,
-  Checkbox,
-  FormControlLabel,
   Grid,
   TextField,
 } from "@mui/material";
 import { lighten } from "@mui/material/styles";
 import { styled } from "@mui/system";
-import React, { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate, useLocation } from "react-router-dom";
-import { toast, Toaster } from "sonner";
+import { useLocation } from "react-router-dom";
+import { toast } from "sonner";
 import { CONFIGURATION_UPDATE } from "../../constants/actionTypes";
 import { GREEN, WHITE } from "../../constants/colors";
 import { TWITCH_AUTH_URL } from "../../constants/oauth";
@@ -33,7 +31,7 @@ const SaveButton = styled(Button)(({ theme }) => ({
   },
 }));
 
-function Config({}) {
+function Config({ }) {
   const location = useLocation();
 
   const parameters = useMemo(
