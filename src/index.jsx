@@ -16,7 +16,7 @@ const root = createRoot(container);
 root.render(
   <React.StrictMode>
     <Provider store={store}>
-      <Router basename={import.meta.env.VITE_BASE_URL || "/unsprint-twitch/"}>
+      <Router >
         <Routes>
           <Route path="/overlay/timer" element={<TimerOverlay />} />
           <Route path="/overlay/forest" element={<ForestOverlay />} />

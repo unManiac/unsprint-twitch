@@ -6,6 +6,8 @@ import path from "path";
 export default defineConfig(({ mode }) => {
   const BASE_URL = process.env.VITE_BASE_URL || "/unsprint-twitch/";
 
+  console.log(`Set BASE_URL=${BASE_URL}`);
+
   return {
     plugins: [react()],
     resolve: {
@@ -13,13 +15,6 @@ export default defineConfig(({ mode }) => {
         "@": path.resolve(__dirname, "./src"),
       },
       extensions: [".mjs", ".js", ".jsx", ".ts", ".tsx", ".json"],
-    },
-    optimizeDeps: {
-      esbuildOptions: {
-        loader: {
-          ".js": "jsx",
-        },
-      },
     },
     // For GitHub Pages deployment
     base: BASE_URL,
