@@ -1,5 +1,4 @@
 import {
-  makeStyles,
   Paper,
   Table,
   TableContainer,
@@ -8,64 +7,55 @@ import {
   TableBody,
   Box,
   TableCell,
-  withStyles,
   Grid,
   Button,
-} from "@material-ui/core";
-import { Alert } from "@material-ui/lab";
-import React, { useState } from "react";
+} from "@mui/material";
+import { styled } from "@mui/system";
+import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { withRouter } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import BatchListener from "../../components/BatchListener";
 import { GREEN, WHITE } from "../../constants/colors";
-import { initialState } from "../../reducers/sprint";
 import useTmi from "../../useTmi";
 import SprintConfig from "./SprintConfig";
 import SprintRanking from "./SprintRanking";
 import SprintTimer from "./SprintTimer";
 
-const GreenTableCell = withStyles(() => ({
-  head: {
+const GreenTableCell = styled(TableCell)(({ theme }) => ({
+  "&.MuiTableCell-head": {
     backgroundColor: GREEN,
     color: WHITE,
   },
-  body: {
+  "&.MuiTableCell-body": {
     fontSize: 14,
-  },
-}))(TableCell);
-
-const StyledTableRow = withStyles((theme) => ({
-  root: {
-    "&:nth-of-type(odd)": {
-      backgroundColor: theme.palette.action.hover,
-    },
-  },
-}))(TableRow);
-
-const useStyles = makeStyles(() => ({
-  root: {
-    marginTop: 20,
-  },
-  timer: {
-    marginBottom: 30,
-  },
-  total: {
-    textAlign: "center",
-    fontWeight: 500,
-    color: GREEN,
-    marginTop: 0,
-    marginBottom: 5,
   },
 }));
 
-function Sprint({ history }) {
-  const classes = useStyles();
+const StyledTableRow = styled(TableRow)(({ theme }) => ({
+  "&:nth-of-type(odd)": {
+    backgroundColor: theme.palette.action.hover,
+  },
+}));
+
+const RootContainer = styled(Grid)(({ theme }) => ({
+  marginTop: 20,
+}));
+
+const TotalText = styled("p")(({ theme }) => ({
+  textAlign: "center",
+  fontWeight: 500,
+  color: GREEN,
+  marginTop: 0,
+  marginBottom: 5,
+}));
+
+function Sprint() {
+  const navigate = useNavigate();
 
   const [openConfig, setOpenConfig] = useState(false);
   const [overlaySprint, setOverlaySprint] = useState(
     localStorage.getItem("overlay_sprint") === "true"
   );
-  const [alert, setAlert] = useState();
   const [twitch, failed] = useTmi({
     enableSprint: !overlaySprint,
     enableForest: false,
@@ -74,24 +64,15 @@ function Sprint({ history }) {
   const participants = useSelector((state) => state.participant.list);
   const sprint = useSelector((state) => state.sprint);
 
-  if (failed) {
-    history.push(`/config`);
-  }
-
-  const updateAlert = (alert) => {
-    setAlert(alert);
-    setTimeout(() => setAlert(null), 2500);
-  };
+  useEffect(() => {
+    if (failed) {
+      navigate("/config");
+    }
+  }, [failed]);
 
   return (
-    <Grid container className={classes.root} alignItems="center">
+    <RootContainer container alignItems="center">
       <BatchListener />
-
-      {alert && (
-        <Alert severity={alert.severiy} style={{ flex: 1, marginBottom: 10 }}>
-          {alert.message}
-        </Alert>
-      )}
 
       <Grid container justifyContent="space-between" alignItems="center">
         <h2 style={{ display: "inline-block" }}>Preparando o unSprint</h2>
@@ -99,7 +80,7 @@ function Sprint({ history }) {
         <Box>
           <Button
             onClick={() => setOpenConfig(true)}
-            color="default"
+            color="inherit"
             variant="outlined"
             style={{ marginRight: 20 }}
             href="https://www.youtube.com/watch?v=aHp66UUH7Vo"
@@ -121,17 +102,12 @@ function Sprint({ history }) {
       {openConfig && (
         <SprintConfig
           open
-          updateAlert={updateAlert}
           onToggleOverlay={setOverlaySprint}
           onClose={() => setOpenConfig(false)}
         />
       )}
 
-      <SprintTimer
-        updateAlert={updateAlert}
-        className={classes.timer}
-        twitch={twitch}
-      />
+      <SprintTimer sx={{ marginBottom: 3 }} twitch={twitch} />
 
       <Grid
         item
@@ -139,12 +115,10 @@ function Sprint({ history }) {
         style={{ alignSelf: "baseline" }}
         sm={sprint.ranking ? 5 : 12}
       >
-        <p className={classes.total}>
-          Total participantes: {participants.length}
-        </p>
+        <TotalText>Total participantes: {participants.length}</TotalText>
 
         <TableContainer component={Paper}>
-          <Table className={classes.participants} aria-label="customized table">
+          <Table aria-label="customized table">
             <TableHead>
               <TableRow>
                 <GreenTableCell>Usuário</GreenTableCell>
@@ -166,8 +140,8 @@ function Sprint({ history }) {
       </Grid>
 
       {sprint.ranking && <SprintRanking />}
-    </Grid>
+    </RootContainer>
   );
 }
 
-export default withRouter(Sprint);
+export default Sprint;

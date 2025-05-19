@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo } from "react";
 import Countdown from "react-countdown";
 import { connect, useDispatch, useSelector } from "react-redux";
-import { withRouter } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import useTmi from "../useTmi";
 import Config from "../pages/Config/Config";
 import { end } from "../actions/sprint";
@@ -44,7 +44,8 @@ function scrollAnimate(id, top, scroll) {
   } catch (err) {}
 }
 
-function SprintOverlay({ end, location }) {
+function SprintOverlay({ end }) {
+  const location = useLocation();
   const [twitch, failed] = useTmi({
     enableSprint: true,
     enableForest: false,
@@ -158,8 +159,6 @@ function SprintOverlay({ end, location }) {
   );
 }
 
-export default withRouter(
-  connect(undefined, {
-    end,
-  })(SprintOverlay)
-);
+export default connect(undefined, {
+  end,
+})(SprintOverlay);

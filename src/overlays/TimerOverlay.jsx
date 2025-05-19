@@ -1,6 +1,5 @@
-import React, { useMemo, createRef } from "react";
+import { useMemo, createRef } from "react";
 import { connect, useSelector } from "react-redux";
-import { withRouter } from "react-router-dom";
 import useTmi from "../useTmi";
 import "./SprintOverlay.css";
 import { end } from "../actions/sprint";
@@ -74,8 +73,6 @@ function TimerOverlay({ location, end }) {
   );
 }
 
-export default withRouter(
-  connect(undefined, {
-    end,
-  })(TimerOverlay)
-);
+export default connect(undefined, {
+  end,
+})(TimerOverlay);

@@ -8,67 +8,58 @@ import {
   FormControlLabel,
   Grid,
   IconButton,
-  makeStyles,
   Switch,
   TextField,
   Tooltip,
-} from "@material-ui/core";
-import React, { useState } from "react";
+} from "@mui/material";
+import { styled } from "@mui/system";
+import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RANKING_RESET, SPRINT_UPDATE } from "../../constants/actionTypes";
 import { WHITE } from "../../constants/colors";
-import { b64EncodeUnicode, getNextMonday } from "../../helper";
+import { getNextMonday } from "../../helper";
 import { initialState } from "../../reducers/sprint";
 import SprintVip from "./SprintVip";
+import { toast } from "sonner";
 
-const useStyles = makeStyles(() => ({
-  form: {
-    padding: 10,
-  },
-  title: {
-    marginTop: 0,
-  },
-  dialog: {
-    overflow: "hidden",
-    paddingBottom: 40,
-  },
-  actions: {
-    justifyContent: "center",
-    borderTop: "1px solid rgba(0, 0, 0, 0.12)",
-    paddingTop: 20,
-    position: "sticky",
-    bottom: 0,
-    background: WHITE,
-  },
-  beta: {
-    background: "red",
-    color: WHITE,
-    borderRadius: 25,
-    padding: "1px 5px",
-    fontSize: 10,
-  },
+const StyledForm = styled("form")(({ theme }) => ({
+  padding: 10,
 }));
 
-function SprintConfig({
-  open,
-  updateAlert,
-  onToggleOverlay,
-  onClose,
-  ...rest
-}) {
-  const classes = useStyles();
+const Title = styled("h2")(({ theme }) => ({
+  marginTop: 0,
+}));
 
+const DialogContentStyled = styled(DialogContent)(({ theme }) => ({
+  overflow: "hidden",
+  paddingBottom: 40,
+}));
+
+const DialogActionsStyled = styled(DialogActions)(({ theme }) => ({
+  justifyContent: "center",
+  borderTop: "1px solid rgba(0, 0, 0, 0.12)",
+  paddingTop: 20,
+  position: "sticky",
+  bottom: 0,
+  background: WHITE,
+}));
+
+const BetaTag = styled("sup")(({ theme }) => ({
+  background: "red",
+  color: WHITE,
+  borderRadius: 25,
+  padding: "1px 5px",
+  fontSize: 10,
+}));
+
+function SprintConfig({ open, onToggleOverlay, onClose, ...rest }) {
   const dispatch = useDispatch();
   const sprint = useSelector((state) => state.sprint);
   const config = useSelector((state) => state.configuration);
-  const vip = useSelector((state) => state.vip);
 
   const [messageStarted, setMessageStarted] = useState(sprint.messageStarted);
   const [messageEnded, setMessageEnded] = useState(sprint.messageEnded);
   const [messageBonus, setMessageBonus] = useState(sprint.messageBonus);
-  const [overlaySprint, setOverlaySprint] = useState(
-    localStorage.getItem("overlay_sprint") === "true"
-  );
   const [messageConfirmation, setMessageConfirmation] = useState(
     sprint.messageConfirmation
   );
@@ -149,10 +140,7 @@ function SprintConfig({
       type: SPRINT_UPDATE,
       sprint: obj,
     });
-    updateAlert({
-      severiy: "success",
-      message: "Configurações salvas com sucesso.",
-    });
+    toast.success("Configurações salvas com sucesso.");
     onClose();
   };
 
@@ -160,21 +148,15 @@ function SprintConfig({
     InputProps: {
       endAdornment: (
         <Tooltip title="Clicando aqui a mensagem será restaurada para a original.">
-          <IconButton onClick={action} size="small">
-            🗑️
-          </IconButton>
+          <span>
+            <IconButton onClick={action} size="small">
+              🗑️
+            </IconButton>
+          </span>
         </Tooltip>
       ),
     },
   });
-
-  const urlOverlay = `${
-    window.location.href
-  }overlay/sprint?scroll=20&nomsg=${window.encodeURI(
-    ": sem ranking"
-  )}&msg=${window.encodeURI(
-    ": @minutos minutos (@posicao°)"
-  )}&config=${b64EncodeUnicode(JSON.stringify({ sprint, config, vip }))}`;
 
   const urlTimer = `${window.location.href}overlay/timer?channel=${config.channel}&font=Kodchasan`;
 
@@ -184,9 +166,9 @@ function SprintConfig({
         <SprintVip open onClose={() => setOpenSpecialMultiplier(false)} />
       )}
       <Dialog open={open} maxWidth="lg">
-        <form onSubmit={onSave} className={classes.form} {...rest}>
-          <DialogContent className={classes.dialog}>
-            <h2 className={classes.title}>Configurações do Sprint</h2>
+        <StyledForm onSubmit={onSave} {...rest}>
+          <DialogContentStyled>
+            <Title>Configurações do Sprint</Title>
 
             <Grid container spacing={3} alignItems="center">
               <Grid item xs={12} sm={2}>
@@ -564,67 +546,10 @@ function SprintConfig({
               </Grid>
 
               <Grid item xs={12}>
-                <h2 style={{ color: "purple" }}>
-                  Configurações avançadas abaixo. Essas configurações não são
-                  obrigatórias para utilizar o bot, utilize apenas se tiver
-                  conhecimento ou assistência de alguém.
-                </h2>
-              </Grid>
-
-              <Grid item xs={12}>
-                <FormControlLabel
-                  control={
-                    <Switch
-                      checked={overlaySprint}
-                      color="primary"
-                      onChange={() => {
-                        setOverlaySprint(!overlaySprint);
-                        onToggleOverlay(!overlaySprint);
-                        localStorage.setItem(
-                          "overlay_sprint",
-                          String(!overlaySprint)
-                        );
-                      }}
-                    />
-                  }
-                  label="Habilitar overlay do Bot de Sprint"
-                />
-              </Grid>
-
-              {overlaySprint && (
-                <Grid item xs={12}>
-                  <span>
-                    <strong>Overlay do Bot de Sprint</strong>, clique no texto
-                    abaixo que será copiado automaticamente
-                  </span>
-                  <TextField
-                    value={urlOverlay}
-                    onClick={() => {
-                      navigator.clipboard.writeText(urlOverlay);
-                    }}
-                    error
-                    helperText="Não compartilhe esse link com ninguém!"
-                    disabled
-                    fullWidth
-                  />
-                  <strong>
-                    Quando habilitado, o sprint não funciona mais por esta aba,
-                    apenas pelo Overlay. Desabilite se quiser que volte a
-                    funcionar como anteriormente. Digite "!un comandos" no chat
-                    pra ver como iniciar, modificar e encerrar o sprint sem a
-                    interface.
-                  </strong>
-                </Grid>
-              )}
-
-              <Grid item xs={12}>
-                <Divider style={{ marginTop: 20, marginBottom: 10 }} />
-              </Grid>
-
-              <Grid item xs={12}>
+                {" "}
                 <span>
                   <strong>Overlay do Timer</strong>
-                  <sup className={classes.beta}>Beta</sup>
+                  <BetaTag>Beta</BetaTag>
                   <br />
                   Importante: apenas funciona com comandos digitados no chat.
                   Acesse a aba "Glossário" no topo para saber os comandos.
@@ -650,12 +575,11 @@ function SprintConfig({
                   - CSS personalizado:{" "}
                   <pre>{`body { background-color: rgba(0, 0, 0, 0); margin: 0px auto; overflow: hidden; color: white; font-size: 100px; }`}</pre>
                 </span>
-                <br />
+                <br />{" "}
               </Grid>
             </Grid>
-          </DialogContent>
-
-          <DialogActions className={classes.actions}>
+          </DialogContentStyled>
+          <DialogActionsStyled>
             <Button
               variant="contained"
               size="large"
@@ -665,16 +589,11 @@ function SprintConfig({
             >
               Salvar
             </Button>
-
-            <Button
-              variant="outlined"
-              color="default"
-              onClick={() => onClose()}
-            >
+            <Button variant="outlined" color="error" onClick={() => onClose()}>
               Fechar
-            </Button>
-          </DialogActions>
-        </form>
+            </Button>{" "}
+          </DialogActionsStyled>
+        </StyledForm>
       </Dialog>
     </>
   );

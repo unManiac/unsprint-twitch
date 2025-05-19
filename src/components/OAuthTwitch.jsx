@@ -1,7 +1,6 @@
-import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { Redirect } from 'react-router-dom';
-import { CONFIGURATION_UPDATE } from '../constants/actionTypes';
+import { useDispatch, useSelector } from "react-redux";
+import { redirect } from "react-router-dom";
+import { CONFIGURATION_UPDATE } from "../constants/actionTypes";
 
 const OAuthTwitch = () => {
   const url = window.location.href;
@@ -16,12 +15,10 @@ const OAuthTwitch = () => {
     configuration: {
       ...config,
       oauth: `oauth:${accessToken}`,
-    }
+    },
   });
-    
-  return (
-    <Redirect to="/config" />
-  );
+
+  redirect("/config");
 };
 
 export default OAuthTwitch;

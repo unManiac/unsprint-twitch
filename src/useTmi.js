@@ -8,8 +8,6 @@ import forestCommands from "./forestCommands";
 import { store } from "./store";
 import { action } from "./utils/announce";
 
-let externalClient = null;
-
 function useTmi({
   enableSprint = true,
   enableForest = true,
@@ -22,37 +20,7 @@ function useTmi({
   const dispatch = useDispatch();
   const config = useSelector((state) => state.configuration);
 
-  useEffect(() => {
-    if (!enableTimer && !enableForest && !enableSprint) {
-      return;
-    }
-
-    setFailed(false);
-    connect(config);
-
-    return () => {
-      if (externalClient?.disconnect) externalClient.disconnect();
-    };
-    // eslint-disable-next-line
-  }, [
-    config?.oauth,
-    config?.channel,
-    enableForest,
-    enableSprint,
-    enableTimer,
-    setFailed,
-  ]);
-
-  useEffect(() => {
-    if (!client || enableSprint || enableForest || enableTimer) {
-      return;
-    }
-    if (externalClient?.disconnect) externalClient.disconnect();
-    // eslint-disable-next-line
-  }, [client, enableSprint, enableForest, enableTimer]);
-
   const connect = (config) => {
-    if (externalClient?.disconnect) externalClient.disconnect();
     const client = new tmi.client(
       channel
         ? {
@@ -72,12 +40,18 @@ function useTmi({
             channels: [config.channel],
           }
     );
-    setClient(client);
-    externalClient = client;
 
-    // Register our event handlers (defined below)
+    client.actionSay = (msg) => {
+      const { configuration } = store.getState();
+      client.say(
+        configuration.channel,
+        action(configuration, msg, enableForest)
+      );
+    };
+
+    setClient(client);
+
     client.on("message", onMessageHandler);
-    client.on("connected", onConnectedHandler);
 
     client
       .connect()
@@ -90,6 +64,20 @@ function useTmi({
         setClient(null);
       });
   };
+
+  useEffect(() => {
+    setFailed(false);
+    if (!enableTimer && !enableForest && !enableSprint) {
+      return;
+    }
+
+    connect(config);
+
+    return () => {
+      if (client?.disconnect) client.disconnect();
+    };
+    // eslint-disable-next-line
+  }, [config?.oauth, config?.channel, enableForest, enableSprint, enableTimer]);
 
   // Called every time a message comes in
   function onMessageHandler(target, context, msg, self, silent) {
@@ -227,19 +215,6 @@ function useTmi({
         sprintCommands["!morte"](params);
       }
     }
-  }
-
-  // Called every time the bot connects to Twitch chat
-  function onConnectedHandler(addr, port) {}
-
-  if (client) {
-    client.actionSay = (msg) => {
-      const { configuration } = store.getState();
-      client.say(
-        configuration.channel,
-        action(configuration, msg, enableForest)
-      );
-    };
   }
 
   return [client, failed];

@@ -1,5 +1,4 @@
 import {
-  makeStyles,
   Paper,
   Table,
   TableContainer,
@@ -8,16 +7,16 @@ import {
   IconButton,
   TableBody,
   TableCell,
-  withStyles,
   Grid,
   TextField,
   TablePagination,
-} from "@material-ui/core";
-import FirstPageIcon from "@material-ui/icons/FirstPage";
-import KeyboardArrowLeft from "@material-ui/icons/KeyboardArrowLeft";
-import KeyboardArrowRight from "@material-ui/icons/KeyboardArrowRight";
-import LastPageIcon from "@material-ui/icons/LastPage";
-import { Alert } from "@material-ui/lab";
+} from "@mui/material";
+import { styled } from "@mui/material/styles";
+import FirstPageIcon from "@mui/icons-material/FirstPage";
+import KeyboardArrowLeft from "@mui/icons-material/KeyboardArrowLeft";
+import KeyboardArrowRight from "@mui/icons-material/KeyboardArrowRight";
+import LastPageIcon from "@mui/icons-material/LastPage";
+import { Alert } from "@mui/lab";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -27,15 +26,12 @@ import {
 import { BLUE, GREEN, WHITE } from "../../constants/colors";
 import { getLastMonday } from "../../helper";
 
-const useStyles1 = makeStyles(() => ({
-  root: {
-    flexShrink: 0,
-    marginLeft: 30,
-  },
+const PaginationActions = styled('div')(({ theme }) => ({
+  flexShrink: 0,
+  marginLeft: 30,
 }));
 
 function TablePaginationActions(props) {
-  const classes = useStyles1();
   const { count, page, rowsPerPage, onPageChange } = props;
 
   const handleFirstPageButtonClick = (event) => {
@@ -55,7 +51,7 @@ function TablePaginationActions(props) {
   };
 
   return (
-    <div className={classes.root}>
+    <PaginationActions>
       <IconButton
         onClick={handleFirstPageButtonClick}
         disabled={page === 0}
@@ -84,11 +80,11 @@ function TablePaginationActions(props) {
       >
         <LastPageIcon />
       </IconButton>
-    </div>
+    </PaginationActions>
   );
 }
 
-const BlueTableCell = withStyles(() => ({
+const BlueTableCell = styled(TableCell)(({ theme }) => ({
   head: {
     backgroundColor: BLUE,
     color: WHITE,
@@ -96,30 +92,25 @@ const BlueTableCell = withStyles(() => ({
   body: {
     fontSize: 14,
   },
-}))(TableCell);
+}));
 
-const StyledTableRow = withStyles((theme) => ({
-  root: {
-    "&:nth-of-type(odd)": {
-      backgroundColor: theme.palette.action.hover,
-    },
-  },
-}))(TableRow);
-
-const useStyles = makeStyles(() => ({
-  total: {
-    justifyContent: "space-between",
-    alignItems: "center",
-    display: "flex",
-    fontWeight: 500,
-    color: GREEN,
-    marginTop: 0,
-    marginBottom: 5,
+const StyledTableRow = styled(TableRow)(({ theme }) => ({
+  "&:nth-of-type(odd)": {
+    backgroundColor: theme.palette.action.hover,
   },
 }));
 
+const TotalText = styled('p')(({ theme }) => ({
+  justifyContent: "space-between",
+  alignItems: "center",
+  display: "flex",
+  fontWeight: 500,
+  color: GREEN,
+  marginTop: 0,
+  marginBottom: 5,
+}));
+
 function SprintRanking() {
-  const classes = useStyles();
 
   const [search, setSearch] = useState("");
   const [rankingWillReset, setRankingWillReset] = useState(false);
@@ -128,9 +119,11 @@ function SprintRanking() {
 
   const dispatch = useDispatch();
 
-  const ranking = useSelector((state) =>
-    state.ranking.list.map((p, idx) => ({ ...p, position: idx + 1 }))
-  );
+  const rankingSelector = useSelector((state) => state.ranking.list);
+  const ranking = rankingSelector.map((p, idx) => ({
+    ...p,
+    position: idx + 1,
+  }));
   const rankingLastReset = useSelector((state) => state.ranking.lastReset);
   const sprint = useSelector((state) => state.sprint);
 
@@ -185,19 +178,17 @@ function SprintRanking() {
             O ranking será resetado e os prêmios distribuídos assim que você
             iniciar um novo sprint.
           </Alert>
-        )}
-        {sprint.disableResetRanking && (
+        )}        {sprint.disableResetRanking && (
           <Alert severity="error">Ranking não será resetado.</Alert>
         )}
-
-        <p className={classes.total} style={{ color: BLUE }}>
+        <TotalText style={{ color: BLUE }}>
           <div>Ranking semanal: {ranking.length}</div>
           <TextField
             value={search}
             placeholder="Filtrar nome"
             onChange={handleSeach}
           />
-        </p>
+        </TotalText>
 
         <TableContainer component={Paper}>
           <Table aria-label="customized table">

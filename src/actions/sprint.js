@@ -10,6 +10,7 @@ import {
 import { getLastMonday } from "../helper";
 import { addPoints, saveSprint } from "../requests";
 import { segmentIdentify, segmentTrack } from "../utils/segment";
+import { toast } from "sonner";
 
 function addPointsByRanking(twitch, position) {
   return function (dispatch, getState) {
@@ -134,7 +135,8 @@ export function changeTime(twitch, minutes, silence) {
       minutes || parseInt(window.prompt("Digite os minutos restante:"));
 
     if (Number.isNaN(selectedMinutes)) {
-      return { message: "Tempo incorreto", severity: "warning" };
+      toast.warn("Tempo incorreto.");
+      return;
     }
 
     dispatch({
@@ -164,7 +166,7 @@ export function changeTime(twitch, minutes, silence) {
     twitch.actionSay(
       `unSprint foi atualizado para ${selectedMinutes} minutos, para checar os novos pontos que irá ganhar digite !tempo`
     );
-    return { message: "Tempo atualizado", severity: "success" };
+    toast.success("Tempo atualizado.");
   };
 }
 

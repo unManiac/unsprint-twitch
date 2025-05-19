@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo } from "react";
 import { connect, useDispatch, useSelector } from "react-redux";
-import { withRouter } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import useTmi from "../useTmi";
 import { CONFIGURATION_UPDATE } from "../constants/actionTypes";
 import "./SprintOverlay.css";
@@ -8,7 +8,8 @@ import { b64DecodeUnicode } from "../helper";
 import { end } from "../actions/forest";
 import Countdown from "react-countdown";
 
-function ForestOverlay({ location, end }) {
+function ForestOverlay({ end }) {
+  const location = useLocation();
   const [twitch, failed] = useTmi({
     enableSprint: false,
     enableForest: true,
@@ -71,8 +72,6 @@ function ForestOverlay({ location, end }) {
   );
 }
 
-export default withRouter(
-  connect(undefined, {
-    end,
-  })(ForestOverlay)
-);
+export default connect(undefined, {
+  end,
+})(ForestOverlay);
