@@ -23,9 +23,6 @@ export default defineConfig(({ mode }) => {
     },
     // For GitHub Pages deployment
     base: BASE_URL,
-    define: {
-      "process.env.BASE_URL": BASE_URL,
-    },
     server: {
       port: 3001,
       open: true,
