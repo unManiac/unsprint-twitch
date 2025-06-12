@@ -8,7 +8,7 @@ import {
   SPRINT_UPDATE_TIME,
 } from "../constants/actionTypes";
 import { getLastMonday } from "../helper";
-import { addPoints, saveSprint } from "../requests";
+import { addPoints } from "../requests";
 import { segmentIdentify, segmentTrack } from "../utils/segment";
 import { toast } from "sonner";
 
@@ -100,15 +100,6 @@ export function startTime(twitch, minutes, silence) {
       return;
     }
 
-    saveSprint(config.oauth, config.channel, [
-      {
-        username: config.channel,
-        sprint: newSprint.uuid,
-        minutos: newSprint.minutes,
-        evento: "criar",
-      },
-    ]);
-
     const { messageStarted } = sprint;
 
     if (messageStarted) {
@@ -148,15 +139,6 @@ export function changeTime(twitch, minutes, silence) {
       return;
     }
 
-    saveSprint(config.oauth, config.channel, [
-      {
-        username: config.channel,
-        sprint: sprint.uuid,
-        minutos: selectedMinutes,
-        evento: "atualizar",
-      },
-    ]);
-
     segmentTrack("Modificou tempo Sprint", {
       minutos: selectedMinutes,
       userId: config.channel,
@@ -180,15 +162,6 @@ export function end(twitch, silence) {
     if (silence) {
       return;
     }
-
-    saveSprint(config.oauth, config.channel, [
-      {
-        username: config.channel,
-        sprint: sprint.uuid,
-        minutos: sprint.minutes,
-        evento: "encerrar",
-      },
-    ]);
 
     segmentTrack("Encerrou Sprint", {
       userId: config.channel,
@@ -214,14 +187,5 @@ export function cancel(silence) {
     if (silence) {
       return;
     }
-
-    saveSprint(config.oauth, config.channel, [
-      {
-        username: config.channel,
-        sprint: sprint.uuid,
-        minutos: sprint.minutes,
-        evento: "cancelar",
-      },
-    ]);
   };
 }

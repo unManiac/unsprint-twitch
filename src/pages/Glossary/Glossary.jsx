@@ -190,8 +190,7 @@ export default function Glossary() {
             </strong>
             <div>
               Conferir quando foi seu último resgate e qual sua posição no
-              ranking semanal do bot. Este ranking não é idêntico ao ranking do
-              maratona.app, apesar das informações serem relacionadas.
+              ranking semanal do bot.
             </div>
           </Command>
           <Command item>
@@ -201,28 +200,6 @@ export default function Glossary() {
           <Command item>
             <strong>!unsprint</strong>
             <div>Explica brevemente o que é o unSprint.</div>
-          </Command>
-          <Command item>
-            <strong>
-              !estante
-              <br />
-              !estante @usuario
-            </strong>
-            <div>
-              Compartilha o link para acessar as estantes do usuário no
-              maratona.app
-            </div>
-          </Command>
-          <Command item>
-            <strong>
-              !quiz
-              <br />
-              !quiz @usuario
-            </strong>
-            <div>
-              Compartilha o link para jogar o "Qual a capa?" usando as estantes
-              do usuário no maratona.app
-            </div>
           </Command>
           <Command item>
             <strong>!unlivro</strong>

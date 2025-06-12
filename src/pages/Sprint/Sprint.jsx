@@ -14,7 +14,6 @@ import { styled } from "@mui/system";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import BatchListener from "../../components/BatchListener";
 import { GREEN, WHITE } from "../../constants/colors";
 import useTmi from "../../useTmi";
 import SprintConfig from "./SprintConfig";
@@ -72,8 +71,6 @@ function Sprint() {
 
   return (
     <RootContainer container alignItems="center">
-      <BatchListener />
-
       <Grid container justifyContent="space-between" alignItems="center">
         <h2 style={{ display: "inline-block" }}>Preparando o unSprint</h2>
 

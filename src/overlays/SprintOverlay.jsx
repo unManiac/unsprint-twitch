@@ -5,7 +5,6 @@ import { useLocation } from "react-router-dom";
 import useTmi from "../useTmi";
 import Config from "../pages/Config/Config";
 import { end } from "../actions/sprint";
-import $ from "jquery";
 import {
   CONFIGURATION_UPDATE,
   SPRINT_UPDATE,
@@ -13,36 +12,6 @@ import {
 } from "../constants/actionTypes";
 import "./SprintOverlay.css";
 import { b64DecodeUnicode } from "../helper";
-import BatchListener from "../components/BatchListener";
-
-let currentId = 0;
-let timeoutId = 0;
-function scrollAnimate(id, top, scroll) {
-  clearTimeout(timeoutId);
-  if (id !== currentId) return;
-  try {
-    const element = $("#animate");
-    element.stop(true);
-
-    if (!element[0]) {
-      return;
-    }
-
-    const scrollTop = top
-      ? 0
-      : element[0].scrollHeight - element[0].offsetHeight;
-    timeoutId = setTimeout(
-      () =>
-        element.animate(
-          { scrollTop },
-          element[0].scrollHeight * scroll,
-          "linear",
-          () => scrollAnimate(id, !top, scroll)
-        ),
-      1000
-    );
-  } catch (err) {}
-}
 
 function SprintOverlay({ end }) {
   const location = useLocation();
@@ -65,27 +34,6 @@ function SprintOverlay({ end }) {
     () => (parameters.get("config") || "").replace(new RegExp(" ", "g"), "+"),
     [parameters]
   );
-  const scrollParam = useMemo(() => {
-    let scroll = Number.parseInt(parameters.get("scroll"));
-    if (Number.isNaN(scroll)) {
-      scroll = 20;
-    }
-    return scroll;
-  }, [parameters]);
-
-  useEffect(() => {
-    window.document.getElementsByTagName("html")[0].classList.add("overlay");
-    return () =>
-      window.document
-        .getElementsByTagName("html")[0]
-        .classList.remove("overlay");
-  }, []);
-
-  useEffect(() => {
-    currentId++;
-    scrollAnimate(currentId, false, scrollParam);
-    return () => clearTimeout(timeoutId);
-  }, [participants, scrollParam]);
 
   useEffect(() => {
     if (configParam && localStorage.getItem("hash_unconfig") !== configParam) {
@@ -130,22 +78,6 @@ function SprintOverlay({ end }) {
 
   return (
     <>
-      <BatchListener />
-      <div id="animate">
-        {participants.map((p) => {
-          let description = p.ranking
-            ? descriptionVariable
-                .replace("@minutos", p.ranking.minutes)
-                .replace("@posicao", p.ranking.position)
-            : noRankingVariable;
-          return (
-            <div key={p.username} className="participant">
-              {p.username}
-              {description}
-            </div>
-          );
-        })}
-      </div>
       <div style={{ color: "transparent" }}>
         {sprint.ends && (
           <Countdown

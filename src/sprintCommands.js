@@ -1,6 +1,5 @@
 import { v4 as uuidv4 } from "uuid";
 import {
-  BATCH_ADD,
   PARTICIPANTS_ADD_LIVES,
   PARTICIPANTS_REMOVE_LIVE,
   PARTICIPANT_ADD,
@@ -71,21 +70,6 @@ const iniciar = ({
     participant: newParticipant,
   });
 
-  dispatch({
-    type: BATCH_ADD,
-    batch: [
-      {
-        uuid: uuidv4(),
-        username,
-        userId,
-        sprint: sprint.uuid,
-        minutos: minutes,
-        evento: "iniciar",
-        eventoAt: new Date().toISOString(),
-      },
-    ],
-  });
-
   const reply = sprint.messageConfirmation
     .replace("@nome", `@${username}`)
     .replace("@tempo", `${minutes}`)
@@ -141,21 +125,6 @@ const ganhei = ({
   dispatch({
     type: PARTICIPANT_REMOVE,
     username,
-  });
-
-  dispatch({
-    type: BATCH_ADD,
-    batch: [
-      {
-        uuid: uuidv4(),
-        username,
-        userId,
-        sprint: sprint.uuid,
-        minutos: minutes,
-        evento: "resgatar",
-        eventoAt: new Date().toISOString(),
-      },
-    ],
   });
 
   if (sprint.ranking) {
@@ -225,23 +194,6 @@ const minutos = ({ twitchActionSay, sprint, username, ranking }) => {
 };
 
 const commands = {
-  "!unlink": ({ twitchActionSay, username }) => {
-    twitchActionSay(
-      `@${username} seu perfil é: https://botfo.co/u/${username}`
-    );
-  },
-  "!estante": ({ twitchActionSay, username, message }) => {
-    const username2 = (message.split(" ")[1] || "").replace("@", "");
-    twitchActionSay(
-      `link: https://maratona.app/u/${username2 || username}/estantes`
-    );
-  },
-  "!quiz": ({ twitchActionSay, username, message }) => {
-    const username2 = (message.split(" ")[1] || "").replace("@", "");
-    twitchActionSay(
-      `link: https://maratona.app/quiz?u=${username2 || username}`
-    );
-  },
   "!calcula": ({ twitchActionSay, message, username }) => {
     const valores = message
       .replace(new RegExp("[^0-9]", "g"), " ")
@@ -462,21 +414,6 @@ const commands = {
       });
 
       const [, minutes] = calculatePoints(joined, sprint.ends || sprint.ended);
-
-      dispatch({
-        type: BATCH_ADD,
-        batch: [
-          {
-            uuid: uuidv4(),
-            username,
-            userId,
-            sprint: sprint.uuid,
-            minutos: minutes,
-            evento: "perder",
-            eventoAt: new Date().toISOString(),
-          },
-        ],
-      });
 
       twitchActionSay(
         `@${username} não sobreviveu, digite !iniciar novamente para recomeçar na partida.`

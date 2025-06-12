@@ -40,22 +40,6 @@ export function updateStoreItem(id, item, config) {
   ).then((resp) => resp.json());
 }
 
-export function saveSprint(oauth, channel, body) {
-  return fetch(
-    `https://maratona.app/api/unsprint/participantes?channel=${channel}`,
-    {
-      method: "POST",
-      headers: {
-        Authorization: oauth,
-        "content-type": "application/json",
-      },
-      body: JSON.stringify(body),
-    }
-  )
-    .then((resp) => resp.json())
-    .catch((err) => segmentTrack("Erro integração", { body, error: err }));
-}
-
 export function discordMessage(webhookUrl, content) {
   if (!webhookUrl) {
     return Promise.resolve();
