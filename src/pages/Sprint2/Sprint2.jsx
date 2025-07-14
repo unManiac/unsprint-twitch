@@ -37,12 +37,14 @@ function Sprint2({ }) {
     }
   }, [config]);
 
-  const urlOverlay = `${window.location.href
-    }overlay/sprint?hide=********************************************************************************************************&scroll=20&nomsg=${window.encodeURI(
-      ": sem ranking"
-    )}&msg=${window.encodeURI(
-      ": @minutos minutos (@posicao°)"
-    )}&config=${b64EncodeUnicode(JSON.stringify({ sprint, config, vip }))}`;
+  const urlOverlay = `${window.location.href.replace(
+    "/sprint",
+    "/"
+  )}overlay/sprint?hide=********************************************************************************************************&scroll=20&nomsg=${window.encodeURI(
+    ": sem ranking"
+  )}&msg=${window.encodeURI(
+    ": @minutos minutos (@posicao°)"
+  )}&config=${b64EncodeUnicode(JSON.stringify({ sprint, config, vip }))}`;
 
   return (
     <StyledGrid container spacing={1} alignItems="center">

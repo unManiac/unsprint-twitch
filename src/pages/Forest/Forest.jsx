@@ -43,8 +43,8 @@ function Forest({}) {
   }, [config]);
 
   const urlOverlay = `${window.location.href.replace(
-    "forest",
-    ""
+    "/forest",
+    "/"
   )}overlay/forest?hide=********************************************************************************************************&config=${b64EncodeUnicode(
     JSON.stringify({ config })
   )}`;
