@@ -7,6 +7,7 @@ import Config from "./pages/Config/Config";
 import Sprint from "./pages/Sprint/Sprint";
 import Forest from "./pages/Forest/Forest";
 import Glossary from "./pages/Glossary/Glossary";
+import Sprint2 from "./pages/Sprint2/Sprint2";
 import { Toaster } from "sonner";
 
 const StyledToolbarDiv = styled("div")(({ theme }) => ({
@@ -94,6 +95,7 @@ function App() {
         <Routes>
           <Route path="/config" element={<Config />} />
           <Route path="/about" element={<About />} />
+          <Route path="/sprint" element={<Sprint2 />} />
           <Route path="/forest" element={<Forest />} />
           <Route path="/comandos" element={<Glossary />} />
           <Route
