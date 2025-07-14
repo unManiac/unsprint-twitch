@@ -24,7 +24,9 @@ const Title = styled('h2')(({ theme }) => ({
 function Sprint2({ }) {
   const navigate = useNavigate();
 
+  const sprint = useSelector((state) => state.sprint);
   const config = useSelector((state) => state.configuration);
+  const vip = useSelector((state) => state.vip);
 
   useEffect(() => {
     if (!config.oauth) {

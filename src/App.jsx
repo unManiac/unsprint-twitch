@@ -98,20 +98,6 @@ function App() {
           <Route path="/sprint" element={<Sprint2 />} />
           <Route path="/forest" element={<Forest />} />
           <Route path="/comandos" element={<Glossary />} />
-          <Route
-            path="/contact"
-            element={
-              <div style={{ marginTop: 50 }}>
-                <pre>
-                  Discord: Maniac#9227 <br />
-                  Twitch:{" "}
-                  <a href="https://www.twitch.tv/unmaniac">
-                    https://www.twitch.tv/unmaniac
-                  </a>
-                </pre>
-              </div>
-            }
-          />
           <Route path="/" element={<Sprint />} />
         </Routes>
       </Container>
